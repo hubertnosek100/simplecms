@@ -1,0 +1,137 @@
+<!doctype html>
+
+<head>
+  <title>JS CMS</title>
+  <meta charset="UTF-8">
+  <!-- Latest compiled and minified CSS -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css">
+
+  <!-- jQuery library -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+  <!-- Popper JS -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js"></script>
+
+  <!-- Latest compiled JavaScript -->
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js"></script>
+  <script src="/simplecms.js"></script>
+  <link rel="stylesheet" href="/simplecms.css">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css" integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ"
+    crossorigin="anonymous">
+
+
+</head>
+<nav class="scms-navbar navbar navbar-expand-md scms-primary link-white">
+  <!-- Brand -->
+  <a class="navbar-brand" href="/">Simple CMS</a>
+  <!-- Toggler/collapsibe Button -->
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <!-- Navbar links -->
+  <div class="collapse navbar-collapse d-flex justify-content-between" id="collapsibleNavbar">
+    <ul class="navbar-nav">
+      <li class="nav-item">
+        <a class="nav-link" href="/simplecms/examples">Examples</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/simplecms/components">Components</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/simplecms/database">Database</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/simplecms/dashboard">Dashboard</a>
+      </li>
+
+    </ul>
+    <ul class="navbar-nav">
+      <li class="nav-item">
+        <a class="nav-link" href="/Login">Login</a>
+      </li>
+    </ul>
+  </div>
+</nav>
+
+<body class="scms-body">
+  <div class="container pt-5">
+    <h2>New template</h2>
+    <p>Create new template.</p>
+    <hr/>
+    <div class="pt-2">
+      <form id="addtemplateform">
+        <div class="d-flex">
+          <div class="form-group p-2">
+            <label for="name">Name</label>
+            <input name="name" required type="text" class="form-control" id="name" placeholder="Name of your template">
+          </div>
+          <div class="form-group p-2">
+            <label for="uuid">Uuid</label>
+            <input name="uuid" required type="text" class="form-control" id="uuid" placeholder="Enter unique identifier">
+          </div>
+        </div>
+        <div id="element-list">
+
+          </div>
+        <div class="form-group p-2">
+          <button type="button" class="btn btn-primary scms-primary scms-btn" data-toggle="modal" data-target="#addelementmodal">
+            <i class="fas fa-plus"></i>
+            Add element
+          </button>
+        </div>
+        
+
+        <div class="form-group d-flex flex-row-reverse">
+          <div>
+            <button class="btn btn-primary scms-primary scms-btn">Create template</button>
+          </div>
+        </div>
+      </form>
+
+      <div id="stickymenu" class="left-menu">
+      </div>
+    </div>
+  </div>
+  <script>
+    $(function () {
+      $("#stickymenu").load("/simplecms/dashboard/sitckymenu.html");
+    });
+  </script>
+
+  <div class="modal fade" id="addelementmodal" tabindex="-1" role="dialog" aria-labelledby="addelementmodalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="addelementmodalLabel">Add new element</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <form id="addelementform">
+          <div class="modal-body">
+
+            <div class="form-group">
+              <label for="element-name">Name</label>
+              <input name="name" id="element-name" required class="form-control" type="text" placeholder="">
+            </div>
+            <div class="form-group">
+              <label for="element-type">Type</label>
+              <select id="newtemplatetypeselect" name="type" required class="form-control" id="element-type">
+              </select>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <button id="addelementmodalSave" type="submit" class="btn btn-primary scms-btn scms-primary">Add</button>
+          </div>
+        </form>
+
+      </div>
+    </div>
+  </div>
+  <script>
+      simplecms.init("http://localhost:3000", "f438548f5f0bbfd5733f34c80bcf412bf7c7c317");
+  </script>
+</body>
+
+</html>

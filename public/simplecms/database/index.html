@@ -17,9 +17,10 @@
   <script src="/simplecms.js"></script>
   <link rel="stylesheet" href="/simplecms.css">
 
-
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css" integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ"
+    crossorigin="anonymous">
 </head>
-<nav class="scms-navbar navbar navbar-expand-md scms-primary link-white">
+<nav class=" scms-navbar navbar navbar-expand-md scms-primary link-white">
   <!-- Brand -->
   <a class="navbar-brand" href="/">Simple CMS</a>
   <!-- Toggler/collapsibe Button -->
@@ -53,18 +54,34 @@
 
 <body class="scms-body">
   <div class="container pt-5">
-    <div class="d-flex align-items-center flex-column">
-      <h2>Geting started!</h2>
-      <p>Welcome to Simple CMS.</p>
-    </div>
+
+    <h2>Database</h2>
+    <p>List all of objects you have in your simplecms.</p>
     <hr/>
 
-    <div class="p-5">
-
+    <div class="form-group w-25">
+      <label for="scmsTableSelect">Select table:</label>
+      <select class="form-control" id="scmsTableSelect">
+      </select>
     </div>
+
+    <table id="scmsDbTable" class="table table-hover text-center">
+      <thead class="scms-primary text-light">
+        <tr>
+          <th>#ID</th>
+          <th>Content</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+
+      </tbody>
+    </table>
+
   </div>
   <script>
     simplecms.init("http://localhost:3000", "f438548f5f0bbfd5733f34c80bcf412bf7c7c317");
+    simplecms.database.init();
   </script>
 </body>
 

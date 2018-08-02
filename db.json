@@ -1,5 +1,86 @@
 {
-    "text":[
-    {"id": 1, "text" :"Bleble"}
-    ]
+  "template": [
+    {
+      "name": "All",
+      "uuid": "allid",
+      "elements": [
+        {
+          "name": "Description",
+          "type": "text"
+        },
+        {
+          "name": "Age",
+          "type": "number"
+        },
+        {
+          "name": "Date of birth",
+          "type": "date"
+        },
+        {
+          "name": "Clock",
+          "type": "datetime"
+        },
+        {
+          "name": "Favourite color",
+          "type": "color"
+        },
+        {
+          "name": "My website",
+          "type": "link"
+        }
+      ],
+      "id": 3
+    },
+    {
+      "name": "Strona główna",
+      "uuid": "main",
+      "elements": [
+        {
+          "name": "Data",
+          "type": "datetime"
+        },
+        {
+          "name": "Background",
+          "type": "color"
+        }
+      ],
+      "id": 4
+    }
+  ],
+  "exponent": [
+    {
+      "uuid": "pierwsza",
+      "Data": "08/15/2018 12:12 PM",
+      "Background": "rgb(101, 78, 54)",
+      "templateid": "4",
+      "template": "Strona główna",
+      "id": 5
+    }
+  ],
+  "simpletext": [
+    {
+      "id": 11,
+      "uuid": "profileNavContent",
+      "text": "xzcsadsdsd"
+    }
+  ],
+  "simplevideo": [
+    {
+      "id": 1,
+      "uuid": "firstVideo",
+      "url": "http://techslides.com/demos/sample-videos/small.mp4 "
+    }
+  ],
+  "simpleimage": [
+    {
+      "id": 23,
+      "uuid": "firstImage",
+      "url": "http://www.pngall.com/wp-content/uploads/2016/03/Bug-PNG-2.png"
+    },
+    {
+      "uuid": "card",
+      "url": "http://www.pngall.com/wp-content/uploads/2016/03/Bug-PNG-2.png",
+      "id": 24
+    }
+  ]
 }

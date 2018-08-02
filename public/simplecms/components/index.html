@@ -1,0 +1,245 @@
+<!doctype html>
+
+<head>
+  <title>JS CMS</title>
+  <meta charset="UTF-8">
+  <!-- Latest compiled and minified CSS -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css">
+
+  <!-- jQuery library -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+  <!-- Popper JS -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js"></script>
+
+  <!-- Latest compiled JavaScript -->
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js"></script>
+  <script src="/simplecms.js"></script>
+  <link rel="stylesheet" href="/simplecms.css">
+
+
+</head>
+<nav class="scms-navbar navbar navbar-expand-md scms-primary link-white">
+  <!-- Brand -->
+  <a class="navbar-brand" href="/">Simple CMS</a>
+  <!-- Toggler/collapsibe Button -->
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <!-- Navbar links -->
+  <div class="collapse navbar-collapse d-flex justify-content-between" id="collapsibleNavbar">
+    <ul class="navbar-nav">
+      <li class="nav-item">
+        <a class="nav-link" href="/simplecms/examples">Examples</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/simplecms/components">Components</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/simplecms/database">Database</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/simplecms/dashboard">Dashboard</a>
+      </li>
+
+    </ul>
+    <ul class="navbar-nav">
+      <li class="nav-item">
+        <a class="nav-link" href="/Login">Login</a>
+      </li>
+    </ul>
+  </div>
+</nav>
+
+<body class="scms-body">
+  <div class="container pt-5">
+    <h2>Components</h2>
+    <p>List all of components in simplecms.</p>
+    <hr/>
+    <div class="p-2">
+
+
+
+
+
+      <div class="bd-example">
+        <div class="row">
+          <div class="col-4">
+            <nav id="navbar-example3" class="navbar navbar-light bg-light flex-column">
+              <a class="navbar-brand" href="#">Components</a>
+              <nav class="nav nav-pills flex-column">
+                <a class="nav-link active" href="#item-1">Tags</a>
+                <nav class="nav nav-pills flex-column">
+                  <a class="nav-link ml-3 my-1" href="#item-1-1">Simpletext</a>
+                  <a class="nav-link ml-3 my-1" href="#item-1-2">Simpleimage</a>
+                  <a class="nav-link ml-3 my-1" href="#item-1-3">Simplevideo</a>
+                </nav>
+                <a class="nav-link" href="#item-2">Tips</a>
+                <a class="nav-link" href="#item-3">UI</a>
+                <nav class="nav nav-pills flex-column">
+                  <a class="nav-link ml-3 my-1" href="#item-3-1">Color</a>
+                  <a class="nav-link ml-3 my-1" href="#item-3-2">Number</a>
+                  <a class="nav-link ml-3 my-1" href="#item-3-3">Date</a>
+                  <a class="nav-link ml-3 my-1" href="#item-3-4">Date time</a>
+                  <a class="nav-link ml-3 my-1" href="#item-3-5">Link</a>
+                  <a class="nav-link ml-3 my-1" href="#item-3-6">Collections</a>
+                  <a class="nav-link ml-3 my-1" href="#item-3-7">Nav collections</a>
+                </nav>
+              </nav>
+            </nav>
+          </div>
+          <div class="col-8">
+            <div data-spy="scroll" data-target="#navbar-example3" data-offset="0" class="scrollspy-example-2">
+              <div id="item-1 pt-2">
+                <h4>
+                  Tags
+                </h4>
+              </div>
+              <div id="item-1-1" class="pt-2">
+                <h5>Simpletext</h5>
+                <p>Simpletext tag is for editable areas, you want to change in a fly. </br>
+                  It is watched and saved after 1 sec. </br>
+                </p>
+                <code class="bg-article">
+                  &lt;simpletext&gt; &lt;/simpletext&gt;
+                </code>
+
+                <p class="pt-3">
+                  You should add uuid attribute and than this tag will be remembered.
+                </p>
+
+                <code class="bg-article">
+                  &lt;simpletext uuid="example-uuid"&gt; &lt;/simpletext&gt;
+                </code>
+
+                <p class="pt-3">
+                  All of components with uuid are remembered in database. </br>
+                  You can see that in
+                  <a href="/simplecms/database">database</a> dashboard.
+                  </br>
+                  </br>
+                  Every time you make new
+                  <code>uuid</code> to
+                  <code>tag</code> element you're creating new
+                  <code>entity</code>.</br>
+                  There is no automatic tool to remove unused
+                  <code>tags</code> with dead
+                  <code>uuid</code>.
+                </p>
+
+              </div>
+
+              <div id="item-1-2" class="pt-4">
+                <h5>Simpleimage</h5>
+                <p>Simpleimage tag you may also change in the fly. </br>
+                  Click to change url.</br>
+                </p>
+
+                <code class="bg-article">
+                  &lt;simpleimage&gt; &lt;/simpleimage&gt;
+                </code>
+                <p class="pt-3">Remember to add
+                  <code>uuid</code> attribute</p>
+
+
+                <code class="bg-article">
+                  &lt;simpleimage uuid="example-uuid"&gt; &lt;/simpleimage&gt;
+                </code>
+
+                <p class="pt-3">
+                  </br>
+                  You can observe that, in a
+                  <code>&lt;simpleimage&gt;</code> is added node with tag
+                  <code>&lt;img&gt;</code>
+                  </br>and with
+                  <code>src</code> attribute you had entered. </br>
+                  The
+                  <code>class</code> attribute is copied in it. </br>
+                  <div class="bg-article">
+                    <code class="">
+                      &lt;simpleimage uuid="example-uuid" class="simple"&gt; </br>
+                      &emsp; &lt;img class="simple"&gt;&lt;/img&gt;</br>
+                      &lt;/simpleimage&gt;
+                    </code>
+                  </div>
+
+                </p>
+                <p></p>
+              </div>
+
+              <div id="item-1-3" class="pt-4">
+                <h5>Simplevideo</h5>
+                <p>Simplevideo is like simpleimage. </br>
+                  Click to change url.</br>
+                </p>
+
+                <code class="bg-article">
+                  &lt;simplevideo&gt; &lt;/simplevideo&gt;
+                </code>
+                <p class="pt-3">Remember to add
+                  <code>uuid</code> attribute</p>
+
+                <code class="bg-article">
+                  &lt;simplevideo uuid="example-uuid"&gt; &lt;/simplevideo&gt;
+                </code>
+
+                <p class="pt-3">Here is the same situation like in
+                  <code>&lt;simpleimage&gt;</code> tag.</br>
+                  The
+                  <code>class</code> attribute is copied in <code>&lt;simplevideo&gt;</code> tag. </br>
+
+                <div class="bg-article">
+                  <code class="">
+                    &lt;simplevideo uuid="example-uuid" class="simple"&gt; </br>
+                    &emsp; &lt;video class="simple"&gt;&lt;/video&gt;</br>
+                    &lt;/simplevideo&gt;
+                  </code>
+                </div>
+              </div>
+
+              <div class="pt-5">
+                <h4 id="item-2">Tips</h4>
+              </div>
+              <div class="pt-5">
+                <h4 id="item-3">UI</h4>
+              </div>
+              <div class="pt-5">
+                <h5 id="item-3-1">Color</h5>
+              </div>
+              <div class="pt-5">
+                <h5 id="item-3-2">Number</h5>
+              </div>
+              <div class="pt-5">
+                <h5 id="item-3-3">Date</h5>
+              </div>
+              <div class="pt-5">
+                <h5 id="item-3-4">Date time</h5>
+              </div>
+              <div class="pt-5">
+                <h5 id="item-3-5">Link</h5>
+              </div>
+              <div class="pt-5">
+                <h5 id="item-3-6">Collections</h5>
+              </div>
+              <div class="pt-5">
+                <h5 id="item-3-7">Nav collections</h5>
+              </div>
+
+
+
+
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+  <script>
+  
+    simplecms.init("http://localhost:3000", "f438548f5f0bbfd5733f34c80bcf412bf7c7c317");
+
+  </script>
+</body>
+
+</html>

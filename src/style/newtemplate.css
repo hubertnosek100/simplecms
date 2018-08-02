@@ -1,0 +1,19 @@
+#element-list {
+  display: flex;
+  flex-wrap: wrap; }
+
+.temp-element {
+  padding: 8px;
+  display: flex;
+  margin-left: 15px;
+  margin-bottom: 3px;
+  color: lightgray;
+  box-shadow: 2px 2px 2px;
+  font-size: 13px; }
+
+.temp-action {
+  display: flex;
+  flex-direction: column;
+  align-content: center;
+  padding: 3px;
+  padding-left: 8px !important; }

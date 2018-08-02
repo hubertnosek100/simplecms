@@ -1,0 +1,48 @@
+@import 'menu.scss';
+.bg-article{
+    background-color: #f5f2f0;
+    border-radius: 5px;
+    width: 100%;
+    padding: 10px;
+}
+
+.bd-example{
+    margin-right: 0;
+    margin-left: 0;
+
+    position: relative;
+    margin: 1rem -15px 0;
+    overflow-y: scroll;
+}
+
+.bd-example::after {
+    display: block;
+    clear: both;
+    content: "";
+}
+.scrollspy-example-2 {
+    position: relative;
+    height: 630px;
+    overflow: auto;
+}
+
+.left-menu{
+    position: fixed;
+    background: $primary;
+    width: 45px;
+    left:0;
+    padding: 10px;
+    box-shadow: 0px 5px 5px grey;
+    border-top-right-radius: 3px;
+    border-bottom-right-radius: 3px;
+    top:250px;
+    ul{
+        list-style-type: none;
+        margin: 0;
+        padding-left: 5px !important;
+        padding: 4px;
+        li{
+            padding: 2px;
+        }
+    }
+}

@@ -16,6 +16,8 @@
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js"></script>
   <script src="/simplecms.js"></script>
   <link rel="stylesheet" href="/simplecms.css">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css" integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ"
+    crossorigin="anonymous">
 
 
 </head>
@@ -53,18 +55,24 @@
 
 <body class="scms-body">
   <div class="container pt-5">
-    <div class="d-flex align-items-center flex-column">
-      <h2>Geting started!</h2>
-      <p>Welcome to Simple CMS.</p>
-    </div>
+    <h2>Exponents</h2>
+    <p>Manage your content.</p>
     <hr/>
+    <div class="pt-2">
+      <div class="exponents-list">
 
-    <div class="p-5">
-
+      </div>
+      <div id="stickymenu" class="left-menu">
+      </div>
     </div>
   </div>
   <script>
-    simplecms.init("http://localhost:3000", "f438548f5f0bbfd5733f34c80bcf412bf7c7c317");
+      simplecms.init("http://localhost:3000", "f438548f5f0bbfd5733f34c80bcf412bf7c7c317");
+
+    simplecms.exponents.init();
+    $(function () {
+      $("#stickymenu").load("/simplecms/dashboard/sitckymenu.html");
+    });
   </script>
 </body>
 

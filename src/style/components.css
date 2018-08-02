@@ -1,0 +1,110 @@
+body {
+  font-family: "Lato", sans-serif; }
+
+.sidenav {
+  height: 100%;
+  width: 0;
+  position: fixed;
+  z-index: 1110;
+  top: 0;
+  right: 0;
+  overflow-x: hidden;
+  transition: 0.5s;
+  padding-top: 60px;
+  margin-right: -16px;
+  border-left-style: solid;
+  border-left-width: 1px;
+  border-left-color: lightgray; }
+
+.sidenav a {
+  padding: 8px 8px 8px 32px;
+  text-decoration: none;
+  font-size: 25px;
+  color: white;
+  display: block;
+  transition: 0.3s; }
+
+.sidenav a:hover {
+  color: #f1f1f1; }
+
+.sidenav .closebtn {
+  position: absolute;
+  top: 0;
+  right: 25px;
+  font-size: 36px;
+  margin-left: 50px; }
+
+#main {
+  transition: margin-left .5s;
+  padding: 16px; }
+
+@media screen and (max-height: 450px) {
+  .sidenav {
+    padding-top: 15px; }
+  .sidenav a {
+    font-size: 18px; } }
+
+.link-white a {
+  color: white !important;
+  transition: 0.3s; }
+  .link-white a:hover {
+    color: #f1f1f1 !important;
+    text-decoration: none; }
+
+nav a {
+  color: gray !important; }
+
+#navbar-example3 a.active {
+  background-color: #64df91 !important;
+  color: white !important; }
+
+.scms-primary {
+  background-color: #64df91 !important; }
+
+.scms-btn {
+  border-color: #64df91 !important;
+  background-color: #64df91 !important; }
+  .scms-btn:hover {
+    border-color: #44bf71 !important;
+    background-color: #44bf71 !important; }
+
+.bg-article {
+  background-color: #f5f2f0;
+  border-radius: 5px;
+  width: 100%;
+  padding: 10px; }
+
+.bd-example {
+  margin-right: 0;
+  margin-left: 0;
+  position: relative;
+  margin: 1rem -15px 0;
+  overflow-y: scroll; }
+
+.bd-example::after {
+  display: block;
+  clear: both;
+  content: ""; }
+
+.scrollspy-example-2 {
+  position: relative;
+  height: 630px;
+  overflow: auto; }
+
+.left-menu {
+  position: fixed;
+  background: #64df91;
+  width: 45px;
+  left: 0;
+  padding: 10px;
+  box-shadow: 0px 5px 5px grey;
+  border-top-right-radius: 3px;
+  border-bottom-right-radius: 3px;
+  top: 250px; }
+  .left-menu ul {
+    list-style-type: none;
+    margin: 0;
+    padding-left: 5px !important;
+    padding: 4px; }
+    .left-menu ul li {
+      padding: 2px; }

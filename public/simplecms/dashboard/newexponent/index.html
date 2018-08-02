@@ -15,7 +15,16 @@
   <!-- Latest compiled JavaScript -->
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js"></script>
   <script src="/simplecms.js"></script>
+  <script src="/lib/moment.js"></script>
+  <script src="/lib/bootstrap-colorpicker.min.js"></script>
   <link rel="stylesheet" href="/simplecms.css">
+  <link rel="stylesheet" href="/lib/bootstrap-colorpicker.min.css">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css" integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ"
+    crossorigin="anonymous">
+
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.0-alpha14/js/tempusdominus-bootstrap-4.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.0-alpha14/css/tempusdominus-bootstrap-4.min.css"
+  />
 
 
 </head>
@@ -53,18 +62,45 @@
 
 <body class="scms-body">
   <div class="container pt-5">
-    <div class="d-flex align-items-center flex-column">
-      <h2>Geting started!</h2>
-      <p>Welcome to Simple CMS.</p>
-    </div>
+    <h2>New exponent</h2>
+    <p>Create new exponent from your template.</p>
     <hr/>
+    <div class="pt-2">
+      <form id="createexponentform">
+        <div class="d-flex">
+          <div class="form-group p-2">
+            <label for="element-type">Template</label>
+            <select id="newtemplateselect" required class="form-control" id="element-type">
+            </select>
+          </div>
+          <div class="form-group p-2">
+            <label for="element-type">Uuid</label>
+            <input name="uuid" required class="form-control">
+            </input>
+          </div>
+        </div>
+        <div id="newexponentcontent">
 
-    <div class="p-5">
+        </div>
 
+        <div class="form-group p-2">
+          <button type="submit" class="btn btn-primary scms-primary scms-btn">
+            Create exponent
+          </button>
+        </div>
+      </form>
+
+      <div id="stickymenu" class="left-menu">
+      </div>
     </div>
   </div>
   <script>
     simplecms.init("http://localhost:3000", "f438548f5f0bbfd5733f34c80bcf412bf7c7c317");
+
+    simplecms.newexponent.init();
+    $(function () {
+      $("#stickymenu").load("/simplecms/dashboard/sitckymenu.html");
+    });
   </script>
 </body>
 

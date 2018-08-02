@@ -53,14 +53,17 @@
 
 <body class="scms-body">
   <div class="container pt-5">
-    <div class="d-flex align-items-center flex-column">
-      <h2>Geting started!</h2>
-      <p>Welcome to Simple CMS.</p>
-    </div>
-    <hr/>
 
-    <div class="p-5">
-
+    <div class="d-flex justify-content-center">
+      <form class="login-form" method="post">
+        <h1 class="h3 font-weight-normal align-self-center text-center ">Logowanie</h1>
+        <input class="btn-login-top form-control h-auto p-2" type="text" required="" placeholder="Login" data-val="true" id="Email"
+          name="login" value="">
+        <input class="btn-login-bottom form-control h-auto p-2" type="password" required="" placeholder="Hasło" data-val="true" data-val-required="The Hasło field is required."
+          id="Password" name="password">
+        <button class="btn btn-lg btn-primary scms-btn scms-primary  btn-block mt-3" type="submit">Zaloguj się</button>
+        <p class="mt-5 mb-3 text-muted"></p>
+      </form>
     </div>
   </div>
   <script>
