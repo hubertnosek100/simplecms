@@ -6,19 +6,52 @@
         <p>Here your will manage you simplecms.</p>
         <hr/>
         <div class="pt-5">
-            <div>
-                <label>API key </label>
-            </div>
-            <div class="input-group w-50">
-                <div class="input-group-prepend">
-                    <div class="input-group-text" id="btnGroupAddon">
-                        <i class="fas fa-key"></i>
+            <div class="card">
+
+                <div class="card-header">
+                    <label>API key </label>
+                </div>
+                <div class="card-body">
+                    <div class="input-group w-50">
+                        <div class="input-group-prepend">
+                            <div class="input-group-text" id="btnGroupAddon">
+                                <i class="fas fa-key"></i>
+                            </div>
+                        </div>
+                        <input id="apikeytext" disabled type="text" class="form-control" placeholder="You should generate api key to protect your api."
+                            aria-label="Input group example" aria-describedby="btnGroupAddon">
+                        <div class="input-group-append">
+                            <button id="apikeygeneratebtn" class="btn btn-outline-secondary" type="button">Generate</button>
+                        </div>
                     </div>
                 </div>
-                <input id="apikeytext" disabled type="text" class="form-control" placeholder="You should generate api key to protect your api."
-                    aria-label="Input group example" aria-describedby="btnGroupAddon">
-                <div class="input-group-append">
-                    <button id="apikeygeneratebtn" class="btn btn-outline-secondary" type="button">Generate</button>
+            </div>
+
+            <div class="card">
+                <div class="card-header d-flex justify-content-between">
+                    <div>
+                            Requests diagram
+                    </div>
+                    <div class="selectgroup">
+                        <label class="selectgroup-item">
+                            <input type="radio" name="when" value="daily" class="selectgroup-input" checked="">
+                            <span class="selectgroup-button">Daily</span>
+                        </label>
+       
+                        <label class="selectgroup-item">
+                            <input type="radio" name="when" value="monthly" class="selectgroup-input">
+                            <span class="selectgroup-button">Monthly</span>
+                        </label>
+                        <label class="selectgroup-item">
+                            <input type="radio" name="when" value="yearly" class="selectgroup-input">
+                            <span class="selectgroup-button">Yearly</span>
+                        </label>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div id="chart-employment" style="height: 16rem; max-height: 256px; position: relative;" class="c3">
+
+                    </div>
                 </div>
             </div>
 

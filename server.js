@@ -1,12 +1,17 @@
 const jsonServer = require('json-server')
-const router = jsonServer.router('db.json')
+const router = jsonServer.router('db/db.json')
 const middlewares = jsonServer.defaults()
 var passwordhasher = require('password-hasher');
 var jwt = require('jsonwebtoken');
 var cookieParser = require('cookie-parser')
-var controller = require('./app/controller');
+
 var expressLayouts = require('express-ejs-layouts');
 var express = require('express');
+
+var controller = require('./app/controller');
+var requester = require('./app/requester');
+var uploader = require('./app/uploader');
+
 
 
 var server = express();
@@ -17,12 +22,14 @@ server.use(jsonServer.bodyParser)
 server.use(cookieParser())
 
 controller(server, userMiddleware);
+uploader(server, userMiddleware);
+requester.init(server);
 
 
 var auth;
 
 fs = require('fs');
-fs.readFile('apikey.json', 'utf8', function (err, data) {
+fs.readFile('db/apikey.json', 'utf8', function (err, data) {
   if (err) {
     return console.log(err);
   }
@@ -38,7 +45,7 @@ server.get('/apikey', (req, res) => {
 server.post('/apikey', (req, res) => {
   var apikey = req.body.apikey;
   auth.apikey = apikey;
-  fs.writeFile("apikey.json", JSON.stringify(auth), function (err) {
+  fs.writeFile("db/apikey.json", JSON.stringify(auth), function (err) {
     if (err) {
       return console.log(err);
     }
@@ -93,12 +100,8 @@ server.post('/login', (req, res) => {
 
 server.use(middlewares)
 
-server.use(function (req, res, next) {
-  res.locals.user = "Hubert"
-  next()
-})
-
 server.use((req, res, next) => {
+  requester.save(req);
   if (isAuthorized(req)) { // add your authorization logic here
     next() // continue to JSON Server router
   } else {
@@ -147,7 +150,7 @@ function isAuthorizedByToken(token) {
   var decoded = undefined
   try {
     decoded = jwt.verify(token, auth.privatekey);
-  } catch(err){
+  } catch (err) {
     return false;
   }
   var date = new Date();

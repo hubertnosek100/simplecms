@@ -51,3 +51,6 @@ p:empty:not(:focus)::before {
 .smallhr {
   margin-top: 1rem !important;
   margin-bottom: 1rem !important; }
+
+.selectgroup-button {
+  padding: 3px 10px !important; }

@@ -9,18 +9,37 @@
                 <p>Manage and upload media</p>
             </div>
             <div class="d-flex flex-column-reverse p-3">
-                <button class="btn btn-primary scms-btn scms-priamry">
-                    <i class="fas fa-plus"></i> Upload file</button>
+                <form ref='uploadForm' id='uploadForm' action='/upload' method='post' encType="multipart/form-data">
+                    <div class="d-flex justify-content-between">
+                        <div class="custom-file mr-2">
+                            <input type="file" class="custom-file-input" name="sampleFile">
+                            <label class="custom-file-label">Choose file</label>
+                        </div>
+                        <div>
+                            <button class="btn btn-primary scms-btn scms-priamry" type="submit">
+                                <i class="fas fa-plus"></i> Upload file
+                            </button>
+                        </div>
+                    </div>
+                </form>
+
             </div>
         </div>
         <hr/>
-        <div class="pt-2">
-            <div class="media-list">
+        <div class="pt-2 ">
+            <div class="d-flex justify-content-center">
 
+                <div class="media-list w-50">
+
+                </div>
             </div>
+
+
             <%- include stickymenu.ejs %>
 
         </div>
     </div>
-
+    <script>
+        app.media.init();
+    </script>
 </body>

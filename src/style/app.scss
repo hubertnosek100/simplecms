@@ -57,10 +57,15 @@ p:empty:not(:focus)::before {
     border-bottom-right-radius: 0px !important;
 }
 
-.max-600{
+.max-600 {
     max-width: 600px;
 }
-.smallhr{
+
+.smallhr {
     margin-top: 1rem !important;
     margin-bottom: 1rem !important;
+}
+
+.selectgroup-button {
+    padding: 3px 10px !important;
 }

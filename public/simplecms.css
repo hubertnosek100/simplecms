@@ -63,6 +63,10 @@ p:empty:not(:focus)::before {
   margin-top: 1rem !important;
   margin-bottom: 1rem !important;
 }
+
+.selectgroup-button {
+  padding: 3px 10px !important;
+}
 body {
   font-family: "Lato", sans-serif;
 }

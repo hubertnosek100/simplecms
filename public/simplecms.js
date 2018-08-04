@@ -193,6 +193,7 @@ app.dashboard = (function () {
             _load();
 
             $('#apikeygeneratebtn').on('click', _generate);
+            app.dashboard.chart();
         });
     }
 
@@ -208,7 +209,7 @@ app.dashboard = (function () {
 
     function _generate(params) {
         var api = _guid();
-       $('#apikeytext').val(api);
+        $('#apikeytext').val(api);
         app.service.post('/apikey/', {
             apikey: api
         });
@@ -233,6 +234,67 @@ app.dashboard = (function () {
         init: _init
     }
 }());
+
+app.dashboard.chart = function () {
+
+    $('input[type=radio][name=when]').change(function () {
+        console.log(this.value);
+        if (this.value === "daily") {
+            drawDaily();
+        } else if (this.value === "monthly") {
+            drawMonthly();
+        } else if (this.value === "yearly") {
+            drawYearly();
+        }
+    });
+
+    var drawYearly = function () {
+        app.service.get("/requester?when=yearly", function (data) {
+            var parsed = app.dashboard.yearData(data);
+            draw(parsed);
+        });
+    }
+
+    var drawMonthly = function () {
+        app.service.get("/requester?when=monthly", function (data) {
+            var parsed = app.dashboard.monthData(data);
+            draw(parsed);
+        });
+    }
+
+    var drawDaily = function () {
+        app.service.get("/requester?when=daily", function (data) {
+            var parsed = app.dashboard.hourData(data);
+            draw(parsed);
+        });
+    }
+
+    drawDaily();
+    var draw = function (parsed) {
+        var chart = c3.generate({
+            bindto: '#chart-employment', // id of chart wrapper
+            data: {
+                columns: parsed.data,
+                type: 'line', // default type of chart
+                colors: parsed.colors
+            },
+            axis: {
+                x: {
+                    type: 'category',
+                    // name of each category
+                    categories: parsed.categories
+                },
+            },
+            legend: {
+                show: true, //hide legend
+            },
+            padding: {
+                bottom: 0,
+                top: 0
+            },
+        });
+    }
+};
 app.exponents = (function () {
     function _init() {
         $(document).ready(function () {
@@ -312,6 +374,50 @@ app.exponents = (function () {
         init: _init
     }
 }());
+var media = (function () {
+
+    function _init() {
+        app.service.get('/media', _set);
+    }
+
+    function _set(data) {
+        var $list = $('.media-list')
+
+        if (data.length === 0) {
+            $p = $('<p class="p-3">There is no media. </p>');
+            $list.append($p)
+        } else {
+            var table = $('<table class="table table-hover text-center"></table>');
+            var head = $('<thead class=""></thead>');
+            var headTr = $('<tr> </tr>');
+            headTr.append('<td>name</td>');
+            head.append(headTr);
+            table.append(head);
+
+            var tbody = $('<tbody></tbody>')
+            data.forEach(el => {
+                tbody.append(_newELement(el))
+            });
+
+            table.append(tbody);
+            $list.append($('<div class="card"></div>').append(table));
+        }
+    }
+
+    function _newELement(element) {
+        $row = $("<tr></tr>");
+        $col = $("<td></td>").text(element);
+        $row.append($col);
+        return $row;
+    }
+
+
+    return {
+        init: _init
+    }
+}());
+
+app.media = media;
 app.newexponent = (function () {
     function _init() {
         $(document).ready(function () {
@@ -687,6 +793,83 @@ var uiBuilder = (function () {
         buildFormGroup: _buildFormGroup,
     }
 }());
+app.menu = (function () {
+
+    function _load(url) {
+        app.service.get(url + "/simplecms/components/menu.html", _set, "html");
+    }
+
+    function _set(data) {
+        $('body').append(data);
+    }
+
+    function _init() {
+        $('simpletext').contextmenu(function (e) {
+            _openNav();
+            e.preventDefault();
+        });
+        $(document).on('keydown',function(e){
+            if(e.keyCode === 27){
+                _closeNav();
+            }
+        });
+    }
+
+    function _openNav() {
+        document.getElementById("mySidenav").style.width = "250px";
+        // document.body.style.backgroundColor = "rgba(0,0,0,0.4)";
+        $('body').append('<div id="backdrop" class="modal-backdrop fade show"></div>');
+    }
+
+    function _closeNav() {
+        document.getElementById("mySidenav").style.width = "0";
+        // document.body.style.backgroundColor = "white";
+        $('#backdrop').remove();
+    }
+
+    $(document).ready(function () {
+        _init();
+    });
+
+    return {
+        load: _load,
+        open: _openNav,
+        close: _closeNav
+    }
+}())
+app.modal = (function () {
+
+    function _load(url) {
+        app.service.get(url + "/simplecms/components/modal.html", _set, "html");
+    }
+
+    function _set(data) {
+        $('body').append(data);
+    }
+
+    function _create(callback, model, title, placeholder, url, property) {
+
+        $("#simplemodal").modal();
+        $("#simplemodal").find('input').attr("placeholder", placeholder);
+        $("#simpleModalLabel").text(title);
+        $("#simpleModalSave").unbind();
+        $("#simpleModalSave").on("click", function () {
+            model[property] = $("#simplemodal").find('input').val();
+            if (model.id) {
+                app.service.put(url + "/" + model.id, model)
+            } else {
+                app.service.post(url, model)
+            }
+            $('#simplemodal').modal("hide");
+            callback(model[property], model.uuid);
+        });
+    }
+
+    return {
+        load: _load,
+        create: _create
+    }
+}());
 app.simpleimage = (function () {
 
     function _load(url) {
@@ -846,80 +1029,218 @@ app.simplevideo = (function () {
         load: _load
     }
 }());
-app.menu = (function () {
+app.dashboard.hourData = function (data) {
+    var names = [];
+    var columns = [];
+    var colors = {};
+    var cl = [tabler.colors["orange"],
+        tabler.colors["blue"],
+        tabler.colors["green"],
+        tabler.colors["red"],
+        tabler.colors["yellow"],
+        tabler.colors["purple"]
+    ];
 
-    function _load(url) {
-        app.service.get(url + "/simplecms/components/menu.html", _set, "html");
-    }
-
-    function _set(data) {
-        $('body').append(data);
-    }
-
-    function _init() {
-        $('simpletext').contextmenu(function (e) {
-            _openNav();
-            e.preventDefault();
-        });
-        $(document).on('keydown',function(e){
-            if(e.keyCode === 27){
-                _closeNav();
+    for (var timestamp in data) {
+        if (data.hasOwnProperty(timestamp)) {
+            for (var col in data[timestamp]) {
+                if (data[timestamp].hasOwnProperty(col)) {
+                    if (names.indexOf(col) === -1) {
+                        names.push(col);
+                        var ar = [];
+                        ar.push(col);
+                        columns.push(ar)
+                        colors[col] = cl[names.length];
+                    }
+                }
             }
-        });
+        }
     }
 
-    function _openNav() {
-        document.getElementById("mySidenav").style.width = "250px";
-        // document.body.style.backgroundColor = "rgba(0,0,0,0.4)";
-        $('body').append('<div id="backdrop" class="modal-backdrop fade show"></div>');
+    var categories = [];
+
+    var obj = {};
+    for (let j = 0; j < names.length; j++) {
+        obj[names[j]] = 0;
     }
 
-    function _closeNav() {
-        document.getElementById("mySidenav").style.width = "0";
-        // document.body.style.backgroundColor = "white";
-        $('#backdrop').remove();
+    var sorted = {};
+    var a = new Date();
+    for (let j = 0; j < a.getHours() + 1; j++) {
+        var timestamp = (a.getMonth() + 1) + '/' + a.getDate() + '/' + a.getFullYear() + '.' + j;
+        if (!data.hasOwnProperty(timestamp)) {
+            sorted[timestamp] = obj;
+        } else {
+            sorted[timestamp] = data[timestamp];
+        }
     }
-
-    $(document).ready(function () {
-        _init();
-    });
-
-    return {
-        load: _load,
-        open: _openNav,
-        close: _closeNav
-    }
-}())
-app.modal = (function () {
-
-    function _load(url) {
-        app.service.get(url + "/simplecms/components/modal.html", _set, "html");
-    }
-
-    function _set(data) {
-        $('body').append(data);
-    }
-
-    function _create(callback, model, title, placeholder, url, property) {
-
-        $("#simplemodal").modal();
-        $("#simplemodal").find('input').attr("placeholder", placeholder);
-        $("#simpleModalLabel").text(title);
-        $("#simpleModalSave").unbind();
-        $("#simpleModalSave").on("click", function () {
-            model[property] = $("#simplemodal").find('input').val();
-            if (model.id) {
-                app.service.put(url + "/" + model.id, model)
-            } else {
-                app.service.post(url, model)
+    for (var timestamp in sorted) {
+        categories.push(timestamp.slice(9, 11))
+        if (sorted.hasOwnProperty(timestamp)) {
+            for (let j = 0; j < names.length; j++) {
+                var value = 0;
+                if (sorted[timestamp].hasOwnProperty(names[j])) {
+                    value = sorted[timestamp][names[j]]
+                }
+                columns[j].push(value)
             }
-            $('#simplemodal').modal("hide");
-            callback(model[property], model.uuid);
-        });
+        }
+    }
+    return {
+        categories: categories,
+        colors: colors,
+        data: columns
+    }
+}
+app.dashboard.monthData = function (data) {
+    var names = [];
+    var columns = [];
+    var colors = {};
+    var cl = [tabler.colors["orange"],
+        tabler.colors["blue"],
+        tabler.colors["green"],
+        tabler.colors["red"],
+        tabler.colors["yellow"],
+        tabler.colors["purple"]
+    ];
+
+    var monthly = {};
+
+    for (var timestamp in data) {
+        if (data.hasOwnProperty(timestamp)) {
+            for (var col in data[timestamp]) {
+                if (data[timestamp].hasOwnProperty(col)) {
+                    if (names.indexOf(col) === -1) {
+                        names.push(col);
+                        var ar = [];
+                        ar.push(col);
+                        columns.push(ar)
+                        colors[col] = cl[names.length];
+                       
+                    }
+
+                    var month = timestamp.split('/')[1];
+                    if (!monthly[month]) {
+                        monthly[month] = {}
+                    }
+                    if (monthly[month][col]) {
+                        monthly[month][col] = data[timestamp][col] + monthly[month][col];
+                    } else {
+                        monthly[month][col] = data[timestamp][col];
+                    }
+                }
+            }
+        }
     }
 
-    return {
-        load: _load,
-        create: _create
+    var categories = [];
+
+    var obj = {};
+    for (let j = 0; j < names.length; j++) {
+        obj[names[j]] = 0;
     }
-}());
+    
+    var sorted = {};
+    var a = new Date();
+    for (let j = 0; j < a.getDate() + 1; j++) {
+        if (!monthly.hasOwnProperty(j)) {
+            sorted[j] = obj;
+        } else {
+            sorted[j] = monthly[j];
+        }
+    }
+
+    for (var timestamp in sorted) {
+        categories.push(timestamp)
+        if (sorted.hasOwnProperty(timestamp)) {
+            for (let j = 0; j < names.length; j++) {
+                var value = 0;
+                if (sorted[timestamp].hasOwnProperty(names[j])) {
+                    value = sorted[timestamp][names[j]]
+                }
+                columns[j].push(value)
+            }
+        }
+    }
+    return {
+        categories: categories,
+        colors: colors,
+        data: columns
+    }
+}
+app.dashboard.yearData = function (data) {
+    var names = [];
+    var columns = [];
+    var colors = {};
+    var cl = [tabler.colors["orange"],
+        tabler.colors["blue"],
+        tabler.colors["green"],
+        tabler.colors["red"],
+        tabler.colors["yellow"],
+        tabler.colors["purple"]
+    ];
+
+    var yearly = {};
+
+    for (var timestamp in data) {
+        if (data.hasOwnProperty(timestamp)) {
+            for (var col in data[timestamp]) {
+                if (data[timestamp].hasOwnProperty(col)) {
+                    if (names.indexOf(col) === -1) {
+                        names.push(col);
+                        var ar = [];
+                        ar.push(col);
+                        columns.push(ar)
+                        colors[col] = cl[names.length];
+                       
+                    }
+                    var year = timestamp.split('/')[0];
+                    if (!yearly[year]) {
+                        yearly[year] = {}
+                    }
+                    if (yearly[year][col]) {
+                        yearly[year][col] = data[timestamp][col] + yearly[year][col];
+                    } else {
+                        yearly[year][col] = data[timestamp][col];
+                    }
+                }
+            }
+        }
+    }
+
+    var categories = [];
+
+    var obj = {};
+    for (let j = 0; j < names.length; j++) {
+        obj[names[j]] = 0;
+    }
+    
+    var sorted = {};
+    var a = new Date();
+    for (let j = 1; j < a.getMonth() + 2; j++) {
+        if (!yearly.hasOwnProperty(j)) {
+            sorted[j] = obj;
+        } else {
+            sorted[j] = yearly[j];
+        }
+    }
+
+
+    for (var timestamp in sorted) {
+        categories.push(timestamp)
+        if (sorted.hasOwnProperty(timestamp)) {
+            for (let j = 0; j < names.length; j++) {
+                var value = 0;
+                if (sorted[timestamp].hasOwnProperty(names[j])) {
+                    value = sorted[timestamp][names[j]]
+                }
+                columns[j].push(value)
+            }
+        }
+    }
+    return {
+        categories: categories,
+        colors: colors,
+        data: columns
+    }
+}
