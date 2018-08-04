@@ -2,7 +2,15 @@
   display: flex;
   flex-wrap: wrap; }
 
+.nav-padding {
+  padding: 0px 20px !important; }
+
+.top-hr {
+  border-top: 1px solid rgba(0, 40, 100, 0.12) !important; }
+
 .temp-element {
+  background-color: white;
+  border-radius: 2px;
   padding: 8px;
   display: flex;
   margin-left: 15px;

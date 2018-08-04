@@ -32,6 +32,18 @@ gulp.task('sass', function () {
         .pipe(gulp.dest('./src/style'));
 });
 
+
+gulp.task('tb', function (done) {
+    gulp.start('sass-compile', done);
+    setTimeout(function () {
+         gulp.src('./public/scss/bundle.scss')
+            .pipe(sass().on('error', sass.logError))
+            .pipe(gulp.dest('./public/'));
+        
+    }, 1000);
+});
+
+
 gulp.task('watch', function () {
     watch('./src/js/**/*.js', batch(function (events, done) {
         gulp.start('js', done);

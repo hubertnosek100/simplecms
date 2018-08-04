@@ -1,0 +1,52 @@
+<body class="scms-body">
+
+    <script src="/lib/moment.js"></script>
+    <script src="/lib/bootstrap-colorpicker.min.js"></script>
+    <link rel="stylesheet" href="/lib/bootstrap-colorpicker.min.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css" integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ"
+        crossorigin="anonymous">
+
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.0-alpha14/js/tempusdominus-bootstrap-4.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.0-alpha14/css/tempusdominus-bootstrap-4.min.css"
+    />
+
+    <div class="container pt-5">
+        <h2>New exponent</h2>
+        <p>Create new exponent from your template.</p>
+        <hr/>
+        <div class="pt-2  d-flex justify-content-center">
+            <form id="createexponentform" class="card max-600">
+                <div class="d-flex">
+                    <div class="form-group p-2">
+                        <label for="element-type">Template</label>
+                        <select id="newtemplateselect" required class="form-control" id="element-type">
+                        </select>
+                    </div>
+                    <div class="form-group p-2">
+                        <label for="element-type">Uuid</label>
+                        <input name="uuid" required class="form-control">
+                        </input>
+                    </div>
+                </div>
+                <hr class="smallhr" />
+
+                <div id="newexponentcontent" class="d-flex flex-wrap">
+
+                </div>
+                <hr class="smallhr" />
+
+                <div class="form-group p-2 d-flex justify-content-center">
+                    <button type="submit" class="btn btn-primary scms-primary scms-btn btn-lg">
+                        Create exponent
+                    </button>
+                </div>
+            </form>
+
+            <%- include stickymenu.ejs %>
+
+        </div>
+    </div>
+    <script>
+        simplecms.newexponent.init();
+    </script>
+</body>

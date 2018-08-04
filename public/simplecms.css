@@ -1,5 +1,7 @@
 .scms-body .container {
-  padding-top: 120px !important;
+  padding-left: 1rem !important;
+  padding-left: 1rem !important;
+  padding-top: 40px !important;
 }
 
 .pointer {
@@ -43,14 +45,23 @@ p:empty:not(:focus)::before {
 }
 
 .btn-login-bottom {
-  border-top-left-radius: 0px;
-  border-top-right-radius: 0px;
-  margin-top: -1px;
+  border-top-left-radius: 0px !important;
+  border-top-right-radius: 0px !important;
+  margin-top: -1px !important;
 }
 
 .btn-login-top {
-  border-bottom-left-radius: 0px;
-  border-bottom-right-radius: 0px;
+  border-bottom-left-radius: 0px !important;
+  border-bottom-right-radius: 0px !important;
+}
+
+.max-600 {
+  max-width: 600px;
+}
+
+.smallhr {
+  margin-top: 1rem !important;
+  margin-bottom: 1rem !important;
 }
 body {
   font-family: "Lato", sans-serif;
@@ -164,7 +175,7 @@ nav a {
 
 .scrollspy-example-2 {
   position: relative;
-  height: 630px;
+  height: 420px;
   overflow: auto;
 }
 
@@ -283,7 +294,17 @@ nav a {
   flex-wrap: wrap;
 }
 
+.nav-padding {
+  padding: 0px 20px !important;
+}
+
+.top-hr {
+  border-top: 1px solid rgba(0, 40, 100, 0.12) !important;
+}
+
 .temp-element {
+  background-color: white;
+  border-radius: 2px;
   padding: 8px;
   display: flex;
   margin-left: 15px;

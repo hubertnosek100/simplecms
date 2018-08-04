@@ -21,7 +21,7 @@ app.exponents = (function () {
             data.forEach(element => {});
 
             var table = $('<table class="table table-hover text-center"></table>');
-            var head = $('<thead class="scms-primary text-light"></thead>');
+            var head = $('<thead class=""></thead>');
             var headTr = $('<tr> </tr>');
             headTr.append('<td>#ID</td>');
             headTr.append('<td>Template</td>');
@@ -37,7 +37,7 @@ app.exponents = (function () {
 
             table.append(tbody);
             var btn = buttonBuilder.build("Create new exponent", "/simplecms/dashboard/newexponent");
-            $list.append(table);
+            $list.append($('<div class="card"></div>').append(table));
             $list.append(btn);
         }
     }

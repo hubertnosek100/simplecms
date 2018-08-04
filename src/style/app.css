@@ -1,5 +1,7 @@
 .scms-body .container {
-  padding-top: 120px !important; }
+  padding-left: 1rem !important;
+  padding-left: 1rem !important;
+  padding-top: 40px !important; }
 
 .pointer {
   cursor: pointer; }
@@ -35,10 +37,17 @@ p:empty:not(:focus)::before {
   z-index: 100; }
 
 .btn-login-bottom {
-  border-top-left-radius: 0px;
-  border-top-right-radius: 0px;
-  margin-top: -1px; }
+  border-top-left-radius: 0px !important;
+  border-top-right-radius: 0px !important;
+  margin-top: -1px !important; }
 
 .btn-login-top {
-  border-bottom-left-radius: 0px;
-  border-bottom-right-radius: 0px; }
+  border-bottom-left-radius: 0px !important;
+  border-bottom-right-radius: 0px !important; }
+
+.max-600 {
+  max-width: 600px; }
+
+.smallhr {
+  margin-top: 1rem !important;
+  margin-bottom: 1rem !important; }

@@ -19,7 +19,7 @@ app.template = (function () {
             $list.append($p)
         } else {
             var table = $('<table class="table table-hover text-center"></table>');
-            var head = $('<thead class="scms-primary text-light"></thead>');
+            var head = $('<thead class=""></thead>');
             var headTr = $('<tr> </tr>');
             headTr.append('<td>#ID</td>');
             headTr.append('<td>@uuid</td>');
@@ -35,7 +35,7 @@ app.template = (function () {
 
             table.append(tbody);
             var btn = buttonBuilder.build("Create new template", "/simplecms/dashboard/newtemplate");
-            $list.append(table);
+            $list.append($('<div class="card"></div>').append(table));
             $list.append(btn);
         }
     }

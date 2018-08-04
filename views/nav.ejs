@@ -1,0 +1,51 @@
+<nav class="scms-navbar navbar navbar-expand-md scms-primary link-white">
+    <!-- Brand -->
+    <a class="navbar-brand" href="/">Simple CMS</a>
+    <!-- Toggler/collapsibe Button -->
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <!-- Navbar links -->
+    <div class="collapse navbar-collapse d-flex justify-content-between" id="collapsibleNavbar">
+        <ul class="navbar-nav">
+
+            <% if (isAuthenticated){ %>
+                <li class="nav-item">
+                    <a class="nav-link" href="/simplecms/examples">
+                        <i class="fa fa-cube pr-1"></i>Examples</a>
+                </li>
+                <%  }%>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="/simplecms/components">
+                            <i class="fa fa-calendar pr-1"></i>Components</a>
+                    </li>
+                    <% if (isAuthenticated){ %>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/simplecms/database">
+                                <i class="fa fa-database pr-1"></i> Database</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/simplecms/dashboard">
+                                <i class="fa fa-tachometer-alt pr-1"></i> Dashboard</a>
+                        </li>
+
+                        <%  }%>
+        </ul>
+        <ul class="navbar-nav">
+
+
+            <% if (isAuthenticated){ %>
+                <li class="nav-item">
+                    <a class="nav-link" href="/Logout">
+                        <i class="fa fa-sign-out-alt pr-1"></i>Logout</a>
+                </li>
+                <%  } else {%>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/Login">
+                            <i class="fa fa-sign-in-alt pr-1"></i>Login</a>
+                    </li>
+                    <%  }  %>
+        </ul>
+    </div>
+</nav>

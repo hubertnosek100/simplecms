@@ -9,7 +9,7 @@ var colorBuilder = (function () {
 
         var formgroup = uiBuilder.buildFormGroup(name);
         name = name.replace(/\s/g, '');
-        var colorpicker = '<input id="colorpicker' + name + '" name="' + name + '" type="text" class="form-control w-25" value="rgb(255, 128, 0)" />'
+        var colorpicker = '<input id="colorpicker' + name + '" name="' + name + '" type="text" class="form-control" value="rgb(255, 128, 0)" />'
         formgroup.append(colorpicker);
         return {
             content: formgroup,

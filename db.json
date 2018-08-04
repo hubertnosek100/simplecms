@@ -32,16 +32,28 @@
       "id": 3
     },
     {
-      "name": "Strona główna",
-      "uuid": "main",
+      "name": "Profile",
+      "uuid": "profile",
       "elements": [
         {
-          "name": "Data",
-          "type": "datetime"
+          "name": "Title",
+          "type": "text"
         },
         {
-          "name": "Background",
-          "type": "color"
+          "name": "Description",
+          "type": "text"
+        },
+        {
+          "name": "Age",
+          "type": "date"
+        },
+        {
+          "name": "Age",
+          "type": "number"
+        },
+        {
+          "name": "Date of birth",
+          "type": "date"
         }
       ],
       "id": 4
@@ -55,13 +67,29 @@
       "templateid": "4",
       "template": "Strona główna",
       "id": 5
+    },
+    {
+      "uuid": "redCoral",
+      "Data": "08/01/2018 7:31 PM",
+      "Background": "rgb(255, 0, 0)",
+      "templateid": "4",
+      "template": "Strona główna",
+      "id": 6
+    },
+    {
+      "uuid": "greenCoral",
+      "Data": "08/22/2018 7:32 AM",
+      "Background": "rgb(0, 97, 255)",
+      "templateid": "4",
+      "template": "Strona główna",
+      "id": 7
     }
   ],
   "simpletext": [
     {
       "id": 11,
       "uuid": "profileNavContent",
-      "text": "xzcsadsdsd"
+      "text": "Lorem pisum i takie tam inne cuda"
     }
   ],
   "simplevideo": [

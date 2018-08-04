@@ -1,0 +1,21 @@
+<body class="scms-body">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css" integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ"
+        crossorigin="anonymous">
+    <div class="container pt-5">
+        <h2>Templates</h2>
+        <p>Manage your templates</p>
+        <hr/>
+        <div class="pt-2">
+            <div class="template-list">
+
+            </div>
+            <div id="stickymenu" class="left-menu">
+            </div>
+        </div>
+    </div>
+    <%- include stickymenu.ejs %>
+
+        <script>
+            simplecms.template.init();
+        </script>
+</body>

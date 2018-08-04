@@ -186,253 +186,6 @@ app.static = (function () {
         elementTypes: _elementTypes
     }
 }());
-var buttonBuilder = (function () {
-
-    function _build(text, link) {
-        return '<a href="' + link + '" class="btn btn-primary scms-primary scms-btn">' + text + '</a>';
-    }
-
-    return {
-        build: _build,
-    }
-}());
-var colorBuilder = (function () {
-
-    function _init() {
-        elementFactory.register("color", colorBuilder);
-    }
-
-    function _build(name) {
-        var dispName = name;
-
-        var formgroup = uiBuilder.buildFormGroup(name);
-        name = name.replace(/\s/g, '');
-        var colorpicker = '<input id="colorpicker' + name + '" name="' + name + '" type="text" class="form-control w-25" value="rgb(255, 128, 0)" />'
-        formgroup.append(colorpicker);
-        return {
-            content: formgroup,
-            callback: function () {
-                $('#colorpicker' + name).colorpicker();
-            }
-        };
-    }
-
-    $(document).ready(_init);
-    return {
-        build: _build,
-    }
-}());
-var dateBuilder = (function () {
-
-    function _init() {
-        elementFactory.register("date", dateBuilder);
-    }
-
-    function _build(name) {
-        var dispName = name;
-        name = name.replace(/\s/g, '');
-        var datepicker = '<div class="form-group w-25 p-2"><label>' + dispName + '</label><div class="input-group date" id="datetimepicker' + name + '" data-target-input="nearest"><input name="'+name+'" type="text" class="form-control datetimepicker-input" data-target="#datetimepicker' + name + '"><div class="input-group-append" data-target="#datetimepicker' + name + '" data-toggle="datetimepicker"><div class="input-group-text"><i class="fa fa-calendar"></i></div></div></div></div>'
-        return {
-            content: datepicker,
-            callback: function () {
-                $('#datetimepicker' + name).datetimepicker({
-                    format: 'L'
-                });
-            }
-        };
-    }
-
-    $(document).ready(_init);
-    return {
-        build: _build,
-    }
-}());
-var datetimeBuilder = (function () {
-
-    function _init() {
-        elementFactory.register("datetime", datetimeBuilder);
-    }
-
-    function _build(name) {
-        var dispName = name;
-        name = name.replace(/\s/g,'');
-        var datepicker = '<div class="form-group w-25 p-2"><label>'+ dispName+ '</label><div class="input-group date" id="datetimepicker'+name+'" data-target-input="nearest"><input name="'+name+'" type="text" class="form-control datetimepicker-input" data-target="#datetimepicker'+name+'"><div class="input-group-append" data-target="#datetimepicker'+name+'" data-toggle="datetimepicker"><div class="input-group-text"><i class="fa fa-calendar"></i></div></div></div></div>'
-        return {
-            content: datepicker,
-            callback: function () {
-                $('#datetimepicker' + name).datetimepicker();
-            }
-        };
-    }
-
-    $(document).ready(_init);
-    return {
-        build: _build,
-    }
-}());
-var elementFactory = (function () {
-
-    var _builders = [];
-
-    function _register(key, builder) {
-        _builders[key] = builder;
-    }
-
-    function _build(type, name) {
-        var builder = _builders[type];
-        if (builder) {
-            return builder.build(name);
-        }
-    }
-
-    return {
-        build: _build,
-        register: _register
-    }
-}());
-
-
-
-var linkBuilder = (function () {
-
-    function _init() {
-        elementFactory.register("link", linkBuilder);
-    }
-
-    function _build(name) { 
-        var formgroup = uiBuilder.buildFormGroup(name);
-        formgroup.append('<input class="form-control w-25" required name="' + name + '" type="text"></input>');
-        return formgroup;
-    }
-
-    $(document).ready(_init);
-    return {
-        build: _build,
-    }
-}());
-var numberBuilder = (function () {
-
-    function _init() {
-        elementFactory.register("number", numberBuilder);
-    }
-
-    function _build(name) {
-        var formgroup = uiBuilder.buildFormGroup(name);
-        formgroup.append('<input class="form-control w-25" required name="' + name + '" type="number"></input>');
-        return formgroup;
-    }
-
-    $(document).ready(_init);
-    return {
-        build: _build,
-    }
-}());
-var textBuilder = (function () {
-
-    function _init() {
-        elementFactory.register("text", textBuilder);
-    }
-
-    function _build(name) { 
-        var formgroup = uiBuilder.buildFormGroup(name);
-        formgroup.append('<input class="form-control w-25" required name="' + name + '" type="text"></input>');
-        return formgroup;
-    }
-
-    $(document).ready(_init);
-    return {
-        build: _build,
-    }
-}());
-var uiBuilder = (function () {
-
-    function _buildFormGroup(name) {
-        var formgroup = $('<div class="form-group p-2"></div>');
-        formgroup.append('<label>' + name + '</label>')
-        return formgroup;
-    }
-
-    return {
-        buildFormGroup: _buildFormGroup,
-    }
-}());
-app.menu = (function () {
-
-    function _load(url) {
-        app.service.get(url + "/simplecms/components/menu.html", _set, "html");
-    }
-
-    function _set(data) {
-        $('body').append(data);
-    }
-
-    function _init() {
-        $('simpletext').contextmenu(function (e) {
-            _openNav();
-            e.preventDefault();
-        });
-        $(document).on('keydown',function(e){
-            if(e.keyCode === 27){
-                _closeNav();
-            }
-        });
-    }
-
-    function _openNav() {
-        document.getElementById("mySidenav").style.width = "250px";
-        // document.body.style.backgroundColor = "rgba(0,0,0,0.4)";
-        $('body').append('<div id="backdrop" class="modal-backdrop fade show"></div>');
-    }
-
-    function _closeNav() {
-        document.getElementById("mySidenav").style.width = "0";
-        // document.body.style.backgroundColor = "white";
-        $('#backdrop').remove();
-    }
-
-    $(document).ready(function () {
-        _init();
-    });
-
-    return {
-        load: _load,
-        open: _openNav,
-        close: _closeNav
-    }
-}())
-app.modal = (function () {
-
-    function _load(url) {
-        app.service.get(url + "/simplecms/components/modal.html", _set, "html");
-    }
-
-    function _set(data) {
-        $('body').append(data);
-    }
-
-    function _create(callback, model, title, placeholder, url, property) {
-
-        $("#simplemodal").modal();
-        $("#simplemodal").find('input').attr("placeholder", placeholder);
-        $("#simpleModalLabel").text(title);
-        $("#simpleModalSave").unbind();
-        $("#simpleModalSave").on("click", function () {
-            model[property] = $("#simplemodal").find('input').val();
-            if (model.id) {
-                app.service.put(url + "/" + model.id, model)
-            } else {
-                app.service.post(url, model)
-            }
-            $('#simplemodal').modal("hide");
-            callback(model[property], model.uuid);
-        });
-    }
-
-    return {
-        load: _load,
-        create: _create
-    }
-}());
 app.dashboard = (function () {
 
     function _init() {
@@ -503,7 +256,7 @@ app.exponents = (function () {
             data.forEach(element => {});
 
             var table = $('<table class="table table-hover text-center"></table>');
-            var head = $('<thead class="scms-primary text-light"></thead>');
+            var head = $('<thead class=""></thead>');
             var headTr = $('<tr> </tr>');
             headTr.append('<td>#ID</td>');
             headTr.append('<td>Template</td>');
@@ -519,7 +272,7 @@ app.exponents = (function () {
 
             table.append(tbody);
             var btn = buttonBuilder.build("Create new exponent", "/simplecms/dashboard/newexponent");
-            $list.append(table);
+            $list.append($('<div class="card"></div>').append(table));
             $list.append(btn);
         }
     }
@@ -707,7 +460,7 @@ app.template = (function () {
             $list.append($p)
         } else {
             var table = $('<table class="table table-hover text-center"></table>');
-            var head = $('<thead class="scms-primary text-light"></thead>');
+            var head = $('<thead class=""></thead>');
             var headTr = $('<tr> </tr>');
             headTr.append('<td>#ID</td>');
             headTr.append('<td>@uuid</td>');
@@ -723,7 +476,7 @@ app.template = (function () {
 
             table.append(tbody);
             var btn = buttonBuilder.build("Create new template", "/simplecms/dashboard/newtemplate");
-            $list.append(table);
+            $list.append($('<div class="card"></div>').append(table));
             $list.append(btn);
         }
     }
@@ -762,6 +515,176 @@ app.template = (function () {
 
     return {
         init: _init
+    }
+}());
+var buttonBuilder = (function () {
+
+    function _build(text, link) {
+        return '<a href="' + link + '" class="btn btn-primary scms-primary scms-btn">' + text + '</a>';
+    }
+
+    return {
+        build: _build,
+    }
+}());
+var colorBuilder = (function () {
+
+    function _init() {
+        elementFactory.register("color", colorBuilder);
+    }
+
+    function _build(name) {
+        var dispName = name;
+
+        var formgroup = uiBuilder.buildFormGroup(name);
+        name = name.replace(/\s/g, '');
+        var colorpicker = '<input id="colorpicker' + name + '" name="' + name + '" type="text" class="form-control" value="rgb(255, 128, 0)" />'
+        formgroup.append(colorpicker);
+        return {
+            content: formgroup,
+            callback: function () {
+                $('#colorpicker' + name).colorpicker();
+            }
+        };
+    }
+
+    $(document).ready(_init);
+    return {
+        build: _build,
+    }
+}());
+var dateBuilder = (function () {
+
+    function _init() {
+        elementFactory.register("date", dateBuilder);
+    }
+
+    function _build(name) {
+        var dispName = name;
+        name = name.replace(/\s/g, '');
+        var datepicker = '<div class="form-group p-2"><label>' + dispName + '</label><div class="input-group date" id="datetimepicker' + name + '" data-target-input="nearest"><input name="'+name+'" type="text" class="form-control datetimepicker-input" data-target="#datetimepicker' + name + '"><div class="input-group-append" data-target="#datetimepicker' + name + '" data-toggle="datetimepicker"><div class="input-group-text"><i class="fa fa-calendar"></i></div></div></div></div>'
+        return {
+            content: datepicker,
+            callback: function () {
+                $('#datetimepicker' + name).datetimepicker({
+                    format: 'L'
+                });
+            }
+        };
+    }
+
+    $(document).ready(_init);
+    return {
+        build: _build,
+    }
+}());
+var datetimeBuilder = (function () {
+
+    function _init() {
+        elementFactory.register("datetime", datetimeBuilder);
+    }
+
+    function _build(name) {
+        var dispName = name;
+        name = name.replace(/\s/g,'');
+        var datepicker = '<div class="form-group p-2"><label>'+ dispName+ '</label><div class="input-group date" id="datetimepicker'+name+'" data-target-input="nearest"><input name="'+name+'" type="text" class="form-control datetimepicker-input" data-target="#datetimepicker'+name+'"><div class="input-group-append" data-target="#datetimepicker'+name+'" data-toggle="datetimepicker"><div class="input-group-text"><i class="fa fa-calendar"></i></div></div></div></div>'
+        return {
+            content: datepicker,
+            callback: function () {
+                $('#datetimepicker' + name).datetimepicker();
+            }
+        };
+    }
+
+    $(document).ready(_init);
+    return {
+        build: _build,
+    }
+}());
+var elementFactory = (function () {
+
+    var _builders = [];
+
+    function _register(key, builder) {
+        _builders[key] = builder;
+    }
+
+    function _build(type, name) {
+        var builder = _builders[type];
+        if (builder) {
+            return builder.build(name);
+        }
+    }
+
+    return {
+        build: _build,
+        register: _register
+    }
+}());
+
+
+
+var linkBuilder = (function () {
+
+    function _init() {
+        elementFactory.register("link", linkBuilder);
+    }
+
+    function _build(name) { 
+        var formgroup = uiBuilder.buildFormGroup(name);
+        formgroup.append('<input class="form-control " required name="' + name + '" type="text"></input>');
+        return formgroup;
+    }
+
+    $(document).ready(_init);
+    return {
+        build: _build,
+    }
+}());
+var numberBuilder = (function () {
+
+    function _init() {
+        elementFactory.register("number", numberBuilder);
+    }
+
+    function _build(name) {
+        var formgroup = uiBuilder.buildFormGroup(name);
+        formgroup.append('<input class="form-control" required name="' + name + '" type="number"></input>');
+        return formgroup;
+    }
+
+    $(document).ready(_init);
+    return {
+        build: _build,
+    }
+}());
+var textBuilder = (function () {
+
+    function _init() {
+        elementFactory.register("text", textBuilder);
+    }
+
+    function _build(name) { 
+        var formgroup = uiBuilder.buildFormGroup(name);
+        formgroup.append('<input class="form-control " required name="' + name + '" type="text"></input>');
+        return formgroup;
+    }
+
+    $(document).ready(_init);
+    return {
+        build: _build,
+    }
+}());
+var uiBuilder = (function () {
+
+    function _buildFormGroup(name) {
+        var formgroup = $('<div class="form-group p-2"></div>');
+        formgroup.append('<label>' + name + '</label>')
+        return formgroup;
+    }
+
+    return {
+        buildFormGroup: _buildFormGroup,
     }
 }());
 app.simpleimage = (function () {
@@ -921,5 +844,82 @@ app.simplevideo = (function () {
 
     return {
         load: _load
+    }
+}());
+app.menu = (function () {
+
+    function _load(url) {
+        app.service.get(url + "/simplecms/components/menu.html", _set, "html");
+    }
+
+    function _set(data) {
+        $('body').append(data);
+    }
+
+    function _init() {
+        $('simpletext').contextmenu(function (e) {
+            _openNav();
+            e.preventDefault();
+        });
+        $(document).on('keydown',function(e){
+            if(e.keyCode === 27){
+                _closeNav();
+            }
+        });
+    }
+
+    function _openNav() {
+        document.getElementById("mySidenav").style.width = "250px";
+        // document.body.style.backgroundColor = "rgba(0,0,0,0.4)";
+        $('body').append('<div id="backdrop" class="modal-backdrop fade show"></div>');
+    }
+
+    function _closeNav() {
+        document.getElementById("mySidenav").style.width = "0";
+        // document.body.style.backgroundColor = "white";
+        $('#backdrop').remove();
+    }
+
+    $(document).ready(function () {
+        _init();
+    });
+
+    return {
+        load: _load,
+        open: _openNav,
+        close: _closeNav
+    }
+}())
+app.modal = (function () {
+
+    function _load(url) {
+        app.service.get(url + "/simplecms/components/modal.html", _set, "html");
+    }
+
+    function _set(data) {
+        $('body').append(data);
+    }
+
+    function _create(callback, model, title, placeholder, url, property) {
+
+        $("#simplemodal").modal();
+        $("#simplemodal").find('input').attr("placeholder", placeholder);
+        $("#simpleModalLabel").text(title);
+        $("#simpleModalSave").unbind();
+        $("#simpleModalSave").on("click", function () {
+            model[property] = $("#simplemodal").find('input').val();
+            if (model.id) {
+                app.service.put(url + "/" + model.id, model)
+            } else {
+                app.service.post(url, model)
+            }
+            $('#simplemodal').modal("hide");
+            callback(model[property], model.uuid);
+        });
+    }
+
+    return {
+        load: _load,
+        create: _create
     }
 }());

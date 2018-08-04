@@ -1,0 +1,35 @@
+<body class="scms-body">
+
+    <div class="container pt-5">
+
+        <h2>Database</h2>
+        <p>List all of objects you have in your simplecms.</p>
+        <hr/>
+
+        <div class="form-group w-25">
+            <label for="scmsTableSelect">Select table:</label>
+            <select class="form-control" id="scmsTableSelect">
+            </select>
+        </div>
+
+        <div class="card">
+
+            <table id="scmsDbTable" class="table table-hover text-center">
+                <thead class="text-light">
+                    <tr>
+                        <th>#ID</th>
+                        <th>Content</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+    <script>
+        simplecms.database.init();
+    </script>
+</body>

@@ -1,19 +1,29 @@
-
-#element-list{
+#element-list {
     display: flex;
     flex-wrap: wrap;
 }
-.temp-element{
+
+.nav-padding {
+    padding: 0px 20px !important;
+}
+
+.top-hr {
+    border-top: 1px solid rgba(0, 40, 100, 0.12) !important;
+}
+
+.temp-element {
+    background-color: white;
+    border-radius: 2px;
     padding: 8px;
     display: flex;
     margin-left: 15px;
     margin-bottom: 3px;
-    color:lightgray;
+    color: lightgray;
     box-shadow: 2px 2px 2px;
     font-size: 13px;
 }
 
-.temp-action{
+.temp-action {
     display: flex;
     flex-direction: column;
     align-content: center;

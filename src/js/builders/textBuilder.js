@@ -6,7 +6,7 @@ var textBuilder = (function () {
 
     function _build(name) { 
         var formgroup = uiBuilder.buildFormGroup(name);
-        formgroup.append('<input class="form-control w-25" required name="' + name + '" type="text"></input>');
+        formgroup.append('<input class="form-control " required name="' + name + '" type="text"></input>');
         return formgroup;
     }
 

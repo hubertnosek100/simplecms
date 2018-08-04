@@ -1,11 +1,23 @@
 const jsonServer = require('json-server')
-const server = jsonServer.create()
 const router = jsonServer.router('db.json')
 const middlewares = jsonServer.defaults()
 var passwordhasher = require('password-hasher');
 var jwt = require('jsonwebtoken');
+var cookieParser = require('cookie-parser')
+var controller = require('./app/controller');
+var expressLayouts = require('express-ejs-layouts');
+var express = require('express');
 
+
+var server = express();
+server.set('view engine', 'ejs');
+
+server.use(expressLayouts);
 server.use(jsonServer.bodyParser)
+server.use(cookieParser())
+
+controller(server, userMiddleware);
+
 
 var auth;
 
@@ -34,8 +46,16 @@ server.post('/apikey', (req, res) => {
   });
 })
 
+server.get('/logout', (req, res) => {
+  res.cookie('token', "")
+  userMiddleware(req, res)
+  // res.render('login')
+  res.redirect('/login');
+});
+
+
+
 server.post('/login', (req, res) => {
-  var a = 1;
   var name = req.body.login;
   var pwd = req.body.password;
 
@@ -48,25 +68,36 @@ server.post('/login', (req, res) => {
         var token = jwt.sign({
           data: {
             login: auth.username,
-            apikey: auth.apikey
+            publickey: auth.publickey
           }
         }, auth.privatekey, {
           expiresIn: '1h'
         });
 
-        res.jsonp({
-          message: "sucess",
-          token: token
-        })
+        res.cookie('token', token)
+        userMiddleware(req, res)
+        res.redirect('/');
+
+        // res.jsonp({
+        //   message: "sucess",
+        //   token: token
+        // })
       }
     }
   }
-  res.jsonp({
-    message: "failure"
-  })
+  // res.jsonp({
+  //   message: "failure"
+  // })
+  res.render('login')
 })
 
 server.use(middlewares)
+
+server.use(function (req, res, next) {
+  res.locals.user = "Hubert"
+  next()
+})
+
 server.use((req, res, next) => {
   if (isAuthorized(req)) { // add your authorization logic here
     next() // continue to JSON Server router
@@ -81,7 +112,6 @@ server.listen(3000, () => {
 
 
 function isAuthorized(req) {
-  return true;
   if (req.originalUrl === '/login') {
     return true;
   }
@@ -90,16 +120,38 @@ function isAuthorized(req) {
     return true
   }
 
+  if (isAuthorizedByToken(req.cookies["token"])) {
+    return true
+  }
+
   return auth.apikey === req.headers.apikey && req.method === "GET";
 }
 
+function userMiddleware(req, res) {
+  if (isAuthenticated(req)) {
+    res.locals.isAuthenticated = true;
+
+  } else {
+    res.locals.isAuthenticated = false;
+  }
+}
+
+function isAuthenticated(req) {
+  return isAuthorizedByToken(req.cookies["token"]);
+}
+
 function isAuthorizedByToken(token) {
-  if(!token){
+  if (!token) {
     return false;
   }
-  var decoded = jwt.verify(token, auth.privatekey);
+  var decoded = undefined
+  try {
+    decoded = jwt.verify(token, auth.privatekey);
+  } catch(err){
+    return false;
+  }
   var date = new Date();
   var now = date.getTime() / 1000;
   var expired = now > decoded.exp;
-  return (decoded.data.apikey === auth.apikey) && !expired;
+  return (decoded.data.publickey === auth.publickey) && !expired;
 }
