@@ -6,10 +6,10 @@ var elementFactory = (function () {
         _builders[key] = builder;
     }
 
-    function _build(type, name) {
+    function _build(type, name, items) {
         var builder = _builders[type];
         if (builder) {
-            return builder.build(name);
+            return builder.build(name, items);
         }
     }
 

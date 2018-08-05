@@ -57,6 +57,43 @@
         }
       ],
       "id": 4
+    },
+    {
+      "name": "TestCollection",
+      "uuid": "testcollection",
+      "elements": [
+        {
+          "name": "Title",
+          "type": "text"
+        },
+        {
+          "name": "group",
+          "type": "collection",
+          "items": [
+            {
+              "collection": "group",
+              "name": "age",
+              "type": "number"
+            },
+            {
+              "collection": "group",
+              "name": "date of birth",
+              "type": "datetime"
+            },
+            {
+              "collection": "group",
+              "name": "favourite color",
+              "type": "color"
+            },
+            {
+              "collection": "group",
+              "name": "name",
+              "type": "text"
+            }
+          ]
+        }
+      ],
+      "id": 5
     }
   ],
   "exponent": [
@@ -83,6 +120,61 @@
       "templateid": "4",
       "template": "Strona główna",
       "id": 7
+    },
+    {
+      "uuid": "all1",
+      "Description": "Hejo",
+      "Age": "12",
+      "Dateofbirth": "08/15/2018",
+      "Clock": "08/21/2018 12:30 AM",
+      "Favouritecolor": "rgb(45, 34, 23)",
+      "My website": "http://loclahost:3000",
+      "templateid": "3",
+      "template": "All",
+      "id": 8
+    },
+    {
+      "uuid": "test",
+      "Title": "hejo",
+      "templateid": "5",
+      "template": "TestCollection",
+      "id": 9
+    },
+    {
+      "uuid": "ads",
+      "Title": "asdsd",
+      "templateid": "5",
+      "template": "TestCollection",
+      "id": 10
+    },
+    {
+      "uuid": "asda",
+      "Title": "asds",
+      "templateid": "5",
+      "template": "TestCollection",
+      "id": 11
+    },
+    {
+      "uuid": "asd",
+      "Title": "dasd",
+      "templateid": "5",
+      "template": "TestCollection",
+      "id": 12
+    },
+    {
+      "uuid": "testcollection",
+      "Title": "Test group",
+      "group": [
+        {
+          "age": "123",
+          "dateofbirth": "08/30/2018 7:45 PM",
+          "favouritecolor": "rgb(255, 128, 0)",
+          "name": "First"
+        }
+      ],
+      "templateid": "5",
+      "template": "TestCollection",
+      "id": 13
     }
   ],
   "simpletext": [

@@ -173,7 +173,7 @@ app.static = (function () {
     var _template = "template";
 
     var _components = [_simpletext, _simpleimage, _simplevideo, _exponent, _template];
-    var _elementTypes = ["text", "number", "date", "datetime", "color", "link"];
+    var _elementTypes = ["text", "number", "date", "datetime", "color", "link", "collection"];
 
     return {
         simpleimage: _simpleimage,
@@ -184,6 +184,235 @@ app.static = (function () {
         exponent: _exponent,
         template: _template,
         elementTypes: _elementTypes
+    }
+}());
+var buttonBuilder = (function () {
+
+    function _build(text, link) {
+        return '<a href="' + link + '" class="btn btn-primary scms-primary scms-btn">' + text + '</a>';
+    }
+
+    return {
+        build: _build,
+    }
+}());
+var collectionBuilder = (function () {
+
+    function _init() {
+        elementFactory.register("collection", collectionBuilder);
+    }
+
+    function _build(name, items) {
+        var formgroup = uiBuilder.buildFormGroup(name);
+        var form = $('<form class="expo-form" id ="' + name + '"></form>');
+
+        formgroup.append(_createCollectionBag(name, items));
+        form.append(formgroup);
+        return form;
+    }
+
+    function _createCollectionBag(name, items) {
+        var btn = $('<button class="form-control btn btn-sm btn-secondary ml-2"><i class="fas fa-plus"></i></button>');
+        btn.on("click", function (e) {
+            e.preventDefault();
+            var expoEl = $('<form class="expo-element"></form>')
+            expoEl.append(_createRmButton())
+            if (items.length > 0) {
+                items.forEach(element => {
+                    var uiEl = elementFactory.build(element.type, element.name, element.items);
+                    if (uiEl && uiEl.callback) {
+                        expoEl.append(uiEl.content);
+                        uiEl.callback();
+                    } else {
+                        expoEl.append(uiEl);
+                    }
+                });
+            }
+            $('#' + name).append(expoEl)
+        });
+        return btn;
+    }
+
+
+    function _createRmButton() {
+        var btn = $('<button class="btn btn-sm btn-danger"><i class="fas fa-trash-alt"></i></button>');
+        btn.on("click", function (e) {
+            console.log(e.target)
+            if (e.target.tagName === "BUTTON") {
+                $(e.target).parent().parent().remove();
+            } else {
+                $(e.target).parent().parent().parent().remove();
+            }
+        });
+
+        var formgroup = $('<div style="margin:3px;"></div>')
+        formgroup.append(btn)
+        return formgroup;
+    }
+
+    $(document).ready(_init);
+    return {
+        build: _build,
+    }
+}());
+var colorBuilder = (function () {
+
+    function _init() {
+        elementFactory.register("color", colorBuilder);
+    }
+
+    function _build(name) {
+        var dispName = name;
+
+        var formgroup = uiBuilder.buildFormGroup(name);
+        name = name.replace(/\s/g, '');
+        var colorpicker = '<input id="colorpicker' + name + '" name="' + name + '" type="text" class="form-control" value="rgb(255, 128, 0)" />'
+        formgroup.append(colorpicker);
+        return {
+            content: formgroup,
+            callback: function () {
+                $('#colorpicker' + name).colorpicker();
+            }
+        };
+    }
+
+    $(document).ready(_init);
+    return {
+        build: _build,
+    }
+}());
+var dateBuilder = (function () {
+
+    function _init() {
+        elementFactory.register("date", dateBuilder);
+    }
+
+    function _build(name) {
+        var dispName = name;
+        name = name.replace(/\s/g, '');
+        var datepicker = '<div class="form-group p-2"><label>' + dispName + '</label><div class="input-group date" id="datetimepicker' + name + '" data-target-input="nearest"><input name="'+name+'" type="text" class="form-control datetimepicker-input" data-target="#datetimepicker' + name + '"><div class="input-group-append" data-target="#datetimepicker' + name + '" data-toggle="datetimepicker"><div class="input-group-text"><i class="fa fa-calendar"></i></div></div></div></div>'
+        return {
+            content: datepicker,
+            callback: function () {
+                $('#datetimepicker' + name).datetimepicker({
+                    format: 'L'
+                });
+            }
+        };
+    }
+
+    $(document).ready(_init);
+    return {
+        build: _build,
+    }
+}());
+var datetimeBuilder = (function () {
+
+    function _init() {
+        elementFactory.register("datetime", datetimeBuilder);
+    }
+
+    function _build(name) {
+        var dispName = name;
+        name = name.replace(/\s/g,'');
+        var datepicker = '<div class="form-group p-2"><label>'+ dispName+ '</label><div class="input-group date" id="datetimepicker'+name+'" data-target-input="nearest"><input name="'+name+'" type="text" class="form-control datetimepicker-input" data-target="#datetimepicker'+name+'"><div class="input-group-append" data-target="#datetimepicker'+name+'" data-toggle="datetimepicker"><div class="input-group-text"><i class="fa fa-calendar"></i></div></div></div></div>'
+        return {
+            content: datepicker,
+            callback: function () {
+                $('#datetimepicker' + name).datetimepicker();
+            }
+        };
+    }
+
+    $(document).ready(_init);
+    return {
+        build: _build,
+    }
+}());
+var elementFactory = (function () {
+
+    var _builders = [];
+
+    function _register(key, builder) {
+        _builders[key] = builder;
+    }
+
+    function _build(type, name, items) {
+        var builder = _builders[type];
+        if (builder) {
+            return builder.build(name, items);
+        }
+    }
+
+    return {
+        build: _build,
+        register: _register
+    }
+}());
+
+
+
+var linkBuilder = (function () {
+
+    function _init() {
+        elementFactory.register("link", linkBuilder);
+    }
+
+    function _build(name) { 
+        var formgroup = uiBuilder.buildFormGroup(name);
+        formgroup.append('<input class="form-control " required name="' + name + '" type="text"></input>');
+        return formgroup;
+    }
+
+    $(document).ready(_init);
+    return {
+        build: _build,
+    }
+}());
+var numberBuilder = (function () {
+
+    function _init() {
+        elementFactory.register("number", numberBuilder);
+    }
+
+    function _build(name) {
+        var formgroup = uiBuilder.buildFormGroup(name);
+        formgroup.append('<input class="form-control" required name="' + name + '" type="number"></input>');
+        return formgroup;
+    }
+
+    $(document).ready(_init);
+    return {
+        build: _build,
+    }
+}());
+var textBuilder = (function () {
+
+    function _init() {
+        elementFactory.register("text", textBuilder);
+    }
+
+    function _build(name) { 
+        var formgroup = uiBuilder.buildFormGroup(name);
+        formgroup.append('<input class="form-control " required name="' + name + '" type="text"></input>');
+        return formgroup;
+    }
+
+    $(document).ready(_init);
+    return {
+        build: _build,
+    }
+}());
+var uiBuilder = (function () {
+
+    function _buildFormGroup(name) {
+        var formgroup = $('<div class="form-group p-2"></div>');
+        formgroup.append('<label>' + name + '</label>')
+        return formgroup;
+    }
+
+    return {
+        buildFormGroup: _buildFormGroup,
     }
 }());
 app.menu = (function () {
@@ -506,6 +735,19 @@ app.newexponent = (function () {
     function _submit(e) {
         e.preventDefault();
         var model = app.formToJSON($("#createexponentform"));
+
+        $("#createexponentform").find('form').toArray().splice(0, 1)
+        var forms = $("#createexponentform").find('form').toArray()
+        var colForm = forms.splice(0, 1);
+        debugger
+        var id = $(colForm).attr('id');
+        model[id] = [];
+
+        forms.forEach((el) => {
+            model[id].push(app.formToJSON($(el)));
+        });
+        debugger
+
         model.templateid = $("#newtemplateselect").val();
         model.template = $("#newtemplateselect option:selected").text();
         app.service.post("/" + app.static.exponent, model)
@@ -541,7 +783,7 @@ app.newexponent = (function () {
         _clear("newexponentcontent");
         if (template.elements.length > 0) {
             template.elements.forEach(element => {
-                var uiEl = elementFactory.build(element.type, element.name);
+                var uiEl = elementFactory.build(element.type, element.name, element.items);
                 if (uiEl && uiEl.callback) {
                     $("#newexponentcontent").append(uiEl.content);
                     uiEl.callback();
@@ -576,6 +818,11 @@ app.newtemplate = (function () {
         });
 
         $("#addtemplateform").on("submit", _addTemplate);
+        $('#openAddExponentModal').on("click", _default);
+    }
+
+    function _default() {
+        $('#addCollectionElement').attr('disabled', true);
     }
 
     function _addTemplate(e) {
@@ -592,32 +839,96 @@ app.newtemplate = (function () {
 
         var json = app.formToJSON($(e.target))
 
-        _list.push(json);
-        var name = $("<div>Name: " + json.name + "</div>");
-        var type = $("<div>Type: " + json.type + "</div>");
-        var desc = $('<div></div>');
+        var curretnList;
 
-        desc.append(name);
-        desc.append(type);
 
-        var btn = $('<button class="btn btn-sm btn-danger"><i class="fas fa-trash-alt"></i></button>');
-        btn.on("click", function (e) {
-            console.log(e.target)
-            if (e.target.tagName === "BUTTON") {
-                $(e.target).parent().parent().remove();
-            } else {
-                $(e.target).parent().parent().parent().remove();
+        if (json.collection) {
+            var collection = _list.find(function (x) {
+                return x.name === json.collection
+            });
+            if (!collection.items) {
+                collection.items = [];
             }
+            curretnList = collection.items;
+
+        } else {
+            curretnList = _list;
+        }
+
+        if (!curretnList.find(function (x) {
+                return x.name === json.name
+            }) && !(json.collection && json.type === "collection")) {
+
+            curretnList.push(json);
+            var name = $("<div>Name: " + json.name + "</div>");
+            var type = $("<div>Type: " + json.type + "</div>");
+            var desc = $('<div></div>');
+
+            desc.append(name);
+            desc.append(type);
+
+            var btn = $('<button class="btn btn-sm btn-danger"><i class="fas fa-trash-alt"></i></button>');
+            btn.on("click", function (e) {
+                console.log(e.target)
+                if (e.target.tagName === "BUTTON") {
+                    $(e.target).parent().parent().remove();
+                } else {
+                    $(e.target).parent().parent().parent().remove();
+                }
+                var toDelete = curretnList.find(function (x) {
+                    return x.name === json.name
+                });
+                var index = curretnList.indexOf(toDelete);
+                if (index > -1) {
+                    curretnList.splice(index, 1);
+                }
+
+            });
+
+            var action = $('<div class="temp-action"></div>');
+            action.append(btn);
+
+            var classes = "temp-element";
+            if (json.type === "collection") {
+                action.append(_createCollectionBag(json.name));
+                classes = classes + " temp-collection"
+            }
+
+            var id = json.name;
+            if (json.collection) {
+                id = "collection" + json.collection;
+            }
+            var card = $("<div id='" + id + "' class='" + classes + "'></div>");
+            card.append(desc);
+            card.append(action);
+
+            // to change
+            if (json.collection) {
+                var bag = $('#' + json.collection).find(".temp-bag");
+                if (bag.length == 0) {
+                    bag = $('<div class="temp-bag"></div>');
+                    $('#' + json.collection).append(bag);
+                }
+                bag.append(card)
+
+
+            } else {
+                $("#element-list").append(card);
+            }
+        } else {
+            console.log("error")
+        }
+    }
+
+    function _createCollectionBag(key) {
+        var btn = $('<button class="btn btn-sm btn-secondary ml-2"><i class="fas fa-plus"></i></button>');
+        btn.on("click", function (e) {
+            e.preventDefault();
+            $('#addCollectionElement').removeAttr('disabled');
+            $('#addCollectionElement').val(key);
+            $("#addelementmodal").modal('show');
         });
-
-        var action = $('<div class="temp-action"></div>');
-        action.append(btn);
-
-        var card = $("<div class='temp-element'></div>");
-        card.append(desc);
-        card.append(action);
-
-        $("#element-list").append(card);
+        return btn;
     }
 
     $(document).ready(_init);
@@ -698,176 +1009,6 @@ app.template = (function () {
 
     return {
         init: _init
-    }
-}());
-var buttonBuilder = (function () {
-
-    function _build(text, link) {
-        return '<a href="' + link + '" class="btn btn-primary scms-primary scms-btn">' + text + '</a>';
-    }
-
-    return {
-        build: _build,
-    }
-}());
-var colorBuilder = (function () {
-
-    function _init() {
-        elementFactory.register("color", colorBuilder);
-    }
-
-    function _build(name) {
-        var dispName = name;
-
-        var formgroup = uiBuilder.buildFormGroup(name);
-        name = name.replace(/\s/g, '');
-        var colorpicker = '<input id="colorpicker' + name + '" name="' + name + '" type="text" class="form-control" value="rgb(255, 128, 0)" />'
-        formgroup.append(colorpicker);
-        return {
-            content: formgroup,
-            callback: function () {
-                $('#colorpicker' + name).colorpicker();
-            }
-        };
-    }
-
-    $(document).ready(_init);
-    return {
-        build: _build,
-    }
-}());
-var dateBuilder = (function () {
-
-    function _init() {
-        elementFactory.register("date", dateBuilder);
-    }
-
-    function _build(name) {
-        var dispName = name;
-        name = name.replace(/\s/g, '');
-        var datepicker = '<div class="form-group p-2"><label>' + dispName + '</label><div class="input-group date" id="datetimepicker' + name + '" data-target-input="nearest"><input name="'+name+'" type="text" class="form-control datetimepicker-input" data-target="#datetimepicker' + name + '"><div class="input-group-append" data-target="#datetimepicker' + name + '" data-toggle="datetimepicker"><div class="input-group-text"><i class="fa fa-calendar"></i></div></div></div></div>'
-        return {
-            content: datepicker,
-            callback: function () {
-                $('#datetimepicker' + name).datetimepicker({
-                    format: 'L'
-                });
-            }
-        };
-    }
-
-    $(document).ready(_init);
-    return {
-        build: _build,
-    }
-}());
-var datetimeBuilder = (function () {
-
-    function _init() {
-        elementFactory.register("datetime", datetimeBuilder);
-    }
-
-    function _build(name) {
-        var dispName = name;
-        name = name.replace(/\s/g,'');
-        var datepicker = '<div class="form-group p-2"><label>'+ dispName+ '</label><div class="input-group date" id="datetimepicker'+name+'" data-target-input="nearest"><input name="'+name+'" type="text" class="form-control datetimepicker-input" data-target="#datetimepicker'+name+'"><div class="input-group-append" data-target="#datetimepicker'+name+'" data-toggle="datetimepicker"><div class="input-group-text"><i class="fa fa-calendar"></i></div></div></div></div>'
-        return {
-            content: datepicker,
-            callback: function () {
-                $('#datetimepicker' + name).datetimepicker();
-            }
-        };
-    }
-
-    $(document).ready(_init);
-    return {
-        build: _build,
-    }
-}());
-var elementFactory = (function () {
-
-    var _builders = [];
-
-    function _register(key, builder) {
-        _builders[key] = builder;
-    }
-
-    function _build(type, name) {
-        var builder = _builders[type];
-        if (builder) {
-            return builder.build(name);
-        }
-    }
-
-    return {
-        build: _build,
-        register: _register
-    }
-}());
-
-
-
-var linkBuilder = (function () {
-
-    function _init() {
-        elementFactory.register("link", linkBuilder);
-    }
-
-    function _build(name) { 
-        var formgroup = uiBuilder.buildFormGroup(name);
-        formgroup.append('<input class="form-control " required name="' + name + '" type="text"></input>');
-        return formgroup;
-    }
-
-    $(document).ready(_init);
-    return {
-        build: _build,
-    }
-}());
-var numberBuilder = (function () {
-
-    function _init() {
-        elementFactory.register("number", numberBuilder);
-    }
-
-    function _build(name) {
-        var formgroup = uiBuilder.buildFormGroup(name);
-        formgroup.append('<input class="form-control" required name="' + name + '" type="number"></input>');
-        return formgroup;
-    }
-
-    $(document).ready(_init);
-    return {
-        build: _build,
-    }
-}());
-var textBuilder = (function () {
-
-    function _init() {
-        elementFactory.register("text", textBuilder);
-    }
-
-    function _build(name) { 
-        var formgroup = uiBuilder.buildFormGroup(name);
-        formgroup.append('<input class="form-control " required name="' + name + '" type="text"></input>');
-        return formgroup;
-    }
-
-    $(document).ready(_init);
-    return {
-        build: _build,
-    }
-}());
-var uiBuilder = (function () {
-
-    function _buildFormGroup(name) {
-        var formgroup = $('<div class="form-group p-2"></div>');
-        formgroup.append('<label>' + name + '</label>')
-        return formgroup;
-    }
-
-    return {
-        buildFormGroup: _buildFormGroup,
     }
 }());
 app.simpleimage = (function () {

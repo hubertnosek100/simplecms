@@ -9,6 +9,19 @@ app.newexponent = (function () {
     function _submit(e) {
         e.preventDefault();
         var model = app.formToJSON($("#createexponentform"));
+
+        $("#createexponentform").find('form').toArray().splice(0, 1)
+        var forms = $("#createexponentform").find('form').toArray()
+        var colForm = forms.splice(0, 1);
+        debugger
+        var id = $(colForm).attr('id');
+        model[id] = [];
+
+        forms.forEach((el) => {
+            model[id].push(app.formToJSON($(el)));
+        });
+        debugger
+
         model.templateid = $("#newtemplateselect").val();
         model.template = $("#newtemplateselect option:selected").text();
         app.service.post("/" + app.static.exponent, model)
@@ -44,7 +57,7 @@ app.newexponent = (function () {
         _clear("newexponentcontent");
         if (template.elements.length > 0) {
             template.elements.forEach(element => {
-                var uiEl = elementFactory.build(element.type, element.name);
+                var uiEl = elementFactory.build(element.type, element.name, element.items);
                 if (uiEl && uiEl.callback) {
                     $("#newexponentcontent").append(uiEl.content);
                     uiEl.callback();

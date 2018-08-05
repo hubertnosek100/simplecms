@@ -8,7 +8,7 @@ app.static = (function () {
     var _template = "template";
 
     var _components = [_simpletext, _simpleimage, _simplevideo, _exponent, _template];
-    var _elementTypes = ["text", "number", "date", "datetime", "color", "link"];
+    var _elementTypes = ["text", "number", "date", "datetime", "color", "link", "collection"];
 
     return {
         simpleimage: _simpleimage,
