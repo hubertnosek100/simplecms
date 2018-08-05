@@ -1,0 +1,25 @@
+<div class="modal fade" id="editJsonModal" tabindex="-1" role="dialog" aria-labelledby="editJsonModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editJsonModalLabel">Edit as json</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                </button>
+            </div>
+            <form id="editJsonForm">
+                <div class="modal-body">
+                    <input id="editJsonElement" hidden type="text" name="collection">
+                    <div class="form-group">
+                        <label for="editJsonText">Json</label>
+                        <textarea class="form-control" id="editJsonText" rows="3"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button id="editJsonModalSave" type="submit" class="btn btn-primary scms-btn scms-primary">Edit</button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>

@@ -648,7 +648,7 @@ app.exponents = (function () {
     function _newELement(element) {
         $row = $("<tr></tr>");
         $rmbtn = $("<button db-id='" + element.id + "' class='btn btn-danger'><i class='fas fa-trash-alt'></i></button>");
-        $editbtn = $("<button db-id='" + element.id + "' class='btn btn-primary ml-3' style='width: 40px;'><i class='far fa-edit'></i></i></button>");
+        $editbtn = $("<button db-id='" + element.id + "' data-toggle='modal' data-target='#editJsonModal'  class='btn btn-primary ml-3' style='width: 40px;'><i class='far fa-edit'></i></i></button>");
 
         $rmbtn.on("click", _remove);
         $idColumn = $("<td></td>").text(element.id);
@@ -978,7 +978,7 @@ app.template = (function () {
     function _newELement(element) {
         $row = $("<tr></tr>");
         $rmbtn = $("<button db-id='" + element.id + "' class='btn btn-danger'><i class='fas fa-trash-alt'></i></button>");
-        $editbtn = $("<button db-id='" + element.id + "' class='btn btn-primary ml-3' style='width: 40px;'><i class='far fa-edit'></i></i></button>");
+        $editbtn = $("<button db-id='" + element.id + "' data-toggle='modal' data-target='#editJsonModal' class='btn btn-primary ml-3' style='width: 40px;'><i class='far fa-edit'></i></i></button>");
 
         $rmbtn.on("click", _remove);
 
