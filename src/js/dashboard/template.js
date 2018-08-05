@@ -2,6 +2,7 @@ app.template = (function () {
     function _init() {
         $(document).ready(function () {
             _load();
+            $("#editJsonForm").on("submit", _send);
         });
     }
 
@@ -46,6 +47,7 @@ app.template = (function () {
         $editbtn = $("<button db-id='" + element.id + "' data-toggle='modal' data-target='#editJsonModal' class='btn btn-primary ml-3' style='width: 40px;'><i class='far fa-edit'></i></i></button>");
 
         $rmbtn.on("click", _remove);
+        $editbtn.on("click", _edit);
 
         $idColumn = $("<td></td>").text(element.id);
         $uuidColumn = $("<td></td>").text(element.uuid);
@@ -53,16 +55,43 @@ app.template = (function () {
         $actionColumn = $("<td></td>").append($rmbtn).append($editbtn);
 
         $row.append($idColumn);
-        $row.append($uuidColumn);   
+        $row.append($uuidColumn);
         $row.append($nameColumn);
         $row.append($actionColumn);
         return $row;
     }
 
     function _remove(params) {
-        var id = $(params.target).attr("db-id");
+        var id = '';
+        if (params.target.tagName === "BUTTON") {
+            id = $(params.target).attr("db-id");
+        } else {
+            id = $(params.target).parent().attr("db-id");
+        }
         app.service.delete("/" + app.static.template + "/" + id);
         _reload();
+    }
+
+
+    function _edit(params) {
+        var id = '';
+        if (params.target.tagName === "BUTTON") {
+
+            id = $(params.target).attr("db-id");
+        } else {
+            id = $(params.target).parent().attr("db-id");
+        }
+
+        app.service.get("/" + app.static.template + '/' + id, function (data) {
+            $('#editJsonText').val(JSON.stringify(data))
+        });
+    }
+
+    function _send(e) {
+        e.preventDefault();
+        var model = JSON.parse($('#editJsonText').val());
+        app.service.put("/" + app.static.template + '/' + model.id, model);
+        $('#editJsonModal').modal('hide');
     }
 
 

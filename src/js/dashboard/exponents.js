@@ -2,6 +2,7 @@ app.exponents = (function () {
     function _init() {
         $(document).ready(function () {
             _load();
+            $("#editJsonForm").on("submit", _send);
         });
     }
 
@@ -48,6 +49,7 @@ app.exponents = (function () {
         $editbtn = $("<button db-id='" + element.id + "' data-toggle='modal' data-target='#editJsonModal'  class='btn btn-primary ml-3' style='width: 40px;'><i class='far fa-edit'></i></i></button>");
 
         $rmbtn.on("click", _remove);
+        $editbtn.on("click", _edit);
         $idColumn = $("<td></td>").text(element.id);
         $uuidColumn = $("<td></td>").text(element.template);
         $nameColumn = $("<td></td>").text(element.uuid);
@@ -61,10 +63,35 @@ app.exponents = (function () {
     }
 
     function _remove(params) {
-        var id = $(params.target).attr("db-id");
-        console.log(id)
+        var id = '';
+        if (params.target.tagName === "BUTTON") {
+            id = $(params.target).attr("db-id");
+        } else {
+            id = $(params.target).parent().attr("db-id");
+        }
         app.service.delete("/" + app.static.exponent + "/" + id);
         _reload();
+    }
+
+    function _edit(params) {
+        var id = '';
+        if (params.target.tagName === "BUTTON") {
+
+            id = $(params.target).attr("db-id");
+        } else {
+            id = $(params.target).parent().attr("db-id");
+        }
+
+        app.service.get("/" + app.static.exponent + '/' + id, function (data) {
+            $('#editJsonText').val(JSON.stringify(data))
+        });
+    }
+
+    function _send(e) {
+        e.preventDefault();
+        var model = JSON.parse($('#editJsonText').val());
+        app.service.put("/" + app.static.exponent + '/' + model.id, model);
+        $('#editJsonModal').modal('hide');
     }
 
     function _reload() {
