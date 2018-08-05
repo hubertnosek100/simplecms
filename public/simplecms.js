@@ -54,14 +54,14 @@ app.database = (function () {
             const component = app.static.components[i];
             $("#scmsTableSelect").append("<option value='" + component + "'>" + component + "</option>");
         }
-        app.service.get(app.static.simpletext, _set);
+        app.service.get('/' + app.static.simpletext, _set);
 
         $("#scmsTableSelect").on("change", _reload);
     }
 
     function _reload(data) {
         $("#scmsDbTable").find("tbody").empty();
-        app.service.get($("#scmsTableSelect").val(), _set);
+        app.service.get('/' + $("#scmsTableSelect").val(), _set);
     }
 
     function _set(data) {
@@ -184,6 +184,83 @@ app.static = (function () {
         exponent: _exponent,
         template: _template,
         elementTypes: _elementTypes
+    }
+}());
+app.menu = (function () {
+
+    function _load(url) {
+        app.service.get(url + "/simplecms/components/menu.html", _set, "html");
+    }
+
+    function _set(data) {
+        $('body').append(data);
+    }
+
+    function _init() {
+        $('simpletext').contextmenu(function (e) {
+            _openNav();
+            e.preventDefault();
+        });
+        $(document).on('keydown',function(e){
+            if(e.keyCode === 27){
+                _closeNav();
+            }
+        });
+    }
+
+    function _openNav() {
+        document.getElementById("mySidenav").style.width = "250px";
+        // document.body.style.backgroundColor = "rgba(0,0,0,0.4)";
+        $('body').append('<div id="backdrop" class="modal-backdrop fade show"></div>');
+    }
+
+    function _closeNav() {
+        document.getElementById("mySidenav").style.width = "0";
+        // document.body.style.backgroundColor = "white";
+        $('#backdrop').remove();
+    }
+
+    $(document).ready(function () {
+        _init();
+    });
+
+    return {
+        load: _load,
+        open: _openNav,
+        close: _closeNav
+    }
+}())
+app.modal = (function () {
+
+    function _load(url) {
+        app.service.get(url + "/simplecms/components/modal.html", _set, "html");
+    }
+
+    function _set(data) {
+        $('body').append(data);
+    }
+
+    function _create(callback, model, title, placeholder, url, property) {
+
+        $("#simplemodal").modal();
+        $("#simplemodal").find('input').attr("placeholder", placeholder);
+        $("#simpleModalLabel").text(title);
+        $("#simpleModalSave").unbind();
+        $("#simpleModalSave").on("click", function () {
+            model[property] = $("#simplemodal").find('input').val();
+            if (model.id) {
+                app.service.put(url + "/" + model.id, model)
+            } else {
+                app.service.post(url, model)
+            }
+            $('#simplemodal').modal("hide");
+            callback(model[property], model.uuid);
+        });
+    }
+
+    return {
+        load: _load,
+        create: _create
     }
 }());
 app.dashboard = (function () {
@@ -791,83 +868,6 @@ var uiBuilder = (function () {
 
     return {
         buildFormGroup: _buildFormGroup,
-    }
-}());
-app.menu = (function () {
-
-    function _load(url) {
-        app.service.get(url + "/simplecms/components/menu.html", _set, "html");
-    }
-
-    function _set(data) {
-        $('body').append(data);
-    }
-
-    function _init() {
-        $('simpletext').contextmenu(function (e) {
-            _openNav();
-            e.preventDefault();
-        });
-        $(document).on('keydown',function(e){
-            if(e.keyCode === 27){
-                _closeNav();
-            }
-        });
-    }
-
-    function _openNav() {
-        document.getElementById("mySidenav").style.width = "250px";
-        // document.body.style.backgroundColor = "rgba(0,0,0,0.4)";
-        $('body').append('<div id="backdrop" class="modal-backdrop fade show"></div>');
-    }
-
-    function _closeNav() {
-        document.getElementById("mySidenav").style.width = "0";
-        // document.body.style.backgroundColor = "white";
-        $('#backdrop').remove();
-    }
-
-    $(document).ready(function () {
-        _init();
-    });
-
-    return {
-        load: _load,
-        open: _openNav,
-        close: _closeNav
-    }
-}())
-app.modal = (function () {
-
-    function _load(url) {
-        app.service.get(url + "/simplecms/components/modal.html", _set, "html");
-    }
-
-    function _set(data) {
-        $('body').append(data);
-    }
-
-    function _create(callback, model, title, placeholder, url, property) {
-
-        $("#simplemodal").modal();
-        $("#simplemodal").find('input').attr("placeholder", placeholder);
-        $("#simpleModalLabel").text(title);
-        $("#simpleModalSave").unbind();
-        $("#simpleModalSave").on("click", function () {
-            model[property] = $("#simplemodal").find('input').val();
-            if (model.id) {
-                app.service.put(url + "/" + model.id, model)
-            } else {
-                app.service.post(url, model)
-            }
-            $('#simplemodal').modal("hide");
-            callback(model[property], model.uuid);
-        });
-    }
-
-    return {
-        load: _load,
-        create: _create
     }
 }());
 app.simpleimage = (function () {

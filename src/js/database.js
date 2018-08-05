@@ -4,14 +4,14 @@ app.database = (function () {
             const component = app.static.components[i];
             $("#scmsTableSelect").append("<option value='" + component + "'>" + component + "</option>");
         }
-        app.service.get(app.static.simpletext, _set);
+        app.service.get('/' + app.static.simpletext, _set);
 
         $("#scmsTableSelect").on("change", _reload);
     }
 
     function _reload(data) {
         $("#scmsDbTable").find("tbody").empty();
-        app.service.get($("#scmsTableSelect").val(), _set);
+        app.service.get('/' + $("#scmsTableSelect").val(), _set);
     }
 
     function _set(data) {

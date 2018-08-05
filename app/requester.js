@@ -14,26 +14,30 @@ var requester = (function () {
     }
 
     function _save(req) {
-        var obj = _db.getData('counter');
+        var isEmpty = req.url.indexOf('undefined')
+        if (isEmpty === -1) {
 
-        var timestamp = _getTimeStamp();
-        var counter = obj.counter[timestamp];
-        if (!counter) {
-            obj.counter[timestamp] = {};
+            var obj = _db.getData('counter');
+
+            var timestamp = _getTimeStamp();
+            var counter = obj.counter[timestamp];
+            if (!counter) {
+                obj.counter[timestamp] = {};
+            }
+
+            var key = _transformKey(req);
+
+
+            if (counter[key]) {
+                counter[key] = counter[key] + 1;
+            } else {
+                counter[key] = 1;
+            }
+
+
+            obj.counter[timestamp] = counter;
+            _db.push("counter", obj);
         }
-
-        var key = _transformKey(req);
-
-
-        if (counter[key]) {
-            counter[key] = counter[key] + 1;
-        } else {
-            counter[key] = 1;
-        }
-
-
-        obj.counter[timestamp] = counter;
-        _db.push("counter", obj);
     }
 
     function _transformKey(req) {
