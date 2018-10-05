@@ -94,6 +94,21 @@
         }
       ],
       "id": 5
+    },
+    {
+      "name": "testowa",
+      "uuid": "asd",
+      "elements": [
+        {
+          "name": "jakas",
+          "type": "collection"
+        },
+        {
+          "name": "awa",
+          "type": "date"
+        }
+      ],
+      "id": 6
     }
   ],
   "exponent": [
