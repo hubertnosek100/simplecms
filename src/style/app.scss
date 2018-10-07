@@ -72,3 +72,9 @@ p:empty:not(:focus)::before {
 .selectgroup-button {
     padding: 3px 10px !important;
 }
+.navbar-brand{
+    img{
+        width: 32px;
+        height: 32px;
+    }
+}

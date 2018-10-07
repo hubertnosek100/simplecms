@@ -11,7 +11,8 @@ gulp.task('css', function () {
     del(".public/simplecms.css").then(function () {
         gulp.src('./src/style/**/*.css')
             .pipe(concatCss("simplecms.css"))
-            .pipe(gulp.dest('./public'));
+            .pipe(gulp.dest('./public'))
+            .pipe(gulp.dest('./html'));
     });
 });
 
@@ -21,7 +22,8 @@ gulp.task("js", function () {
             './src/js/**/*.js'
             ])
             .pipe(concat('simplecms.js'))
-            .pipe(gulp.dest("./public"));
+            .pipe(gulp.dest("./public"))
+            .pipe(gulp.dest('./html'));
     });
 });
 

@@ -1,6 +1,13 @@
 body {
   font-family: "Lato", sans-serif; }
 
+.logo span {
+  font-size: 1.125rem; }
+
+.logo img {
+  width: 32px;
+  height: 32px; }
+
 .sidenav {
   height: 100%;
   width: 0;
@@ -17,9 +24,9 @@ body {
   border-left-color: lightgray; }
 
 .sidenav a {
-  padding: 8px 8px 8px 32px;
+  padding: 8px;
   text-decoration: none;
-  font-size: 25px;
+  font-size: 12px;
   color: white;
   display: block;
   transition: 0.3s; }
@@ -42,7 +49,8 @@ body {
   .sidenav {
     padding-top: 15px; }
   .sidenav a {
-    font-size: 18px; } }
+    font-size: 12px;
+    padding: 6px; } }
 
 .link-white a {
   color: white !important;
@@ -55,15 +63,15 @@ nav a {
   color: gray !important; }
 
 #navbar-example3 a.active {
-  background-color: #64df91 !important;
+  background-color: #5ddbb4 !important;
   color: white !important; }
 
 .scms-primary {
-  background-color: #64df91 !important; }
+  background-color: #5ddbb4 !important; }
 
 .scms-btn {
-  border-color: #64df91 !important;
-  background-color: #64df91 !important; }
+  border-color: #5ddbb4 !important;
+  background-color: #5ddbb4 !important; }
   .scms-btn:hover {
     border-color: #44bf71 !important;
     background-color: #44bf71 !important; }

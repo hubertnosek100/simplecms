@@ -76,8 +76,22 @@ p:empty:not(:focus)::before {
 .selectgroup-button {
   padding: 3px 10px !important;
 }
+
+.navbar-brand img {
+  width: 32px;
+  height: 32px;
+}
 body {
   font-family: "Lato", sans-serif;
+}
+
+.logo span {
+  font-size: 1.125rem;
+}
+
+.logo img {
+  width: 32px;
+  height: 32px;
 }
 
 .sidenav {
@@ -97,9 +111,9 @@ body {
 }
 
 .sidenav a {
-  padding: 8px 8px 8px 32px;
+  padding: 8px;
   text-decoration: none;
-  font-size: 25px;
+  font-size: 12px;
   color: white;
   display: block;
   transition: 0.3s;
@@ -128,7 +142,8 @@ body {
   }
 
   .sidenav a {
-    font-size: 18px;
+    font-size: 12px;
+    padding: 6px;
   }
 }
 
@@ -147,17 +162,17 @@ nav a {
 }
 
 #navbar-example3 a.active {
-  background-color: #64df91 !important;
+  background-color: #5ddbb4 !important;
   color: white !important;
 }
 
 .scms-primary {
-  background-color: #64df91 !important;
+  background-color: #5ddbb4 !important;
 }
 
 .scms-btn {
-  border-color: #64df91 !important;
-  background-color: #64df91 !important;
+  border-color: #5ddbb4 !important;
+  background-color: #5ddbb4 !important;
 }
 
 .scms-btn:hover {
@@ -194,7 +209,7 @@ nav a {
 
 .left-menu {
   position: fixed;
-  background: #64df91;
+  background: #5ddbb4;
   width: 45px;
   left: 0;
   padding: 10px;
@@ -218,6 +233,15 @@ body {
   font-family: "Lato", sans-serif;
 }
 
+.logo span {
+  font-size: 1.125rem;
+}
+
+.logo img {
+  width: 32px;
+  height: 32px;
+}
+
 .sidenav {
   height: 100%;
   width: 0;
@@ -235,9 +259,9 @@ body {
 }
 
 .sidenav a {
-  padding: 8px 8px 8px 32px;
+  padding: 8px;
   text-decoration: none;
-  font-size: 25px;
+  font-size: 12px;
   color: white;
   display: block;
   transition: 0.3s;
@@ -266,7 +290,8 @@ body {
   }
 
   .sidenav a {
-    font-size: 18px;
+    font-size: 12px;
+    padding: 6px;
   }
 }
 
@@ -285,17 +310,17 @@ nav a {
 }
 
 #navbar-example3 a.active {
-  background-color: #64df91 !important;
+  background-color: #5ddbb4 !important;
   color: white !important;
 }
 
 .scms-primary {
-  background-color: #64df91 !important;
+  background-color: #5ddbb4 !important;
 }
 
 .scms-btn {
-  border-color: #64df91 !important;
-  background-color: #64df91 !important;
+  border-color: #5ddbb4 !important;
+  background-color: #5ddbb4 !important;
 }
 
 .scms-btn:hover {

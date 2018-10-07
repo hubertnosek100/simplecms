@@ -94,21 +94,6 @@
         }
       ],
       "id": 5
-    },
-    {
-      "name": "testowa",
-      "uuid": "asd",
-      "elements": [
-        {
-          "name": "jakas",
-          "type": "collection"
-        },
-        {
-          "name": "awa",
-          "type": "date"
-        }
-      ],
-      "id": 6
     }
   ],
   "exponent": [
@@ -149,27 +134,6 @@
       "id": 8
     },
     {
-      "uuid": "test",
-      "Title": "hejo",
-      "templateid": "5",
-      "template": "TestCollection",
-      "id": 9
-    },
-    {
-      "uuid": "ads",
-      "Title": "asdsd",
-      "templateid": "5",
-      "template": "TestCollection",
-      "id": 10
-    },
-    {
-      "uuid": "asda",
-      "Title": "asds",
-      "templateid": "5",
-      "template": "TestCollection",
-      "id": 11
-    },
-    {
       "uuid": "asd",
       "Title": "dasd",
       "templateid": "5",
@@ -195,8 +159,37 @@
   "simpletext": [
     {
       "id": 11,
+      "uuid": "Hubert",
+      "text": "Witaj"
+    },
+    {
+      "id": 12,
+      "uuid": "hubert",
+      "text": "Witaj dwa trzy fs",
+      "css": {
+        "font-family": "fantasy",
+        "font-size": "18px",
+        "color": "red",
+        "padding-left": "15px"
+      }
+    },
+    {
+      "id": 13,
       "uuid": "profileNavContent",
-      "text": "Lorem pisum i takie tam inne cuda"
+      "text": "fdasdsadsdg sf"
+    },
+    {
+      "id": 17,
+      "uuid": "hubertContainer",
+      "text": "a",
+      "css": {
+        "font-family": "fantasy",
+        "font-size": "12px",
+        "padding-top": "10px",
+        "padding-right": "30px",
+        "padding-bottom": "10px",
+        "padding-left": "30px"
+      }
     }
   ],
   "simplevideo": [

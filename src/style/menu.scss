@@ -1,9 +1,19 @@
-$primary: #64df91;
+$primary: #5ddbb4 ;// #64df91;
 $primary-dark: #44bf71;
+
 body {
     font-family: "Lato", sans-serif;
     // transition: background-color .5s;
     // transition: margin-left .5s;
+}
+.logo{
+    span{
+       font-size: 1.125rem;
+    }
+    img{
+        width: 32px;
+        height: 32px;
+    }
 }
 
 .sidenav {
@@ -23,9 +33,9 @@ body {
 }
 
 .sidenav a {
-    padding: 8px 8px 8px 32px;
+    padding: 8px;
     text-decoration: none;
-    font-size: 25px;
+    font-size: 12px;
     color: white;
     display: block;
     transition: 0.3s;
@@ -53,7 +63,8 @@ body {
         padding-top: 15px;
     }
     .sidenav a {
-        font-size: 18px;
+        font-size: 12px;
+        padding: 6px;
     }
 }
 

@@ -1,25 +1,51 @@
 <div id="mySidenav" class="sidenav scms-primary ">
     <a href="javascript:void(0)" class="closebtn" onclick="app.menu.close()">&times;</a>
-    <div class="p-2 pr-5">
-        <form>
-            <div class="form-group">
-              <label for="exampleInputEmail1">Email address</label>
-              <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email">
-              <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
-            </div>
-            <div class="form-group">
-              <label for="exampleInputPassword1">Password</label>
-              <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
-            </div>
-            <div class="form-group form-check">
-              <input type="checkbox" class="form-check-input" id="exampleCheck1">
-              <label class="form-check-label" for="exampleCheck1">Check me out</label>
-            </div>
-            <button type="submit" class="btn btn-primary">Submit</button>
-          </form>
+    <div class="text-light logo ml-3">
+      <img id="faviconId"/>
+      <span>Simple CMS</span>
     </div>
-    <a href="#">About</a>
-    <a href="#">Services</a>
-    <a href="#">Clients</a>
-    <a href="#">Contact</a>
+    <div class="mr-3 p-3">
+        <ul class="nav nav-tabs" id="myTab" role="tablist">
+            <li class="nav-item" >
+              <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Component</a>
+            </li>
+            <li class="nav-item">
+              <a onclick="app.menu.loginTab()" class="nav-link" id="login-tab" data-toggle="tab" href="#login" role="tab" aria-controls="login" aria-selected="false">Login</a>
+            </li>
+          </ul>
+          <div class="tab-content" id="myTabContent">
+            <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+              <div class="pt-2">
+                <div class="form-group">
+                  <label for="componentUuid" class="text-light">Uuid</label>
+                  <input disabled type="text" class="form-control" id="componentUuid" >
+                </div>
+                <div class="form-group">
+                  <label for="componentJsonCss" class="text-light" >Json</label>
+                  <textarea class="form-control" id="componentJsonCss" rows="8"></textarea>
+                  <small id="componenJsonHelp" class="form-text text-muted"></small>
+              </div>
+              </div>
+            </div>
+            <div class="tab-pane fade text-light" id="login" role="tabpanel" aria-labelledby="login-tab">
+              <div id="loginInfo" class="text-light pt-2">
+                  Logged successfully.
+              </div>
+                <form id="loginForm" method="POST" class="pt-2">
+                    <div class="form-group">
+                      <label for="exampleInputEmail1" class="text-light">Login</label>
+                      <input name="login" type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter login">
+                      <small id="emailHelp" class="form-text text-muted">We'll never share your account with anyone else.</small>
+                    </div>
+                    <div class="form-group">
+                      <label for="exampleInputPassword1" class="text-light">Password</label>
+                      <input name="password" type="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
+                    </div>
+                    <button type="submit" class="btn btn-outline-light">Login</button>
+                  </form>
+            </div>
+          </div>
+
+
+    </div>
   </div>
