@@ -233,6 +233,143 @@ app.static = (function () {
         elementTypes: _elementTypes
     }
 }());
+app.menu = (function () {
+    var _current = undefined
+    function _load(url) {
+        app.service.get(url + "/simplecms/components/menu.html", _set, "html");
+    }
+
+    function _set(data) {
+        $('body').append(data);
+        $('#loginForm').on('submit', function (e) {
+            e.preventDefault()
+            var model = app.formToJSON($(e.target))
+            app.service.login(model, _drawAuth)
+        })
+        $('#faviconId').attr('src', app.url + '/favicon.png')
+    }
+
+    function _init() {
+        $('simpletext').contextmenu(function (e) {
+            app.menuComponent(e.target)
+            _openNav();
+            e.preventDefault();
+        });
+        $(document).on('keydown', function (e) {
+            if (e.keyCode === 27) {
+                _closeNav();
+            }
+        });
+    }
+
+    function _openNav() {
+        document.getElementById("mySidenav").style.width = "300px";
+        $('body').append('<div id="backdrop" class="modal-backdrop fade show"></div>');
+    }
+
+    function _closeNav() {
+        document.getElementById("mySidenav").style.width = "0";
+        $('#backdrop').remove();
+    }
+
+    function _loginTab(params) {
+        app.service.isAuthenticated(_drawAuth);
+    }
+
+    function _drawAuth(auth) {
+        if (auth) {
+            $('#loginForm').hide()
+            $('#loginInfo').show()
+        } else {
+            $('#loginInfo').hide()
+            $('#loginForm').show()
+        }
+    }
+
+    return {
+        load: _load,
+        open: _openNav,
+        close: _closeNav,
+        current: _current,
+        loginTab: _loginTab,
+        init: _init
+    }
+}())
+app.menuComponent = function (target) {
+
+    var _clearStyles = function (s) {
+        while (s[0]) {
+            s[s[0]] = ""
+        }
+    }
+
+    var _draw = function (el, uuid) {
+        try {
+            var css = JSON.parse($(el).val())
+            var obj = $('simpletext[uuid="' + uuid + '"]');
+            _clearStyles(obj[0].style)
+            for (var style in css) {
+                if (css.hasOwnProperty(style)) {
+                    obj.css(style, css[style]);
+                }
+            }
+            app.simpletext.save({ target: obj[0] })
+            $('#componenJsonHelp').text("")
+        } catch (err) {
+            $('#componenJsonHelp').text("Not valid Json")
+        }
+    }
+
+    var found = function (data) {
+        if (data.length > 0) {
+            var el = data[0];
+            app.menu.current = el;
+            $('#componentUuid').val(el.uuid)
+            $('#componentJsonCss').val(JSON.stringify(el.css));
+
+            var draw = app.debounce(_draw, 1000);
+            $('#componentJsonCss').unbind();
+            $('#componentJsonCss').on('keyup', function (evt) {
+                draw(evt.target, el.uuid);
+            });
+        }
+    };
+    var id = $(target).attr('db-id');
+    app.simpletext.find(app.url, id, found);
+};
+app.modal = (function () {
+
+    function _load(url) {
+        app.service.get(url + "/simplecms/components/modal.html", _set, "html");
+    }
+
+    function _set(data) {
+        $('body').append(data);
+    }
+
+    function _create(callback, model, title, placeholder, url, property) {
+
+        $("#simplemodal").modal();
+        $("#simplemodal").find('input').attr("placeholder", placeholder);
+        $("#simpleModalLabel").text(title);
+        $("#simpleModalSave").unbind();
+        $("#simpleModalSave").on("click", function () {
+            model[property] = $("#simplemodal").find('input').val();
+            if (model.id) {
+                app.service.put(url + "/" + model.id, model)
+            } else {
+                app.service.post(url, model)
+            }
+            $('#simplemodal').modal("hide");
+            callback(model[property], model.uuid);
+        });
+    }
+
+    return {
+        load: _load,
+        create: _create
+    }
+}());
 var buttonBuilder = (function () {
 
     function _build(text, link) {
@@ -460,146 +597,6 @@ var uiBuilder = (function () {
 
     return {
         buildFormGroup: _buildFormGroup,
-    }
-}());
-app.menu = (function () {
-    var _current = undefined
-    function _load(url) {
-        app.service.get(url + "/simplecms/components/menu.html", _set, "html");
-    }
-
-    function _set(data) {
-        $('body').append(data);
-        $('#loginForm').on('submit', function (e) {
-            e.preventDefault()
-            var model = app.formToJSON($(e.target))
-            app.service.login(model, _drawAuth)
-        })
-        $('#faviconId').attr('src', app.url + '/favicon.png')
-    }
-
-    function _init() {
-        $('simpletext').contextmenu(function (e) {
-            app.menuComponent(e.target)
-            _openNav();
-            e.preventDefault();
-        });
-        $(document).on('keydown', function (e) {
-            if (e.keyCode === 27) {
-                _closeNav();
-            }
-        });
-    }
-
-    function _openNav() {
-        document.getElementById("mySidenav").style.width = "300px";
-        $('body').append('<div id="backdrop" class="modal-backdrop fade show"></div>');
-    }
-
-    function _closeNav() {
-        document.getElementById("mySidenav").style.width = "0";
-        $('#backdrop').remove();
-    }
-
-    function _loginTab(params) {
-        app.service.isAuthenticated(_drawAuth);
-    }
-
-    function _drawAuth(auth) {
-        if (auth) {
-            $('#loginForm').hide()
-            $('#loginInfo').show()
-        } else {
-            $('#loginInfo').hide()
-            $('#loginForm').show()
-        }
-    }
-
-    $(document).ready(function () {
-        _init();
-    });
-
-    return {
-        load: _load,
-        open: _openNav,
-        close: _closeNav,
-        current: _current,
-        loginTab: _loginTab
-    }
-}())
-app.menuComponent = function (target) {
-
-    var _clearStyles = function (s) {
-        while (s[0]) {
-            s[s[0]] = ""
-        }
-    }
-
-    var _draw = function (el, uuid) {
-        try {
-            var css = JSON.parse($(el).val())
-            var obj = $('simpletext[uuid="' + uuid + '"]');
-            _clearStyles(obj[0].style)
-            for (var style in css) {
-                if (css.hasOwnProperty(style)) {
-                    obj.css(style, css[style]);
-                }
-            }
-            app.simpletext.save({ target: obj[0] })
-            $('#componenJsonHelp').text("")
-        } catch (err) {
-            $('#componenJsonHelp').text("Not valid Json")
-        }
-    }
-
-    var found = function (data) {
-        if (data.length > 0) {
-            var el = data[0];
-            app.menu.current = el;
-            $('#componentUuid').val(el.uuid)
-            $('#componentJsonCss').val(JSON.stringify(el.css));
-
-            var draw = app.debounce(_draw, 1000);
-            $('#componentJsonCss').unbind();
-            $('#componentJsonCss').on('keyup', function (evt) {
-                draw(evt.target, el.uuid);
-            });
-        }
-    };
-    var id = $(target).attr('db-id');
-    app.simpletext.find(app.url, id, found);
-};
-app.modal = (function () {
-
-    function _load(url) {
-        app.service.get(url + "/simplecms/components/modal.html", _set, "html");
-    }
-
-    function _set(data) {
-        $('body').append(data);
-    }
-
-    function _create(callback, model, title, placeholder, url, property) {
-
-        $("#simplemodal").modal();
-        $("#simplemodal").find('input').attr("placeholder", placeholder);
-        $("#simpleModalLabel").text(title);
-        $("#simpleModalSave").unbind();
-        $("#simpleModalSave").on("click", function () {
-            model[property] = $("#simplemodal").find('input').val();
-            if (model.id) {
-                app.service.put(url + "/" + model.id, model)
-            } else {
-                app.service.post(url, model)
-            }
-            $('#simplemodal').modal("hide");
-            callback(model[property], model.uuid);
-        });
-    }
-
-    return {
-        load: _load,
-        create: _create
     }
 }());
 app.dashboard = (function () {
@@ -1264,6 +1261,7 @@ app.simpletext = (function () {
                 if (!done) {
                     done = true
                     _init();
+                    app.menu.init();
                 }
             }
         });

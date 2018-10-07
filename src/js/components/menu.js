@@ -51,15 +51,12 @@ app.menu = (function () {
         }
     }
 
-    $(document).ready(function () {
-        _init();
-    });
-
     return {
         load: _load,
         open: _openNav,
         close: _closeNav,
         current: _current,
-        loginTab: _loginTab
+        loginTab: _loginTab,
+        init: _init
     }
 }())

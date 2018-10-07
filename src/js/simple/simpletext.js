@@ -30,6 +30,7 @@ app.simpletext = (function () {
                 if (!done) {
                     done = true
                     _init();
+                    app.menu.init();
                 }
             }
         });
