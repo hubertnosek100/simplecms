@@ -11,6 +11,7 @@ app = (function () {
             app.simplevideo.load(url);
             app.modal.load(url);
             app.menu.load(url);
+            app.simpleeditor.listenForCombination();
         });
     }
 
@@ -1174,71 +1175,7 @@ app.template = (function () {
         init: _init
     }
 }());
-app.simpleimage = (function () {
-
-    function _load(url) {
-        app.service.get(url + "/" + app.static.simpleimage, _set);
-        _init();
-    }
-
-    function _init() {
-        $simpleimages = $(app.static.simpleimage);
-        $simpleimages.each(function (idx, el) {
-            $(el).append("<img class='pointer default' src='" + el.url + "'/>");
-            var classes = $(el).attr("class");
-            $(el).find('img').attr("class", classes);
-            $(el).find('img').unbind();
-            $(el).find('img').on("click", function () {
-                app.modal.create(_setLocal, {
-                    uuid: $(el).attr('uuid')
-                }, "Set image url", "Image url...", app.url + "/simpleimage", "url");
-            });
-        });
-    }
-
-    function _set(data) {
-        data.forEach(function (el) {
-            $simpleimage = $(app.static.simpleimage + "[uuid='" + el.uuid + "'");
-            $simpleimage.attr("db-id", el.id);
-            if (el.url !== "") {
-                $simpleimage.find('img').attr('src', el.url);
-                $simpleimage.find('img').removeClass('default');
-            }
-
-            $simpleimage.find('img').unbind();
-            $simpleimage.find('img').on("click", function () {
-                app.modal.create(_setLocal, {
-                    id: el.id,
-                    uuid: el.uuid
-                }, "Set image url", "Image url...", app.url + "/simpleimage", "url");
-            });
-        });
-    }
-
-    function _setLocal(data, uuid) {
-        $element = $(app.static.simpleimage + "[uuid='" + uuid + "'");
-        $element.find('img').attr("src", data);
-        if (data !== "") {
-            $element.find('img').removeClass('default');
-        } else {
-            $element.find('img').addClass('default');
-        }
-    }
-
-    return {
-        load: _load
-    }
-}());
-app.simpletext = (function () {
-
-    function _find(url, id, callback) {
-        app.service.get(url + "/" + app.static.simpletext + '?id=' + id, callback);
-    }
-
-    function _load(url) {
-        app.service.get(url + "/" + app.static.simpletext, _set);
-        _listenForCombination();
-    }
+app.simpleeditor = (function () {
 
     function _listenForCombination(params) {
         var keys = {
@@ -1260,7 +1197,9 @@ app.simpletext = (function () {
             if (keys["shift"] && keys["ctrl"] && keys["e"]) {
                 if (!done) {
                     done = true
-                    _init();
+                    app.simplevideo.init();
+                    app.simpleimage.init();
+                    app.simpletext.init();
                     app.menu.init();
                 }
             }
@@ -1276,6 +1215,73 @@ app.simpletext = (function () {
                 keys["e"] = false;
             }
         });
+    }
+    return {
+        listenForCombination: _listenForCombination
+    }
+}())
+app.simpleimage = (function () {
+
+    function _load(url) {
+        app.service.get(url + "/" + app.static.simpleimage, _set);
+        _init()
+    }
+
+    function _init() {
+        $simpleimages = $(app.static.simpleimage);
+        $simpleimages.each(function (idx, el) {
+            $(el).append("<img class='pointer default' src='" + el.url + "'/>");
+            var classes = $(el).attr("class");
+            $(el).find('img').attr("class", classes);
+        });
+    }
+
+    function _makeEditbale(){
+        $simpleimages = $(app.static.simpleimage);
+        $simpleimages.each(function (idx, el) {
+            $(el).find('img').unbind();
+            $(el).find('img').on("click", function () {
+                app.modal.create(_setLocal, {
+                    uuid: $(el).attr('uuid')
+                }, "Set image url", "Image url...", app.url + "/simpleimage", "url");
+            });
+        });
+    }
+
+    function _set(data) {
+        data.forEach(function (el) {
+            $simpleimage = $(app.static.simpleimage + "[uuid='" + el.uuid + "'");
+            $simpleimage.attr("db-id", el.id);
+            if (el.url !== "") {
+                $simpleimage.find('img').attr('src', el.url);
+                $simpleimage.find('img').removeClass('default');
+            }
+        });
+    }
+
+    function _setLocal(data, uuid) {
+        $element = $(app.static.simpleimage + "[uuid='" + uuid + "'");
+        $element.find('img').attr("src", data);
+        if (data !== "") {
+            $element.find('img').removeClass('default');
+        } else {
+            $element.find('img').addClass('default');
+        }
+    }
+
+    return {
+        load: _load,
+        init: _makeEditbale
+    }
+}());
+app.simpletext = (function () {
+
+    function _find(url, id, callback) {
+        app.service.get(url + "/" + app.static.simpletext + '?id=' + id, callback);
+    }
+
+    function _load(url) {
+        app.service.get(url + "/" + app.static.simpletext, _set);
     }
 
     function _init() {
@@ -1339,14 +1345,15 @@ app.simpletext = (function () {
     return {
         load: _load,
         find: _find,
-        save: _save
+        save: _save,
+        init: _init
     }
 }());
 app.simplevideo = (function () {
 
     function _load(url) {
         app.service.get(url + "/" + app.static.simplevideo, _set);
-        _init();
+        _init()
     }
 
     function _init() {
@@ -1355,6 +1362,12 @@ app.simplevideo = (function () {
             $(el).append("<video controls class='pointer default' src='" + el.url + "'/>");
             var classes = $(el).attr("class");
             $(el).find('video').attr("class", classes);
+        });
+    }
+
+    function _makeEditbale(){
+        $simplevideos = $(app.static.simplevideo);
+        $simplevideos.each(function (idx, el) {
             $(el).find('video').unbind();
             $(el).find('video').on("click", function () {
                 app.modal.create(_setLocal, {
@@ -1372,14 +1385,6 @@ app.simplevideo = (function () {
                 $simplevideo.find('video').attr('src', el.url);
                 $simplevideo.find('video').removeClass('default');
             }
-
-            $simplevideo.find('video').unbind();
-            $simplevideo.find('video').on("click", function () {
-                app.modal.create(_setLocal, {
-                    id: el.id,
-                    uuid: el.uuid
-                }, "Set video url", "Video url...", app.url + "/simplevideo", "url");
-            });
         });
     }
 
@@ -1394,7 +1399,8 @@ app.simplevideo = (function () {
     }
 
     return {
-        load: _load
+        load: _load,
+        init: _makeEditbale
     }
 }());
 app.dashboard.hourData = function (data) {

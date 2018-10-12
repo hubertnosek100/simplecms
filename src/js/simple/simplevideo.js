@@ -2,7 +2,7 @@ app.simplevideo = (function () {
 
     function _load(url) {
         app.service.get(url + "/" + app.static.simplevideo, _set);
-        _init();
+        _init()
     }
 
     function _init() {
@@ -11,6 +11,12 @@ app.simplevideo = (function () {
             $(el).append("<video controls class='pointer default' src='" + el.url + "'/>");
             var classes = $(el).attr("class");
             $(el).find('video').attr("class", classes);
+        });
+    }
+
+    function _makeEditbale(){
+        $simplevideos = $(app.static.simplevideo);
+        $simplevideos.each(function (idx, el) {
             $(el).find('video').unbind();
             $(el).find('video').on("click", function () {
                 app.modal.create(_setLocal, {
@@ -28,14 +34,6 @@ app.simplevideo = (function () {
                 $simplevideo.find('video').attr('src', el.url);
                 $simplevideo.find('video').removeClass('default');
             }
-
-            $simplevideo.find('video').unbind();
-            $simplevideo.find('video').on("click", function () {
-                app.modal.create(_setLocal, {
-                    id: el.id,
-                    uuid: el.uuid
-                }, "Set video url", "Video url...", app.url + "/simplevideo", "url");
-            });
         });
     }
 
@@ -50,6 +48,7 @@ app.simplevideo = (function () {
     }
 
     return {
-        load: _load
+        load: _load,
+        init: _makeEditbale
     }
 }());

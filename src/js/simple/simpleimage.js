@@ -2,7 +2,7 @@ app.simpleimage = (function () {
 
     function _load(url) {
         app.service.get(url + "/" + app.static.simpleimage, _set);
-        _init();
+        _init()
     }
 
     function _init() {
@@ -11,6 +11,12 @@ app.simpleimage = (function () {
             $(el).append("<img class='pointer default' src='" + el.url + "'/>");
             var classes = $(el).attr("class");
             $(el).find('img').attr("class", classes);
+        });
+    }
+
+    function _makeEditbale(){
+        $simpleimages = $(app.static.simpleimage);
+        $simpleimages.each(function (idx, el) {
             $(el).find('img').unbind();
             $(el).find('img').on("click", function () {
                 app.modal.create(_setLocal, {
@@ -28,14 +34,6 @@ app.simpleimage = (function () {
                 $simpleimage.find('img').attr('src', el.url);
                 $simpleimage.find('img').removeClass('default');
             }
-
-            $simpleimage.find('img').unbind();
-            $simpleimage.find('img').on("click", function () {
-                app.modal.create(_setLocal, {
-                    id: el.id,
-                    uuid: el.uuid
-                }, "Set image url", "Image url...", app.url + "/simpleimage", "url");
-            });
         });
     }
 
@@ -50,6 +48,7 @@ app.simpleimage = (function () {
     }
 
     return {
-        load: _load
+        load: _load,
+        init: _makeEditbale
     }
 }());

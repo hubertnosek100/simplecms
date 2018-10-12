@@ -11,6 +11,7 @@ app = (function () {
             app.simplevideo.load(url);
             app.modal.load(url);
             app.menu.load(url);
+            app.simpleeditor.listenForCombination();
         });
     }
 
