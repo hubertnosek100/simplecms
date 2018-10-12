@@ -23,7 +23,7 @@ app.database = (function () {
 
     function _newELement(element) {
         $row = $("<tr></tr>");
-        $rmbtn = $("<button db-id='" + element.id + "' class='btn btn-danger'><i class='fas fa-trash-alt'></i></button>");
+        $rmbtn = $("<button db-id='" + element.id + "' class='btn btn-outline-danger'><i class='fas fa-trash-alt'></i></button>");
 
         $rmbtn.on("click", _remove);
 

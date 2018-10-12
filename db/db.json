@@ -36,17 +36,6 @@
         }
       ],
       "id": 5
-    },
-    {
-      "name": "Simple",
-      "uuid": "simplet",
-      "elements": [
-        {
-          "name": "Text",
-          "type": "text"
-        }
-      ],
-      "id": 6
     }
   ],
   "exponent": [

@@ -74,7 +74,7 @@ app.database = (function () {
 
     function _newELement(element) {
         $row = $("<tr></tr>");
-        $rmbtn = $("<button db-id='" + element.id + "' class='btn btn-danger'><i class='fas fa-trash-alt'></i></button>");
+        $rmbtn = $("<button db-id='" + element.id + "' class='btn btn-outline-danger'><i class='fas fa-trash-alt'></i></button>");
 
         $rmbtn.on("click", _remove);
 
@@ -236,143 +236,6 @@ app.static = (function () {
         elementTypes: _elementTypes
     }
 }());
-app.menu = (function () {
-    var _current = undefined
-    function _load(url) {
-        app.service.get(url + "/simplecms/components/menu.html", _set, "html");
-    }
-
-    function _set(data) {
-        $('body').append(data);
-        $('#loginForm').on('submit', function (e) {
-            e.preventDefault()
-            var model = app.formToJSON($(e.target))
-            app.service.login(model, _drawAuth)
-        })
-        $('#faviconId').attr('src', app.url + '/favicon.png')
-    }
-
-    function _init() {
-        $('simpletext').contextmenu(function (e) {
-            app.menuComponent(e.target)
-            _openNav();
-            e.preventDefault();
-        });
-        $(document).on('keydown', function (e) {
-            if (e.keyCode === 27) {
-                _closeNav();
-            }
-        });
-    }
-
-    function _openNav() {
-        document.getElementById("mySidenav").style.width = "300px";
-        $('body').append('<div id="backdrop" class="modal-backdrop fade show"></div>');
-    }
-
-    function _closeNav() {
-        document.getElementById("mySidenav").style.width = "0";
-        $('#backdrop').remove();
-    }
-
-    function _loginTab(params) {
-        app.service.isAuthenticated(_drawAuth);
-    }
-
-    function _drawAuth(auth) {
-        if (auth) {
-            $('#loginForm').hide()
-            $('#loginInfo').show()
-        } else {
-            $('#loginInfo').hide()
-            $('#loginForm').show()
-        }
-    }
-
-    return {
-        load: _load,
-        open: _openNav,
-        close: _closeNav,
-        current: _current,
-        loginTab: _loginTab,
-        init: _init
-    }
-}())
-app.menuComponent = function (target) {
-
-    var _clearStyles = function (s) {
-        while (s[0]) {
-            s[s[0]] = ""
-        }
-    }
-
-    var _draw = function (el, uuid) {
-        try {
-            var css = JSON.parse($(el).val())
-            var obj = $('simpletext[uuid="' + uuid + '"]');
-            _clearStyles(obj[0].style)
-            for (var style in css) {
-                if (css.hasOwnProperty(style)) {
-                    obj.css(style, css[style]);
-                }
-            }
-            app.simpletext.save({ target: obj[0] })
-            $('#componenJsonHelp').text("")
-        } catch (err) {
-            $('#componenJsonHelp').text("Not valid Json")
-        }
-    }
-
-    var found = function (data) {
-        if (data.length > 0) {
-            var el = data[0];
-            app.menu.current = el;
-            $('#componentUuid').val(el.uuid)
-            $('#componentJsonCss').val(JSON.stringify(el.css));
-
-            var draw = app.debounce(_draw, 1000);
-            $('#componentJsonCss').unbind();
-            $('#componentJsonCss').on('keyup', function (evt) {
-                draw(evt.target, el.uuid);
-            });
-        }
-    };
-    var id = $(target).attr('db-id');
-    app.simpletext.find(app.url, id, found);
-};
-app.modal = (function () {
-
-    function _load(url) {
-        app.service.get(url + "/simplecms/components/modal.html", _set, "html");
-    }
-
-    function _set(data) {
-        $('body').append(data);
-    }
-
-    function _create(callback, model, title, placeholder, url, property) {
-
-        $("#simplemodal").modal();
-        $("#simplemodal").find('input').attr("placeholder", placeholder);
-        $("#simpleModalLabel").text(title);
-        $("#simpleModalSave").unbind();
-        $("#simpleModalSave").on("click", function () {
-            model[property] = $("#simplemodal").find('input').val();
-            if (model.id) {
-                app.service.put(url + "/" + model.id, model)
-            } else {
-                app.service.post(url, model)
-            }
-            $('#simplemodal').modal("hide");
-            callback(model[property], model.uuid);
-        });
-    }
-
-    return {
-        load: _load,
-        create: _create
-    }
-}());
 var buttonBuilder = (function () {
 
     function _build(text, link) {
@@ -422,7 +285,7 @@ var collectionBuilder = (function () {
 
 
     function _createRmButton() {
-        var btn = $('<button class="btn btn-sm btn-danger"><i class="fas fa-trash-alt"></i></button>');
+        var btn = $('<button class="btn btn-sm btn-outline-danger"><i class="fas fa-trash-alt"></i></button>');
         btn.on("click", function (e) {
             console.log(e.target)
             if (e.target.tagName === "BUTTON") {
@@ -602,6 +465,143 @@ var uiBuilder = (function () {
         buildFormGroup: _buildFormGroup,
     }
 }());
+app.menu = (function () {
+    var _current = undefined
+    function _load(url) {
+        app.service.get(url + "/simplecms/components/menu.html", _set, "html");
+    }
+
+    function _set(data) {
+        $('body').append(data);
+        $('#loginForm').on('submit', function (e) {
+            e.preventDefault()
+            var model = app.formToJSON($(e.target))
+            app.service.login(model, _drawAuth)
+        })
+        $('#faviconId').attr('src', app.url + '/favicon.png')
+    }
+
+    function _init() {
+        $('simpletext').contextmenu(function (e) {
+            app.menuComponent(e.target)
+            _openNav();
+            e.preventDefault();
+        });
+        $(document).on('keydown', function (e) {
+            if (e.keyCode === 27) {
+                _closeNav();
+            }
+        });
+    }
+
+    function _openNav() {
+        document.getElementById("mySidenav").style.width = "300px";
+        $('body').append('<div id="backdrop" class="modal-backdrop fade show"></div>');
+    }
+
+    function _closeNav() {
+        document.getElementById("mySidenav").style.width = "0";
+        $('#backdrop').remove();
+    }
+
+    function _loginTab(params) {
+        app.service.isAuthenticated(_drawAuth);
+    }
+
+    function _drawAuth(auth) {
+        if (auth) {
+            $('#loginForm').hide()
+            $('#loginInfo').show()
+        } else {
+            $('#loginInfo').hide()
+            $('#loginForm').show()
+        }
+    }
+
+    return {
+        load: _load,
+        open: _openNav,
+        close: _closeNav,
+        current: _current,
+        loginTab: _loginTab,
+        init: _init
+    }
+}())
+app.menuComponent = function (target) {
+
+    var _clearStyles = function (s) {
+        while (s[0]) {
+            s[s[0]] = ""
+        }
+    }
+
+    var _draw = function (el, uuid) {
+        try {
+            var css = JSON.parse($(el).val())
+            var obj = $('simpletext[uuid="' + uuid + '"]');
+            _clearStyles(obj[0].style)
+            for (var style in css) {
+                if (css.hasOwnProperty(style)) {
+                    obj.css(style, css[style]);
+                }
+            }
+            app.simpletext.save({ target: obj[0] })
+            $('#componenJsonHelp').text("")
+        } catch (err) {
+            $('#componenJsonHelp').text("Not valid Json")
+        }
+    }
+
+    var found = function (data) {
+        if (data.length > 0) {
+            var el = data[0];
+            app.menu.current = el;
+            $('#componentUuid').val(el.uuid)
+            $('#componentJsonCss').val(JSON.stringify(el.css));
+
+            var draw = app.debounce(_draw, 1000);
+            $('#componentJsonCss').unbind();
+            $('#componentJsonCss').on('keyup', function (evt) {
+                draw(evt.target, el.uuid);
+            });
+        }
+    };
+    var id = $(target).attr('db-id');
+    app.simpletext.find(app.url, id, found);
+};
+app.modal = (function () {
+
+    function _load(url) {
+        app.service.get(url + "/simplecms/components/modal.html", _set, "html");
+    }
+
+    function _set(data) {
+        $('body').append(data);
+    }
+
+    function _create(callback, model, title, placeholder, url, property) {
+
+        $("#simplemodal").modal();
+        $("#simplemodal").find('input').attr("placeholder", placeholder);
+        $("#simpleModalLabel").text(title);
+        $("#simpleModalSave").unbind();
+        $("#simpleModalSave").on("click", function () {
+            model[property] = $("#simplemodal").find('input').val();
+            if (model.id) {
+                app.service.put(url + "/" + model.id, model)
+            } else {
+                app.service.post(url, model)
+            }
+            $('#simplemodal').modal("hide");
+            callback(model[property], model.uuid);
+        });
+    }
+
+    return {
+        load: _load,
+        create: _create
+    }
+}());
 app.dashboard = (function () {
 
     function _init() {
@@ -758,8 +758,8 @@ app.exponents = (function () {
 
     function _newELement(element) {
         $row = $("<tr></tr>");
-        $rmbtn = $("<button db-id='" + element.id + "' class='btn btn-danger'><i class='fas fa-trash-alt'></i></button>");
-        $editbtn = $("<button db-id='" + element.id + "' data-toggle='modal' data-target='#editJsonModal'  class='btn btn-primary ml-3' style='width: 40px;'><i class='far fa-edit'></i></i></button>");
+        $rmbtn = $("<button db-id='" + element.id + "' class='btn btn-outline-danger'><i class='fas fa-trash-alt'></i></button>");
+        $editbtn = $("<button db-id='" + element.id + "' data-toggle='modal' data-target='#editJsonModal'  class='btn btn-outline-primary ml-3' style='width: 40px;'><i class='far fa-edit'></i></i></button>");
 
         $rmbtn.on("click", _remove);
         $editbtn.on("click", _edit);
@@ -833,7 +833,9 @@ var media = (function () {
             var table = $('<table class="table table-hover text-center"></table>');
             var head = $('<thead class=""></thead>');
             var headTr = $('<tr> </tr>');
-            headTr.append('<td>name</td>');
+            headTr.append('<td>Preview</td>');
+            headTr.append('<td>Name</td>');
+            headTr.append('<td>Action</td>');
             head.append(headTr);
             table.append(head);
 
@@ -850,18 +852,22 @@ var media = (function () {
     function _newELement(element) {
         $row = $("<tr></tr>");
         $col = $("<td></td>").text(element);
-        $actionCol = $("<td></td>")
+        $copyCol = $("<td></td>")
         $imgCol = $("<td></td>")
 
         var url = _makeMediaUrl(element)
         $imgCol.append('<img style="height:40px; width:40px" src= "' + url + '"/>')
         var $copyBtn = $("<button data-url='" + url + "' class='btn btn-outline-dark'><i class='fas fa-copy'></i></button>");
         $copyBtn.on('click', _copyToCliboard)
-        $actionCol.append($copyBtn)
+        $copyCol.append($copyBtn)
+
+        var $rmBtn = $("<button data-name='" + element + "' class='btn btn-outline-danger ml-3'><i class='fas fa-trash-alt'></i></button>");
+        $rmBtn.on('click', _remove)
+        $copyCol.append($rmBtn)
 
         $row.append($imgCol);
         $row.append($col);
-        $row.append($actionCol);
+        $row.append($copyCol);
         return $row;
     }
 
@@ -870,7 +876,13 @@ var media = (function () {
     }
 
     function _copyToCliboard(e) {
-        var text = $(e.target).attr('data-url')
+        var text = ''
+        if (e.target.tagName === "BUTTON") {
+            text = $(e.target).attr('data-url')
+        } else {
+            text = $(e.target).parent().attr("data-url");
+        }
+
         var $temp = $("<input>");
         $("body").append($temp);
         $temp.val(text).select();
@@ -878,6 +890,24 @@ var media = (function () {
         $temp.remove();
     }
 
+    function _remove(e) {
+        var name = ''
+        if (e.target.tagName === "BUTTON") {
+            name = $(e.target).attr('data-name')
+        } else {
+            name = $(e.target).parent().attr("data-name");
+        }
+
+        app.service.post("/removemedia/", {
+            name: name
+        });
+        _reload();
+    }
+
+    function _reload() {
+        $('.media-list').empty();
+        _init();
+    }
 
     return {
         init: _init
@@ -911,7 +941,13 @@ app.newexponent = (function () {
 
         model.templateid = $("#newtemplateselect").val();
         model.template = $("#newtemplateselect option:selected").text();
-        app.service.post("/" + app.static.exponent, model)
+        app.service.post("/" + app.static.exponent, model, _templateAdded)
+    }
+
+    function _templateAdded(data) {
+        if(JSON.parse(data)){
+            window.location.reload()
+        }
     }
 
     function _load() {
@@ -991,7 +1027,13 @@ app.newtemplate = (function () {
 
         var model = app.formToJSON($("#addtemplateform"));
         model.elements = _list;
-        app.service.post("/" + app.static.template, model);
+        app.service.post("/" + app.static.template, model, _templateAdded);
+    }
+
+    function _templateAdded(data) {
+        if(JSON.parse(data)){
+            window.location.reload()
+        }
     }
 
     function _addNewElement(e) {
@@ -1028,7 +1070,7 @@ app.newtemplate = (function () {
             desc.append(name);
             desc.append(type);
 
-            var btn = $('<button class="btn btn-sm btn-danger"><i class="fas fa-trash-alt"></i></button>');
+            var btn = $('<button class="btn btn-sm btn-outline-danger"><i class="fas fa-trash-alt"></i></button>');
             btn.on("click", function (e) {
                 console.log(e.target)
                 if (e.target.tagName === "BUTTON") {
@@ -1139,8 +1181,8 @@ app.template = (function () {
 
     function _newELement(element) {
         $row = $("<tr></tr>");
-        $rmbtn = $("<button db-id='" + element.id + "' class='btn btn-danger'><i class='fas fa-trash-alt'></i></button>");
-        $editbtn = $("<button db-id='" + element.id + "' data-toggle='modal' data-target='#editJsonModal' class='btn btn-primary ml-3' style='width: 40px;'><i class='far fa-edit'></i></i></button>");
+        $rmbtn = $("<button db-id='" + element.id + "' class='btn btn-outline-danger'><i class='fas fa-trash-alt'></i></button>");
+        $editbtn = $("<button db-id='" + element.id + "' data-toggle='modal' data-target='#editJsonModal' class='btn btn-outline-primary ml-3' style='width: 40px;'><i class='far fa-edit'></i></i></button>");
 
         $rmbtn.on("click", _remove);
         $editbtn.on("click", _edit);
@@ -1475,7 +1517,8 @@ app.dashboard.hourData = function (data) {
         }
     }
     for (var timestamp in sorted) {
-        categories.push(timestamp.slice(9, 11))
+        var h = timestamp.split('.')
+        categories.push(h[1])
         if (sorted.hasOwnProperty(timestamp)) {
             for (let j = 0; j < names.length; j++) {
                 var value = 0;
@@ -1519,7 +1562,7 @@ app.dashboard.monthData = function (data) {
                        
                     }
 
-                    var month = timestamp.split('/')[1];
+                    var month = timestamp.split('/')[0];
                     if (!monthly[month]) {
                         monthly[month] = {}
                     }
@@ -1532,7 +1575,6 @@ app.dashboard.monthData = function (data) {
             }
         }
     }
-
     var categories = [];
 
     var obj = {};

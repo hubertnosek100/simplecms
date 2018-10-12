@@ -24,7 +24,13 @@ app.newexponent = (function () {
 
         model.templateid = $("#newtemplateselect").val();
         model.template = $("#newtemplateselect option:selected").text();
-        app.service.post("/" + app.static.exponent, model)
+        app.service.post("/" + app.static.exponent, model, _templateAdded)
+    }
+
+    function _templateAdded(data) {
+        if(JSON.parse(data)){
+            window.location.reload()
+        }
     }
 
     function _load() {

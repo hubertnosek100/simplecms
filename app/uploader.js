@@ -6,6 +6,13 @@ const fs = require('fs');
 var uploader = function (app, userMiddleware) {
     app.use(fileUpload());
 
+    app.post('/removemedia', (req, res) => {
+        var name = req.body.name;
+        var path = process.cwd();
+        const file = path + '/public/uploaded/' + name;
+        fs.unlinkSync(file)
+    });
+
     app.get('/media', (req, res) => {
         var path = process.cwd();
         const folder = path + '/public/uploaded/';

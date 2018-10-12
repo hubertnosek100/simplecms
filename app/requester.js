@@ -40,16 +40,34 @@ var requester = (function () {
         }
     }
 
+
     function _transformKey(req) {
+        let compontents = ["simpletext", "simplevideo", "simpleimage", "login", "uploaded", "template", "exponent"]
         var key = req.url.replace('/', '')
         key = key.replace("simplecms/dashboard/", '');
         key = key.replace("simplecms/database/", '');
+        
+        for (let i = 0; i < compontents.length; i++) {
+            const comp = compontents[i];
+            if(key.indexOf(comp) !== -1){
+                key = comp;
+                break;
+            }
+        }
+
+
         return key;
     }
 
+
+
     function _getTimeStamp() {
-        var a = new Date();
-        return a.toLocaleDateString() + '.' + a.getHours();
+        var date = new Date();
+        var month = date.getMonth() + 1
+        var day = date.getDate() 
+        var year = date.getFullYear()
+        var hours = date.getHours()
+        return month + '/' + day + '/' + year + '.' + hours;
     }
 
     return {

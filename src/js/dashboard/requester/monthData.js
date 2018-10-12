@@ -25,7 +25,7 @@ app.dashboard.monthData = function (data) {
                        
                     }
 
-                    var month = timestamp.split('/')[1];
+                    var month = timestamp.split('/')[0];
                     if (!monthly[month]) {
                         monthly[month] = {}
                     }
@@ -38,7 +38,6 @@ app.dashboard.monthData = function (data) {
             }
         }
     }
-
     var categories = [];
 
     var obj = {};

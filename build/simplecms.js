@@ -73,7 +73,7 @@ app.database = (function () {
 
     function _newELement(element) {
         $row = $("<tr></tr>");
-        $rmbtn = $("<button db-id='" + element.id + "' class='btn btn-danger'><i class='fas fa-trash-alt'></i></button>");
+        $rmbtn = $("<button db-id='" + element.id + "' class='btn btn-outline-danger'><i class='fas fa-trash-alt'></i></button>");
 
         $rmbtn.on("click", _remove);
 
@@ -282,7 +282,7 @@ var collectionBuilder = (function () {
 
 
     function _createRmButton() {
-        var btn = $('<button class="btn btn-sm btn-danger"><i class="fas fa-trash-alt"></i></button>');
+        var btn = $('<button class="btn btn-sm btn-outline-danger"><i class="fas fa-trash-alt"></i></button>');
         btn.on("click", function (e) {
             console.log(e.target)
             if (e.target.tagName === "BUTTON") {
@@ -755,7 +755,7 @@ app.exponents = (function () {
 
     function _newELement(element) {
         $row = $("<tr></tr>");
-        $rmbtn = $("<button db-id='" + element.id + "' class='btn btn-danger'><i class='fas fa-trash-alt'></i></button>");
+        $rmbtn = $("<button db-id='" + element.id + "' class='btn btn-outline-danger'><i class='fas fa-trash-alt'></i></button>");
         $editbtn = $("<button db-id='" + element.id + "' data-toggle='modal' data-target='#editJsonModal'  class='btn btn-primary ml-3' style='width: 40px;'><i class='far fa-edit'></i></i></button>");
 
         $rmbtn.on("click", _remove);
@@ -1001,7 +1001,7 @@ app.newtemplate = (function () {
             desc.append(name);
             desc.append(type);
 
-            var btn = $('<button class="btn btn-sm btn-danger"><i class="fas fa-trash-alt"></i></button>');
+            var btn = $('<button class="btn btn-sm btn-outline-danger"><i class="fas fa-trash-alt"></i></button>');
             btn.on("click", function (e) {
                 console.log(e.target)
                 if (e.target.tagName === "BUTTON") {
@@ -1112,7 +1112,7 @@ app.template = (function () {
 
     function _newELement(element) {
         $row = $("<tr></tr>");
-        $rmbtn = $("<button db-id='" + element.id + "' class='btn btn-danger'><i class='fas fa-trash-alt'></i></button>");
+        $rmbtn = $("<button db-id='" + element.id + "' class='btn btn-outline-danger'><i class='fas fa-trash-alt'></i></button>");
         $editbtn = $("<button db-id='" + element.id + "' data-toggle='modal' data-target='#editJsonModal' class='btn btn-primary ml-3' style='width: 40px;'><i class='far fa-edit'></i></i></button>");
 
         $rmbtn.on("click", _remove);

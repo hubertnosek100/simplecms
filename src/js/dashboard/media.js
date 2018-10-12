@@ -14,7 +14,9 @@ var media = (function () {
             var table = $('<table class="table table-hover text-center"></table>');
             var head = $('<thead class=""></thead>');
             var headTr = $('<tr> </tr>');
-            headTr.append('<td>name</td>');
+            headTr.append('<td>Preview</td>');
+            headTr.append('<td>Name</td>');
+            headTr.append('<td>Action</td>');
             head.append(headTr);
             table.append(head);
 
@@ -31,18 +33,22 @@ var media = (function () {
     function _newELement(element) {
         $row = $("<tr></tr>");
         $col = $("<td></td>").text(element);
-        $actionCol = $("<td></td>")
+        $copyCol = $("<td></td>")
         $imgCol = $("<td></td>")
 
         var url = _makeMediaUrl(element)
         $imgCol.append('<img style="height:40px; width:40px" src= "' + url + '"/>')
         var $copyBtn = $("<button data-url='" + url + "' class='btn btn-outline-dark'><i class='fas fa-copy'></i></button>");
         $copyBtn.on('click', _copyToCliboard)
-        $actionCol.append($copyBtn)
+        $copyCol.append($copyBtn)
+
+        var $rmBtn = $("<button data-name='" + element + "' class='btn btn-outline-danger ml-3'><i class='fas fa-trash-alt'></i></button>");
+        $rmBtn.on('click', _remove)
+        $copyCol.append($rmBtn)
 
         $row.append($imgCol);
         $row.append($col);
-        $row.append($actionCol);
+        $row.append($copyCol);
         return $row;
     }
 
@@ -51,7 +57,13 @@ var media = (function () {
     }
 
     function _copyToCliboard(e) {
-        var text = $(e.target).attr('data-url')
+        var text = ''
+        if (e.target.tagName === "BUTTON") {
+            text = $(e.target).attr('data-url')
+        } else {
+            text = $(e.target).parent().attr("data-url");
+        }
+
         var $temp = $("<input>");
         $("body").append($temp);
         $temp.val(text).select();
@@ -59,6 +71,24 @@ var media = (function () {
         $temp.remove();
     }
 
+    function _remove(e) {
+        var name = ''
+        if (e.target.tagName === "BUTTON") {
+            name = $(e.target).attr('data-name')
+        } else {
+            name = $(e.target).parent().attr("data-name");
+        }
+
+        app.service.post("/removemedia/", {
+            name: name
+        });
+        _reload();
+    }
+
+    function _reload() {
+        $('.media-list').empty();
+        _init();
+    }
 
     return {
         init: _init

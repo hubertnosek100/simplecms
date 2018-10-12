@@ -23,7 +23,13 @@ app.newtemplate = (function () {
 
         var model = app.formToJSON($("#addtemplateform"));
         model.elements = _list;
-        app.service.post("/" + app.static.template, model);
+        app.service.post("/" + app.static.template, model, _templateAdded);
+    }
+
+    function _templateAdded(data) {
+        if(JSON.parse(data)){
+            window.location.reload()
+        }
     }
 
     function _addNewElement(e) {
@@ -60,7 +66,7 @@ app.newtemplate = (function () {
             desc.append(name);
             desc.append(type);
 
-            var btn = $('<button class="btn btn-sm btn-danger"><i class="fas fa-trash-alt"></i></button>');
+            var btn = $('<button class="btn btn-sm btn-outline-danger"><i class="fas fa-trash-alt"></i></button>');
             btn.on("click", function (e) {
                 console.log(e.target)
                 if (e.target.tagName === "BUTTON") {

@@ -44,7 +44,8 @@ app.dashboard.hourData = function (data) {
         }
     }
     for (var timestamp in sorted) {
-        categories.push(timestamp.slice(9, 11))
+        var h = timestamp.split('.')
+        categories.push(h[1])
         if (sorted.hasOwnProperty(timestamp)) {
             for (let j = 0; j < names.length; j++) {
                 var value = 0;

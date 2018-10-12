@@ -37,7 +37,7 @@ var collectionBuilder = (function () {
 
 
     function _createRmButton() {
-        var btn = $('<button class="btn btn-sm btn-danger"><i class="fas fa-trash-alt"></i></button>');
+        var btn = $('<button class="btn btn-sm btn-outline-danger"><i class="fas fa-trash-alt"></i></button>');
         btn.on("click", function (e) {
             console.log(e.target)
             if (e.target.tagName === "BUTTON") {
