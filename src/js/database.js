@@ -38,8 +38,12 @@ app.database = (function () {
     }
 
     function _remove(params) {
-        var id = $(params.target).attr("db-id");
-        console.log(id)
+        var id = '';
+        if (params.target.tagName === "BUTTON") {
+            id = $(params.target).attr("db-id");
+        } else {
+            id = $(params.target).parent().attr("db-id");
+        }
         var component = $("#scmsTableSelect").val();
         app.service.delete("/" + component + "/" + id);
         _reload();
@@ -47,7 +51,5 @@ app.database = (function () {
 
     return {
         init: _init,
-        // url: _url,
-        // debounce: _debounce
     }
 }());

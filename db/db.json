@@ -1,64 +1,6 @@
 {
   "template": [
     {
-      "name": "All",
-      "uuid": "allid",
-      "elements": [
-        {
-          "name": "Description",
-          "type": "text"
-        },
-        {
-          "name": "Age",
-          "type": "number"
-        },
-        {
-          "name": "Date of birth",
-          "type": "date"
-        },
-        {
-          "name": "Clock",
-          "type": "datetime"
-        },
-        {
-          "name": "Favourite color",
-          "type": "color"
-        },
-        {
-          "name": "My website",
-          "type": "link"
-        }
-      ],
-      "id": 3
-    },
-    {
-      "name": "Profile",
-      "uuid": "profile",
-      "elements": [
-        {
-          "name": "Title",
-          "type": "text"
-        },
-        {
-          "name": "Description",
-          "type": "text"
-        },
-        {
-          "name": "Age",
-          "type": "date"
-        },
-        {
-          "name": "Age",
-          "type": "number"
-        },
-        {
-          "name": "Date of birth",
-          "type": "date"
-        }
-      ],
-      "id": 4
-    },
-    {
       "name": "TestCollection",
       "uuid": "testcollection",
       "elements": [
@@ -94,74 +36,46 @@
         }
       ],
       "id": 5
+    },
+    {
+      "name": "Simple",
+      "uuid": "simplet",
+      "elements": [
+        {
+          "name": "Text",
+          "type": "text"
+        }
+      ],
+      "id": 6
     }
   ],
   "exponent": [
     {
-      "uuid": "pierwsza",
-      "Data": "08/15/2018 12:12 PM",
-      "Background": "rgb(101, 78, 54)",
-      "templateid": "4",
-      "template": "Strona główna",
-      "id": 5
-    },
-    {
-      "uuid": "redCoral",
-      "Data": "08/01/2018 7:31 PM",
-      "Background": "rgb(255, 0, 0)",
-      "templateid": "4",
-      "template": "Strona główna",
+      "uuid": "1234",
+      "Title": "Abc",
+      "group": [],
+      "templateid": "5",
+      "template": "TestCollection",
       "id": 6
     },
     {
-      "uuid": "greenCoral",
-      "Data": "08/22/2018 7:32 AM",
-      "Background": "rgb(0, 97, 255)",
-      "templateid": "4",
-      "template": "Strona główna",
+      "uuid": "12345",
+      "Title": "Abc",
+      "group": [],
+      "templateid": "5",
+      "template": "TestCollection",
       "id": 7
     },
     {
-      "uuid": "all1",
-      "Description": "Hejo",
-      "Age": "12",
-      "Dateofbirth": "08/15/2018",
-      "Clock": "08/21/2018 12:30 AM",
-      "Favouritecolor": "rgb(45, 34, 23)",
-      "My website": "http://loclahost:3000",
-      "templateid": "3",
-      "template": "All",
+      "uuid": "123456",
+      "Title": "Abc",
+      "group": [],
+      "templateid": "5",
+      "template": "TestCollection",
       "id": 8
-    },
-    {
-      "uuid": "asd",
-      "Title": "dasd",
-      "templateid": "5",
-      "template": "TestCollection",
-      "id": 12
-    },
-    {
-      "uuid": "testcollection",
-      "Title": "Test group",
-      "group": [
-        {
-          "age": "123",
-          "dateofbirth": "08/30/2018 7:45 PM",
-          "favouritecolor": "rgb(255, 128, 0)",
-          "name": "First"
-        }
-      ],
-      "templateid": "5",
-      "template": "TestCollection",
-      "id": 13
     }
   ],
   "simpletext": [
-    {
-      "id": 11,
-      "uuid": "Hubert",
-      "text": "Witaj"
-    },
     {
       "id": 12,
       "uuid": "hubert",
@@ -209,6 +123,16 @@
       "uuid": "card",
       "url": "http://www.pngall.com/wp-content/uploads/2016/03/Bug-PNG-2.png",
       "id": 24
+    },
+    {
+      "uuid": "hubertImage",
+      "url": "http://localhost:3000/uploaded/Zrzut%20ekranu%202018-05-31%20o%2021.23.24.png",
+      "id": 25
+    },
+    {
+      "uuid": "hubertImage",
+      "url": "http://localhost:3000/uploaded/Zrzut%20ekranu%202018-08-04%20o%2010.52.50.png",
+      "id": 26
     }
   ]
 }
