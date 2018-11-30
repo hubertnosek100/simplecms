@@ -56,23 +56,35 @@ app = (function () {
 
 var simplecms = app;
 app.database = (function () {
+    var _pager;
     function _init() {
+        _pager =  app.ui.pager;
+        _pager.onChanged(_reload)
+        $("#scmsDbTable").parent().append(_pager.build())
+
         for (let i = 0; i < app.static.components.length; i++) {
             const component = app.static.components[i];
             $("#scmsTableSelect").append("<option value='" + component + "'>" + component + "</option>");
         }
-        app.service.get('/' + app.static.simpletext, _set);
+        app.service.get('/' + app.static.simpletext + _pager.getQuery(), _set);
 
-        $("#scmsTableSelect").on("change", _reload);
+        $("#scmsTableSelect").on("change", _changed);
+    }
+
+    function _changed(){
+        _pager.reset();
+        _reload();
     }
 
     function _reload(data) {
         $("#scmsDbTable").find("tbody").empty();
-        app.service.get('/' + $("#scmsTableSelect").val(), _set);
+        app.service.get('/' + $("#scmsTableSelect").val() + _pager.getQuery(), _set);
     }
 
     function _set(data) {
         var $tableBody = $("#scmsDbTable").find("tbody");
+       
+
         data.forEach(function (el) {
             $tableBody.append(_newELement(el))
         });
@@ -271,6 +283,140 @@ app.static = (function () {
         template: _template,
         elementTypes: _elementTypes,
         simplelanguage: _simplelanguage
+    }
+}());
+app.menu = (function () {
+    var _current = undefined
+    function _load(url) {
+        app.service.get(url + "/simplecms/components/menu.html", _set, "html");
+    }
+
+    function _set(data) {
+        $('body').append(data);
+        $('#loginForm').on('submit', function (e) {
+            e.preventDefault()
+            var model = app.formToJSON($(e.target))
+            app.service.login(model, _drawAuth)
+        })
+        $('#faviconId').attr('src', app.url + '/favicon.png')
+    }
+
+    function _init() {
+        $('simpletext').contextmenu(function (e) {
+            app.menuComponent(e.target)
+            _openNav();
+            e.preventDefault();
+        });
+        $(document).on('keydown', function (e) {
+            if (e.keyCode === 27) {
+                _closeNav();
+            }
+        });
+    }
+
+    function _openNav() {
+        document.getElementById("mySidenav").style.width = "300px";
+        $('body').append('<div id="backdrop" class="modal-backdrop fade show"></div>');
+    }
+
+    function _closeNav() {
+        document.getElementById("mySidenav").style.width = "0";
+        $('#backdrop').remove();
+    }
+
+    function _loginTab(params) {
+        app.service.isAuthenticated(_drawAuth);
+    }
+
+    function _drawAuth(auth) {
+        if (auth) {
+            $('#loginForm').hide()
+            $('#loginInfo').show()
+        } else {
+            $('#loginInfo').hide()
+            $('#loginForm').show()
+        }
+    }
+
+    return {
+        load: _load,
+        open: _openNav,
+        close: _closeNav,
+        current: _current,
+        loginTab: _loginTab,
+        init: _init
+    }
+}())
+app.menuComponent = function (target) {
+    let tagName = target.tagName.toLocaleLowerCase();
+
+    var _draw = function (el, uuid) {
+        try {
+            var css = JSON.parse($(el).val())
+            var obj = $(tagName + '[uuid="' + uuid + '"]');
+            app.simpleeditor.clearStyles(obj[0])
+            for (var style in css) {
+                if (css.hasOwnProperty(style)) {
+                    obj.css(style, css[style]);
+                }
+            }
+            app[tagName].save({
+                target: obj[0]
+            })
+            $('#componenJsonHelp').text("")
+        } catch (err) {
+            $('#componenJsonHelp').text("Not valid Json")
+        }
+    }
+
+    var found = function (data) {
+        var el = app.simpleeditor.unwrap(data)
+        if (el) {
+            app.menu.current = el;
+            $('#componentUuid').val(el.uuid)
+            $('#componentJsonCss').val(JSON.stringify(el.css, undefined, 4));
+
+            var draw = app.debounce(_draw, 1000);
+            $('#componentJsonCss').unbind();
+            $('#componentJsonCss').on('keyup', function (evt) {
+                draw(evt.target, el.uuid);
+            });
+        }
+    };
+    var uuid = $(target).attr('uuid');
+    app[tagName].find(app.url, uuid, found);
+};
+app.modal = (function () {
+
+    function _load(url) {
+        app.service.get(url + "/simplecms/components/modal.html", _set, "html");
+    }
+
+    function _set(data) {
+        $('body').append(data);
+    }
+
+    function _create(callback, model, title, placeholder, url, property) {
+
+        $("#simplemodal").modal();
+        $("#simplemodal").find('input').attr("placeholder", placeholder);
+        $("#simpleModalLabel").text(title);
+        $("#simpleModalSave").unbind();
+        $("#simpleModalSave").on("click", function () {
+            model[property] = $("#simplemodal").find('input').val();
+            if (model.id) {
+                app.service.put(url + "/" + model.id, model)
+            } else {
+                app.service.post(url, model)
+            }
+            $('#simplemodal').modal("hide");
+            callback(model[property], model.uuid);
+        });
+    }
+
+    return {
+        load: _load,
+        create: _create
     }
 }());
 var buttonBuilder = (function () {
@@ -499,140 +645,6 @@ var uiBuilder = (function () {
 
     return {
         buildFormGroup: _buildFormGroup,
-    }
-}());
-app.menu = (function () {
-    var _current = undefined
-    function _load(url) {
-        app.service.get(url + "/simplecms/components/menu.html", _set, "html");
-    }
-
-    function _set(data) {
-        $('body').append(data);
-        $('#loginForm').on('submit', function (e) {
-            e.preventDefault()
-            var model = app.formToJSON($(e.target))
-            app.service.login(model, _drawAuth)
-        })
-        $('#faviconId').attr('src', app.url + '/favicon.png')
-    }
-
-    function _init() {
-        $('simpletext').contextmenu(function (e) {
-            app.menuComponent(e.target)
-            _openNav();
-            e.preventDefault();
-        });
-        $(document).on('keydown', function (e) {
-            if (e.keyCode === 27) {
-                _closeNav();
-            }
-        });
-    }
-
-    function _openNav() {
-        document.getElementById("mySidenav").style.width = "300px";
-        $('body').append('<div id="backdrop" class="modal-backdrop fade show"></div>');
-    }
-
-    function _closeNav() {
-        document.getElementById("mySidenav").style.width = "0";
-        $('#backdrop').remove();
-    }
-
-    function _loginTab(params) {
-        app.service.isAuthenticated(_drawAuth);
-    }
-
-    function _drawAuth(auth) {
-        if (auth) {
-            $('#loginForm').hide()
-            $('#loginInfo').show()
-        } else {
-            $('#loginInfo').hide()
-            $('#loginForm').show()
-        }
-    }
-
-    return {
-        load: _load,
-        open: _openNav,
-        close: _closeNav,
-        current: _current,
-        loginTab: _loginTab,
-        init: _init
-    }
-}())
-app.menuComponent = function (target) {
-    let tagName = target.tagName.toLocaleLowerCase();
-
-    var _draw = function (el, uuid) {
-        try {
-            var css = JSON.parse($(el).val())
-            var obj = $(tagName + '[uuid="' + uuid + '"]');
-            app.simpleeditor.clearStyles(obj[0])
-            for (var style in css) {
-                if (css.hasOwnProperty(style)) {
-                    obj.css(style, css[style]);
-                }
-            }
-            app[tagName].save({
-                target: obj[0]
-            })
-            $('#componenJsonHelp').text("")
-        } catch (err) {
-            $('#componenJsonHelp').text("Not valid Json")
-        }
-    }
-
-    var found = function (data) {
-        var el = app.simpleeditor.unwrap(data)
-        if (el) {
-            app.menu.current = el;
-            $('#componentUuid').val(el.uuid)
-            $('#componentJsonCss').val(JSON.stringify(el.css, undefined, 4));
-
-            var draw = app.debounce(_draw, 1000);
-            $('#componentJsonCss').unbind();
-            $('#componentJsonCss').on('keyup', function (evt) {
-                draw(evt.target, el.uuid);
-            });
-        }
-    };
-    var uuid = $(target).attr('uuid');
-    app[tagName].find(app.url, uuid, found);
-};
-app.modal = (function () {
-
-    function _load(url) {
-        app.service.get(url + "/simplecms/components/modal.html", _set, "html");
-    }
-
-    function _set(data) {
-        $('body').append(data);
-    }
-
-    function _create(callback, model, title, placeholder, url, property) {
-
-        $("#simplemodal").modal();
-        $("#simplemodal").find('input').attr("placeholder", placeholder);
-        $("#simpleModalLabel").text(title);
-        $("#simpleModalSave").unbind();
-        $("#simpleModalSave").on("click", function () {
-            model[property] = $("#simplemodal").find('input').val();
-            if (model.id) {
-                app.service.put(url + "/" + model.id, model)
-            } else {
-                app.service.post(url, model)
-            }
-            $('#simplemodal').modal("hide");
-            callback(model[property], model.uuid);
-        });
-    }
-
-    return {
-        load: _load,
-        create: _create
     }
 }());
 app.dashboard = (function () {
@@ -1713,6 +1725,60 @@ app.simplevideo = (function () {
         load: _load,
         init: _makeEditbale
     }
+}());
+app.ui = app.ui ? app.ui : {};
+app.ui.pager = (function () {
+    var obj = {};
+
+    obj.page = 0;
+    obj.limit = 10;
+
+    obj.nav = $('<nav class="w-100 d-flex justify-content-center" aria-label="Page navigation"></nav>');
+    obj.ul = $('<ul class="pagination"></ul>')
+
+    obj.next = {
+        li: $('<li class="page-item"></li>'),
+        a: $('<a class="page-link">></a>')
+    }
+
+    obj.previous = {
+        li: $('<li class="page-item"></li>'),
+        a: $('<a class="page-link"><</a>')
+    }
+
+    obj.previous.a.on('click',function(){
+        obj.page = obj.page - 1;
+        obj.callback();
+    })
+
+    obj.next.a.on('click',function(){
+        obj.page = obj.page + 1;
+        obj.callback();
+    })
+
+    obj.build = function () {
+        return this.nav.append(
+            this.ul.append(
+                this.previous.li.append(this.previous.a)
+            ).append(
+                this.next.li.append(this.next.a)
+            ));
+    }
+
+    obj.getQuery = function(){
+        return "?_page=" + this.page + "&_limit=" + this.limit;
+    }
+
+    obj.onChanged = function (callback) {
+        this.callback = callback;
+    }
+
+    obj.reset = function(){
+        obj.limit = 10;
+        obj.page = 0;
+    }
+
+    return obj;
 }());
 app.dashboard.hourData = function (data) {
     var names = [];
