@@ -2,7 +2,7 @@ app.ui = app.ui ? app.ui : {};
 app.ui.pager = (function () {
     var obj = {};
 
-    obj.page = 0;
+    obj.page = 1;
     obj.limit = 10;
 
     obj.nav = $('<nav class="w-100 d-flex justify-content-center" aria-label="Page navigation"></nav>');
@@ -20,6 +20,7 @@ app.ui.pager = (function () {
 
     obj.previous.a.on('click',function(){
         obj.page = obj.page - 1;
+        obj.page = obj.page < 1 ? 1: obj.page;
         obj.callback();
     })
 
