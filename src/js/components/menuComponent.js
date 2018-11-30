@@ -1,22 +1,19 @@
 app.menuComponent = function (target) {
-
-    var _clearStyles = function (s) {
-        while (s[0]) {
-            s[s[0]] = ""
-        }
-    }
+    let tagName = target.tagName.toLocaleLowerCase();
 
     var _draw = function (el, uuid) {
         try {
             var css = JSON.parse($(el).val())
-            var obj = $('simpletext[uuid="' + uuid + '"]');
-            _clearStyles(obj[0].style)
+            var obj = $(tagName + '[uuid="' + uuid + '"]');
+            app.simpleeditor.clearStyles(obj[0])
             for (var style in css) {
                 if (css.hasOwnProperty(style)) {
                     obj.css(style, css[style]);
                 }
             }
-            app.simpletext.save({ target: obj[0] })
+            app[tagName].save({
+                target: obj[0]
+            })
             $('#componenJsonHelp').text("")
         } catch (err) {
             $('#componenJsonHelp').text("Not valid Json")
@@ -24,11 +21,11 @@ app.menuComponent = function (target) {
     }
 
     var found = function (data) {
-        if (data.length > 0) {
-            var el = data[0];
+        var el = app.simpleeditor.unwrap(data)
+        if (el) {
             app.menu.current = el;
             $('#componentUuid').val(el.uuid)
-            $('#componentJsonCss').val(JSON.stringify(el.css));
+            $('#componentJsonCss').val(JSON.stringify(el.css, undefined, 4));
 
             var draw = app.debounce(_draw, 1000);
             $('#componentJsonCss').unbind();
@@ -37,6 +34,6 @@ app.menuComponent = function (target) {
             });
         }
     };
-    var id = $(target).attr('db-id');
-    app.simpletext.find(app.url, id, found);
+    var uuid = $(target).attr('uuid');
+    app[tagName].find(app.url, uuid, found);
 };

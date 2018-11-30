@@ -1,11 +1,20 @@
 app.service = (function () {
 
     var _key = 'default';
+    var _defaultLang = undefined;
+    var _lang = undefined;
 
     function _get(url, callback, dataType, model) {
         if (!dataType) {
             dataType = "json"
         }
+
+        var char = '?';
+        if (url.indexOf('?') !== -1) char = '&';
+        if ((_defaultLang !== undefined)) {
+            url += char + "lang=" + _lang + "";
+        }
+
         $.ajax({
             dataType: dataType,
             contentType: "application/json; charset=utf-8",
@@ -22,6 +31,15 @@ app.service = (function () {
         if (!dataType) {
             dataType = "html"
         }
+
+        if (!model.lang) {
+            model.lang = "";
+        }
+
+        if (localStorage["lang"]) {
+            model.lang = localStorage["lang"];
+        }
+
         $.ajax({
             type: method,
             contentType: "application/json; charset=utf-8",
@@ -55,8 +73,16 @@ app.service = (function () {
         _request(url, model, "DELETE")
     }
 
-    function _set(apikey) {
+    function _set(apikey, lang) {
         _key = apikey;
+        _defaultLang = lang;
+        _lang = localStorage["lang"];
+    }
+
+    function _changeLanguage(code) {
+        localStorage.setItem("lang", code);
+        _setCookie("lang", code, 1);
+        window.location.reload();
     }
 
     function _getCookie(cname) {
@@ -104,6 +130,7 @@ app.service = (function () {
         delete: _delete,
         set: _set,
         isAuthenticated: _isAuthenticated,
-        login: _login
+        login: _login,
+        changeLanguage: _changeLanguage
     }
 }());

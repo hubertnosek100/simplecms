@@ -83,7 +83,7 @@ app.exponents = (function () {
         }
 
         app.service.get("/" + app.static.exponent + '/' + id, function (data) {
-            $('#editJsonText').val(JSON.stringify(data))
+            $('#editJsonText').val(JSON.stringify(data, undefined, 4))
         });
     }
 

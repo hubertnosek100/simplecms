@@ -83,7 +83,7 @@ app.template = (function () {
         }
 
         app.service.get("/" + app.static.template + '/' + id, function (data) {
-            $('#editJsonText').val(JSON.stringify(data))
+            $('#editJsonText').val(JSON.stringify(data, undefined, 4))
         });
     }
 

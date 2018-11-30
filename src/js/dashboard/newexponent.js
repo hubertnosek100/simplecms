@@ -13,14 +13,12 @@ app.newexponent = (function () {
         $("#createexponentform").find('form').toArray().splice(0, 1)
         var forms = $("#createexponentform").find('form').toArray()
         var colForm = forms.splice(0, 1);
-        debugger
         var id = $(colForm).attr('id');
         model[id] = [];
 
         forms.forEach((el) => {
             model[id].push(app.formToJSON($(el)));
         });
-        debugger
 
         model.templateid = $("#newtemplateselect").val();
         model.template = $("#newtemplateselect option:selected").text();

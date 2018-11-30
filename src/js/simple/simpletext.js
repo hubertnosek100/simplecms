@@ -1,7 +1,7 @@
 app.simpletext = (function () {
 
-    function _find(url, id, callback) {
-        app.service.get(url + "/" + app.static.simpletext + '?id=' + id, callback);
+    function _find(url, uuid, callback) {
+        app.service.get(url + "/" + app.static.simpletext + '?uuid=' + uuid, callback);
     }
 
     function _load(url) {
@@ -24,7 +24,7 @@ app.simpletext = (function () {
         var text = $(el.target).text();
         var uuid = $(el.target).attr('uuid');
         var id = $(el.target).attr('db-id');
-        var css = _readStyles(el.target);
+        var css = app.simpleeditor.readStyles(el.target);
         if (id) {
             app.service.put(app.url + "/" + app.static.simpletext + "/" + id, {
                 id: id,
@@ -39,17 +39,6 @@ app.simpletext = (function () {
                 css: css
             })
         }
-    }
-
-    function _readStyles(el) {
-        var styles = {};
-        var cur = el.style[0];
-        var i = 0;
-        while (el.style[i]) {
-            styles[el.style[i]] = el.style[el.style[i]]
-            i++;
-        }
-        return styles;
     }
 
     function _set(data) {

@@ -25,7 +25,7 @@ app.dashboard.monthData = function (data) {
                        
                     }
 
-                    var month = timestamp.split('/')[0];
+                    var month = timestamp.split('/')[1];
                     if (!monthly[month]) {
                         monthly[month] = {}
                     }

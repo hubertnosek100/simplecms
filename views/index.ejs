@@ -1,18 +1,51 @@
-
-
-
-
 <body class="scms-body">
   <div class="container pt-5">
-    
+
     <div class="d-flex align-items-center flex-column">
       <h2>Geting started!</h2>
       <p>Welcome to Simple CMS.</p>
     </div>
-    <hr/>
+    <hr />
 
     <div class="p-5">
+      <h1 id="simplecms">simplecms</h1>
 
+      <p>You can use docker image.</p>
+
+      <pre><code> docker run -p 3000:3000 -d nosq/simplecms
+      </code></pre>
+
+      <p><strong>Login</strong>: admin </br>
+        <strong>Password</strong>: admin </br></p>
+
+      <h2 id="api">API</h2>
+
+      <p>Every get action is authorized by api key generate with simplecms. </br>
+        You can just managed all component from Dashboard tab and get it via query for example.</p>
+
+      <pre><code>http://localhost:3000/exponent?uuid=redCoral
+      </code></pre>
+
+      <p>The query above return exponent with uuid 'redCoral'.</p>
+
+      <h2 id="editingremote">Editing remote</h2>
+
+      <p>In html folder is example how to use the simplecms with simple components.
+        You have to include simplecms.min.js and simplecms.min.css and run script described below.</p>
+
+      <pre><code>t: simplecms.init({
+          url: "YOUR_SIMPLECMS_URL", 
+          apikey: "YOUR_API_KEY"
+        });
+        
+e: simplecms.init({
+        url: "http://localhost:3000",
+        apikey: "85f1f9772b69f4e8762b252de9c3cafabaf6ac04"
+    });
+      </code></pre>
+
+      <p>For edit component just press ctrl + shift + e for edit on your website where you imported the library. </br>
+        When you enabled editing just right click on your component to open menu.</p>
     </div>
   </div>
 </body>

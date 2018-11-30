@@ -10,6 +10,7 @@ var controller = require('./app/controller');
 var requester = require('./app/requester');
 var uploader = require('./app/uploader');
 var authorizer = require('./app/authorizer');
+var lang = require('./app/lang');
 
 var server = express();
 server.set('view engine', 'ejs');
@@ -20,6 +21,7 @@ server.use(cookieParser())
 
 controller(server, authorizer.userMiddleware);
 uploader(server, authorizer.userMiddleware);
+lang(server, authorizer.userMiddleware);
 authorizer(server);
 
 requester.init(server);
@@ -35,8 +37,9 @@ server.use((req, res, next) => {
   }
 })
 server.use(router)
-server.listen(3000, () => {
-  console.log('JSON Server is running')
+var port = 3000;
+server.listen(port, () => {
+  console.log('JSON Server is running on port: ' + port)
 })
 
 

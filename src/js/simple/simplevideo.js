@@ -8,19 +8,25 @@ app.simplevideo = (function () {
     function _init() {
         $simplevideos = $(app.static.simplevideo);
         $simplevideos.each(function (idx, el) {
-            $(el).append("<video controls class='pointer default' src='" + el.url + "'/>");
+            $(el).append("<video controls class='default' src='" + el.url + "'/>");
             var classes = $(el).attr("class");
             $(el).find('video').attr("class", classes);
         });
     }
 
-    function _makeEditbale(){
+    function _makeEditbale() {
         $simplevideos = $(app.static.simplevideo);
         $simplevideos.each(function (idx, el) {
-            $(el).find('video').unbind();
+            $(el).find('video')
+                .unbind()
+                .addClass('pointer');
             $(el).find('video').on("click", function () {
+                var uuid = $(el).attr('uuid')
+                var video = $(app.static.simplevideo + "[uuid='" + uuid + "']").find("video");
+                var src = video.attr('src')
                 app.modal.create(_setLocal, {
-                    uuid: $(el).attr('uuid')
+                    uuid: $(el).attr('uuid'),
+                    url: src
                 }, "Set video url", "Video url...", app.url + "/simplevideo", "url");
             });
         });

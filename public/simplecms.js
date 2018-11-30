@@ -1,16 +1,17 @@
 app = (function () {
     var _url;
 
-    function _init(url, apikey) {
-        app.url = url;
-        app.service.set(apikey)
-
+    function _init(options) {
+        app.url = options.url;
+        app.service.set(options.apikey, options.defaultLang)
         $(document).ready(function () {
-            app.simpletext.load(url);
-            app.simpleimage.load(url);
-            app.simplevideo.load(url);
-            app.modal.load(url);
-            app.menu.load(url);
+            app.simpletext.load(options.url);
+            app.simpleimage.load(options.url);
+            app.simplevideo.load(options.url);
+            app.simplelanguage.load(options.url);
+            app.simplecontainer.load(options.url);
+            app.modal.load(options.url);
+            app.menu.load(options.url);
             app.simpleeditor.listenForCombination();
         });
     }
@@ -40,11 +41,16 @@ app = (function () {
         return indexed_array;
     }
 
+    function _goTo(url) {
+        window.location.href = url;
+    }
+
     return {
         init: _init,
         url: _url,
         debounce: _debounce,
-        formToJSON: _formToJSON
+        formToJSON: _formToJSON,
+        goTo: _goTo
     }
 }());
 
@@ -107,11 +113,20 @@ app.database = (function () {
 app.service = (function () {
 
     var _key = 'default';
+    var _defaultLang = undefined;
+    var _lang = undefined;
 
     function _get(url, callback, dataType, model) {
         if (!dataType) {
             dataType = "json"
         }
+
+        var char = '?';
+        if (url.indexOf('?') !== -1) char = '&';
+        if ((_defaultLang !== undefined)) {
+            url += char + "lang=" + _lang + "";
+        }
+
         $.ajax({
             dataType: dataType,
             contentType: "application/json; charset=utf-8",
@@ -128,6 +143,15 @@ app.service = (function () {
         if (!dataType) {
             dataType = "html"
         }
+
+        if (!model.lang) {
+            model.lang = "";
+        }
+
+        if (localStorage["lang"]) {
+            model.lang = localStorage["lang"];
+        }
+
         $.ajax({
             type: method,
             contentType: "application/json; charset=utf-8",
@@ -161,8 +185,16 @@ app.service = (function () {
         _request(url, model, "DELETE")
     }
 
-    function _set(apikey) {
+    function _set(apikey, lang) {
         _key = apikey;
+        _defaultLang = lang;
+        _lang = localStorage["lang"];
+    }
+
+    function _changeLanguage(code) {
+        localStorage.setItem("lang", code);
+        _setCookie("lang", code, 1);
+        window.location.reload();
     }
 
     function _getCookie(cname) {
@@ -210,7 +242,8 @@ app.service = (function () {
         delete: _delete,
         set: _set,
         isAuthenticated: _isAuthenticated,
-        login: _login
+        login: _login,
+        changeLanguage: _changeLanguage
     }
 }());
 app.static = (function () {
@@ -218,22 +251,26 @@ app.static = (function () {
     var _simpleimage = "simpleimage";
     var _simpletext = "simpletext";
     var _simplevideo = "simplevideo";
+    var _simplecontainer = "simplecontainer";
     var _modal = "simplemodal";
     var _exponent = "exponent";
     var _template = "template";
+    var _simplelanguage = "simplelanguage";
 
-    var _components = [_simpletext, _simpleimage, _simplevideo, _exponent, _template];
+    var _components = [_simpletext, _simpleimage, _simplevideo, _exponent, _template, _simplecontainer];
     var _elementTypes = ["text", "number", "date", "datetime", "color", "link", "collection"];
 
     return {
         simpleimage: _simpleimage,
         simpletext: _simpletext,
         simplevideo: _simplevideo,
+        simplecontainer: _simplecontainer,
         modal: _modal,
         components: _components,
         exponent: _exponent,
         template: _template,
-        elementTypes: _elementTypes
+        elementTypes: _elementTypes,
+        simplelanguage: _simplelanguage
     }
 }());
 var buttonBuilder = (function () {
@@ -266,6 +303,7 @@ var collectionBuilder = (function () {
         btn.on("click", function (e) {
             e.preventDefault();
             var expoEl = $('<form class="expo-element"></form>')
+            $('#' + name).append(expoEl)
             expoEl.append(_createRmButton())
             if (items.length > 0) {
                 items.forEach(element => {
@@ -278,7 +316,6 @@ var collectionBuilder = (function () {
                     }
                 });
             }
-            $('#' + name).append(expoEl)
         });
         return btn;
     }
@@ -313,7 +350,6 @@ var colorBuilder = (function () {
 
     function _build(name) {
         var dispName = name;
-
         var formgroup = uiBuilder.buildFormGroup(name);
         name = name.replace(/\s/g, '');
         var colorpicker = '<input id="colorpicker' + name + '" name="' + name + '" type="text" class="form-control" value="rgb(255, 128, 0)" />'
@@ -528,24 +564,21 @@ app.menu = (function () {
     }
 }())
 app.menuComponent = function (target) {
-
-    var _clearStyles = function (s) {
-        while (s[0]) {
-            s[s[0]] = ""
-        }
-    }
+    let tagName = target.tagName.toLocaleLowerCase();
 
     var _draw = function (el, uuid) {
         try {
             var css = JSON.parse($(el).val())
-            var obj = $('simpletext[uuid="' + uuid + '"]');
-            _clearStyles(obj[0].style)
+            var obj = $(tagName + '[uuid="' + uuid + '"]');
+            app.simpleeditor.clearStyles(obj[0])
             for (var style in css) {
                 if (css.hasOwnProperty(style)) {
                     obj.css(style, css[style]);
                 }
             }
-            app.simpletext.save({ target: obj[0] })
+            app[tagName].save({
+                target: obj[0]
+            })
             $('#componenJsonHelp').text("")
         } catch (err) {
             $('#componenJsonHelp').text("Not valid Json")
@@ -553,11 +586,11 @@ app.menuComponent = function (target) {
     }
 
     var found = function (data) {
-        if (data.length > 0) {
-            var el = data[0];
+        var el = app.simpleeditor.unwrap(data)
+        if (el) {
             app.menu.current = el;
             $('#componentUuid').val(el.uuid)
-            $('#componentJsonCss').val(JSON.stringify(el.css));
+            $('#componentJsonCss').val(JSON.stringify(el.css, undefined, 4));
 
             var draw = app.debounce(_draw, 1000);
             $('#componentJsonCss').unbind();
@@ -566,8 +599,8 @@ app.menuComponent = function (target) {
             });
         }
     };
-    var id = $(target).attr('db-id');
-    app.simpletext.find(app.url, id, found);
+    var uuid = $(target).attr('uuid');
+    app[tagName].find(app.url, uuid, found);
 };
 app.modal = (function () {
 
@@ -796,7 +829,7 @@ app.exponents = (function () {
         }
 
         app.service.get("/" + app.static.exponent + '/' + id, function (data) {
-            $('#editJsonText').val(JSON.stringify(data))
+            $('#editJsonText').val(JSON.stringify(data, undefined, 4))
         });
     }
 
@@ -817,6 +850,78 @@ app.exponents = (function () {
         init: _init
     }
 }());
+var lang = (function () {
+
+    function _init() {
+        app.service.get('/lang', _set);
+    }
+
+    function _set(data) {
+
+        var $list = $('.lang-list')
+        $('.lang-list').empty();
+        if (data.length === 0) {
+            $p = $('<p class="p-3">There is no languages. </p>');
+            $list.append($p)
+        } else {
+            var table = $('<table class="table table-hover text-center"></table>');
+            var head = $('<thead class=""></thead>');
+            var headTr = $('<tr> </tr>');
+            headTr.append('<td>Image</td>');
+            headTr.append('<td>Code</td>');
+            headTr.append('<td>Placeholder</td>');
+            headTr.append('<td>Action</td>');
+            head.append(headTr);
+            table.append(head);
+
+            var tbody = $('<tbody></tbody>')
+            data.forEach(el => {
+                tbody.append(_newELement(el))
+            });
+
+            table.append(tbody);
+            $list.append($('<div class="card"></div>').append(table));
+        }
+    }
+
+    function _newELement(element) {
+        var $img = $('<img style="height:40px; width:40px" src= "' + element.url + '"/>')
+        var $rmBtn = $("<button data-name='" + element.code + "' class='btn btn-outline-danger ml-3'><i class='fas fa-trash-alt'></i></button>");
+        $rmBtn.on('click', _remove)
+
+        return $("<tr></tr>")
+            .append($("<td></td>").append($img))
+            .append($("<td></td>").text(element.code))
+            .append($("<td></td>").text(element.placeholder))
+            .append($("<td></td>").append($rmBtn));
+    }
+
+
+    function _remove(e) {
+        var name = ''
+        if (e.target.tagName === "BUTTON") {
+            name = $(e.target).attr('data-name')
+        } else {
+            name = $(e.target).parent().attr("data-name");
+        }
+
+        app.service.post("/removelang/", {
+            code: name
+        });
+        _reload();
+    }
+
+    function _reload() {
+        $('.media-list').empty();
+        _init();
+    }
+
+    return {
+        init: _init
+    }
+}());
+
+app.lang = lang;
 var media = (function () {
 
     function _init() {
@@ -930,14 +1035,12 @@ app.newexponent = (function () {
         $("#createexponentform").find('form').toArray().splice(0, 1)
         var forms = $("#createexponentform").find('form').toArray()
         var colForm = forms.splice(0, 1);
-        debugger
         var id = $(colForm).attr('id');
         model[id] = [];
 
         forms.forEach((el) => {
             model[id].push(app.formToJSON($(el)));
         });
-        debugger
 
         model.templateid = $("#newtemplateselect").val();
         model.template = $("#newtemplateselect option:selected").text();
@@ -1221,7 +1324,7 @@ app.template = (function () {
         }
 
         app.service.get("/" + app.static.template + '/' + id, function (data) {
-            $('#editJsonText').val(JSON.stringify(data))
+            $('#editJsonText').val(JSON.stringify(data, undefined, 4))
         });
     }
 
@@ -1241,6 +1344,76 @@ app.template = (function () {
 
     return {
         init: _init
+    }
+}());
+app.simplecontainer = (function () {
+
+    function _load(url) {
+        var containers = $(app.static.simplecontainer)
+        for (let i = 0; i < containers.length; i++) {
+            const $cont = $(containers[i]);
+            _find(url, $cont.attr("uuid"), function (data) {
+                var el = app.simpleeditor.unwrap(data)
+                if (el) {
+                    $cont.attr("db-id", el.id);
+                    // todo function writeStyles!
+                    var css = el.css
+                    for (var style in css) {
+                        if (css.hasOwnProperty(style)) {
+                            $cont.css(style, css[style]);
+                        }
+                    }
+                } else {
+                    _save({
+                        target: $cont[0]
+                    })
+                }
+            });
+        }
+    }
+
+    function _find(url, uuid, callback) {
+        app.service.get(url + "/" + app.static.simplecontainer + '?uuid=' + uuid, callback);
+    }
+
+    function _save(el) {
+        var uuid = $(el.target).attr('uuid');
+        var id = $(el.target).attr('db-id');
+        var css = app.simpleeditor.readStyles(el.target);
+        if (id) {
+            app.service.put(app.url + "/" + app.static.simplecontainer + "/" + id, {
+                id: id,
+                uuid: uuid,
+                css: css
+            })
+        } else {
+            app.service.post(app.url + "/" + app.static.simplecontainer, {
+                uuid: uuid,
+                css: css
+            })
+        }
+    }
+
+
+    function _makeEditable() {
+        var editButton = $('<button type="button" class="btn btn-primary scms-primary scms-btn btn-sm">EDIT</button>')
+        var editAble = $('<div class="container-editable"></div>')
+        editButton.on('click', _edit)
+        editAble.append(editButton)
+        $(app.static.simplecontainer).prepend(editAble)
+        $(app.static.simplecontainer).addClass('editable')
+    }
+
+    function _edit(e) {
+        app.menu.open();
+        app.menuComponent($(e.target).parent().parent()[0])
+    }
+
+    return {
+        load: _load,
+        save: _save,
+        init: _makeEditable,
+        find: _find
     }
 }());
 app.simpleeditor = (function () {
@@ -1268,6 +1441,7 @@ app.simpleeditor = (function () {
                     app.simplevideo.init();
                     app.simpleimage.init();
                     app.simpletext.init();
+                    app.simplecontainer.init();
                     app.menu.init();
                 }
             }
@@ -1284,8 +1458,39 @@ app.simpleeditor = (function () {
             }
         });
     }
+
+    function _readStyles(el) {
+        var styles = {};
+        var i = 0;
+        while (el.style[i]) {
+            styles[el.style[i]] = el.style[el.style[i]]
+            i++;
+        }
+        return styles;
+    }
+
+    function _clearStyles(obj) {
+        var s = obj.style;
+        while (s[0]) {
+            s[s[0]] = ""
+        }
+    }
+
+    function _unwrap(data) {
+        if (data instanceof Array) {
+            if (data.length > 0) {
+                return data[0];
+            }
+        } else {
+            return data;
+        }
+    }
+
     return {
-        listenForCombination: _listenForCombination
+        listenForCombination: _listenForCombination,
+        readStyles: _readStyles,
+        clearStyles: _clearStyles,
+        unwrap: _unwrap
     }
 }())
 app.simpleimage = (function () {
@@ -1298,19 +1503,26 @@ app.simpleimage = (function () {
     function _init() {
         $simpleimages = $(app.static.simpleimage);
         $simpleimages.each(function (idx, el) {
-            $(el).append("<img class='pointer default' src='" + el.url + "'/>");
+            $(el).append("<img class='default' src='" + el.url + "'/>");
             var classes = $(el).attr("class");
             $(el).find('img').attr("class", classes);
         });
     }
 
-    function _makeEditbale(){
+    function _makeEditbale() {
         $simpleimages = $(app.static.simpleimage);
         $simpleimages.each(function (idx, el) {
-            $(el).find('img').unbind();
+            $(el).find('img')
+                .unbind()
+                .addClass('pointer');
+
             $(el).find('img').on("click", function () {
+                var uuid = $(el).attr('uuid')
+                var image = $(app.static.simpleimage + "[uuid='" + uuid + "']").find("img");
+                var src = image.attr('src')
                 app.modal.create(_setLocal, {
-                    uuid: $(el).attr('uuid')
+                    uuid: $(el).attr('uuid'),
+                    url: src
                 }, "Set image url", "Image url...", app.url + "/simpleimage", "url");
             });
         });
@@ -1342,10 +1554,46 @@ app.simpleimage = (function () {
         init: _makeEditbale
     }
 }());
+app.simplelanguage = (function () {
+    function _init(url) {
+        app.service.get(url + '/lang', _set);
+    }
+
+    function _set(data) {
+        $simplelanguage = $(app.static.simplelanguage);
+        $simplelanguage.each(function (idx, el) {
+            var select = $('<div class="dropdown"></div>')
+            select.append(' <button class="btn btn-outline-primary dropdown-toggle" type="button" id="dropdownLanguagesMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Languages</button>')
+            var container = $('<div class="dropdown-menu" aria-labelledby="dropdownLanguagesMenuButton"></div>')
+            data.forEach(function (lang) {
+                var opt = $('<a data-code="' + lang.code + '" class="dropdown-item"></a>')
+                opt.append('<img style="height:40px; width:40px"  src="' + lang.url + '"/>');
+                opt.append('<span style="margin-left:10px;">' + lang.placeholder + '</span>');
+                opt.on('click', _changeLanguage);
+                container.append(opt)
+            })
+            $(select).append(container)
+            $(el).append(select);
+        });
+    }
+
+    function _changeLanguage(el) {
+        var target = $(el.target);
+        if (el.target.nodeName !== "A") {
+            target = $(target).parent();
+        }
+        var code = target.attr('data-code');
+        app.service.changeLanguage(code);
+    }
+
+    return {
+        load: _init
+    }
+}());
 app.simpletext = (function () {
 
-    function _find(url, id, callback) {
-        app.service.get(url + "/" + app.static.simpletext + '?id=' + id, callback);
+    function _find(url, uuid, callback) {
+        app.service.get(url + "/" + app.static.simpletext + '?uuid=' + uuid, callback);
     }
 
     function _load(url) {
@@ -1368,7 +1616,7 @@ app.simpletext = (function () {
         var text = $(el.target).text();
         var uuid = $(el.target).attr('uuid');
         var id = $(el.target).attr('db-id');
-        var css = _readStyles(el.target);
+        var css = app.simpleeditor.readStyles(el.target);
         if (id) {
             app.service.put(app.url + "/" + app.static.simpletext + "/" + id, {
                 id: id,
@@ -1383,17 +1631,6 @@ app.simpletext = (function () {
                 css: css
             })
         }
-    }
-
-    function _readStyles(el) {
-        var styles = {};
-        var cur = el.style[0];
-        var i = 0;
-        while (el.style[i]) {
-            styles[el.style[i]] = el.style[el.style[i]]
-            i++;
-        }
-        return styles;
     }
 
     function _set(data) {
@@ -1427,19 +1664,25 @@ app.simplevideo = (function () {
     function _init() {
         $simplevideos = $(app.static.simplevideo);
         $simplevideos.each(function (idx, el) {
-            $(el).append("<video controls class='pointer default' src='" + el.url + "'/>");
+            $(el).append("<video controls class='default' src='" + el.url + "'/>");
             var classes = $(el).attr("class");
             $(el).find('video').attr("class", classes);
         });
     }
 
-    function _makeEditbale(){
+    function _makeEditbale() {
         $simplevideos = $(app.static.simplevideo);
         $simplevideos.each(function (idx, el) {
-            $(el).find('video').unbind();
+            $(el).find('video')
+                .unbind()
+                .addClass('pointer');
             $(el).find('video').on("click", function () {
+                var uuid = $(el).attr('uuid')
+                var video = $(app.static.simplevideo + "[uuid='" + uuid + "']").find("video");
+                var src = video.attr('src')
                 app.modal.create(_setLocal, {
-                    uuid: $(el).attr('uuid')
+                    uuid: $(el).attr('uuid'),
+                    url: src
                 }, "Set video url", "Video url...", app.url + "/simplevideo", "url");
             });
         });
@@ -1562,7 +1805,7 @@ app.dashboard.monthData = function (data) {
                        
                     }
 
-                    var month = timestamp.split('/')[0];
+                    var month = timestamp.split('/')[1];
                     if (!monthly[month]) {
                         monthly[month] = {}
                     }

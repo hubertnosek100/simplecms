@@ -5,7 +5,7 @@ var requester = (function () {
     var _db;
 
     function _init(server) {
-        _db = new JsonDB("db/dc", true, false);
+        _db = new JsonDB("db/requester", true, false);
 
         server.get('/requester', (req, res) => {
             var counter = _db.getData('counter');
@@ -42,7 +42,7 @@ var requester = (function () {
 
 
     function _transformKey(req) {
-        let compontents = ["simpletext", "simplevideo", "simpleimage", "login", "uploaded", "template", "exponent"]
+        let compontents = ["simpletext", "simplevideo", "simpleimage", "login", "uploaded", "template", "exponent", "simplecontainer"]
         var key = req.url.replace('/', '')
         key = key.replace("simplecms/dashboard/", '');
         key = key.replace("simplecms/database/", '');

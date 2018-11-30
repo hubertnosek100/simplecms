@@ -1,16 +1,17 @@
 app = (function () {
     var _url;
 
-    function _init(url, apikey) {
-        app.url = url;
-        app.service.set(apikey)
-
+    function _init(options) {
+        app.url = options.url;
+        app.service.set(options.apikey, options.defaultLang)
         $(document).ready(function () {
-            app.simpletext.load(url);
-            app.simpleimage.load(url);
-            app.simplevideo.load(url);
-            app.modal.load(url);
-            app.menu.load(url);
+            app.simpletext.load(options.url);
+            app.simpleimage.load(options.url);
+            app.simplevideo.load(options.url);
+            app.simplelanguage.load(options.url);
+            app.simplecontainer.load(options.url);
+            app.modal.load(options.url);
+            app.menu.load(options.url);
             app.simpleeditor.listenForCombination();
         });
     }
@@ -40,11 +41,16 @@ app = (function () {
         return indexed_array;
     }
 
+    function _goTo(url) {
+        window.location.href = url;
+    }
+
     return {
         init: _init,
         url: _url,
         debounce: _debounce,
-        formToJSON: _formToJSON
+        formToJSON: _formToJSON,
+        goTo: _goTo
     }
 }());
 

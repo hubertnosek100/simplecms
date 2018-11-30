@@ -263,6 +263,7 @@ var collectionBuilder = (function () {
         btn.on("click", function (e) {
             e.preventDefault();
             var expoEl = $('<form class="expo-element"></form>')
+            $('#' + name).append(expoEl)
             expoEl.append(_createRmButton())
             if (items.length > 0) {
                 items.forEach(element => {
@@ -275,7 +276,6 @@ var collectionBuilder = (function () {
                     }
                 });
             }
-            $('#' + name).append(expoEl)
         });
         return btn;
     }

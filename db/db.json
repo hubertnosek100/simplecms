@@ -1,6 +1,126 @@
 {
+  "simplecontainer": [
+    {
+      "id": 2,
+      "uuid": "hubertContainer",
+      "css": {
+        "background-color": "wheat",
+        "display": "flex",
+        "flex-direction": "column",
+        "margin-left": "20%",
+        "margin-right": "20%",
+        "align-items": "center",
+        "border-top-width": "1px",
+        "border-right-width": "1px",
+        "border-bottom-width": "1px",
+        "border-left-width": "1px",
+        "border-top-style": "solid",
+        "border-right-style": "solid",
+        "border-bottom-style": "solid",
+        "border-left-style": "solid",
+        "border-top-color": "black",
+        "border-right-color": "black",
+        "border-bottom-color": "black",
+        "border-left-color": "black",
+        "border-image-source": "initial",
+        "border-image-slice": "initial",
+        "border-image-width": "initial",
+        "border-image-outset": "initial",
+        "border-image-repeat": "initial"
+      },
+      "lang": "de"
+    },
+    {
+      "id": 3,
+      "lang": "de",
+      "uuid": "firstContainer",
+      "css": {
+        "font-family": "fantasy",
+        "justify-content": "space-between",
+        "flex-wrap": "wrap",
+        "width": "90px",
+        "border-top-left-radius": "3px",
+        "border-top-right-radius": "3px",
+        "border-bottom-right-radius": "3px",
+        "border-bottom-left-radius": "3px",
+        "box-shadow": "2px 2px 1px 1px",
+        "padding-top": "5px",
+        "padding-right": "5px",
+        "padding-bottom": "5px",
+        "padding-left": "5px",
+        "display": "flex",
+        "flex-direction": "row",
+        "border-top-width": "1px",
+        "border-right-width": "1px",
+        "border-bottom-width": "1px",
+        "border-left-width": "1px",
+        "border-top-style": "solid",
+        "border-right-style": "solid",
+        "border-bottom-style": "solid",
+        "border-left-style": "solid",
+        "border-top-color": "black",
+        "border-right-color": "black",
+        "border-bottom-color": "black",
+        "border-left-color": "black",
+        "border-image-source": "initial",
+        "border-image-slice": "initial",
+        "border-image-width": "initial",
+        "border-image-outset": "initial",
+        "border-image-repeat": "initial"
+      }
+    },
+    {
+      "lang": "de",
+      "uuid": "firstContainer",
+      "css": {},
+      "id": 4
+    },
+    {
+      "lang": "de",
+      "uuid": "hubertContainer",
+      "css": {},
+      "id": 5
+    },
+    {
+      "id": 6,
+      "uuid": "hubertContainer",
+      "css": {
+        "background-color": "wheat",
+        "display": "flex",
+        "flex-direction": "column",
+        "margin-left": "20%",
+        "margin-right": "20%",
+        "align-items": "center",
+        "border-top-width": "1px",
+        "border-right-width": "1px",
+        "border-bottom-width": "1px",
+        "border-left-width": "1px",
+        "border-top-style": "solid",
+        "border-right-style": "solid",
+        "border-bottom-style": "solid",
+        "border-left-style": "solid",
+        "border-top-color": "black",
+        "border-right-color": "black",
+        "border-bottom-color": "black",
+        "border-left-color": "black",
+        "border-image-source": "initial",
+        "border-image-slice": "initial",
+        "border-image-width": "initial",
+        "border-image-outset": "initial",
+        "border-image-repeat": "initial"
+      },
+      "lang": "pl"
+    },
+    {
+      "uuid": "hubertContainer",
+      "css": {},
+      "lang": "de",
+      "id": 7
+    }
+  ],
   "template": [
     {
+      "lang": "de",
       "name": "TestCollection",
       "uuid": "testcollection",
       "elements": [
@@ -36,6 +156,18 @@
         }
       ],
       "id": 5
+    },
+    {
+      "name": "Color",
+      "uuid": "Color",
+      "elements": [
+        {
+          "name": "TestColor",
+          "type": "color"
+        }
+      ],
+      "lang": "de",
+      "id": 6
     }
   ],
   "exponent": [
@@ -45,7 +177,8 @@
       "group": [],
       "templateid": "5",
       "template": "TestCollection",
-      "id": 6
+      "id": 6,
+      "lang": "de"
     },
     {
       "uuid": "12345",
@@ -53,7 +186,8 @@
       "group": [],
       "templateid": "5",
       "template": "TestCollection",
-      "id": 7
+      "id": 7,
+      "lang": "de"
     },
     {
       "uuid": "123456",
@@ -61,30 +195,63 @@
       "group": [],
       "templateid": "5",
       "template": "TestCollection",
+      "lang": "de",
       "id": 8
+    },
+    {
+      "uuid": "abc",
+      "TestColor": "rgb(255, 128, 0)",
+      "undefined": [],
+      "templateid": "6",
+      "template": "Color",
+      "lang": "de",
+      "id": 9
     }
   ],
   "simpletext": [
     {
       "id": 12,
       "uuid": "hubert",
-      "text": "Witaj dwa trzy fs hej",
+      "lang": "de",
+      "text": "SomeText",
       "css": {
-        "font-family": "fantasy",
-        "font-size": "18px",
-        "color": "red",
-        "padding-left": "15px"
+        "background-color": "wheat",
+        "display": "flex",
+        "flex-direction": "column",
+        "margin-left": "20%",
+        "margin-right": "20%",
+        "align-items": "center",
+        "border-top-width": "1px",
+        "border-right-width": "1px",
+        "border-bottom-width": "1px",
+        "border-left-width": "1px",
+        "border-top-style": "solid",
+        "border-right-style": "solid",
+        "border-bottom-style": "solid",
+        "border-left-style": "solid",
+        "border-top-color": "black",
+        "border-right-color": "black",
+        "border-bottom-color": "black",
+        "border-left-color": "black",
+        "border-image-source": "initial",
+        "border-image-slice": "initial",
+        "border-image-width": "initial",
+        "border-image-outset": "initial",
+        "border-image-repeat": "initial"
       }
     },
     {
       "id": 13,
       "uuid": "profileNavContent",
-      "text": "fdasdsadsdg sf"
+      "lang": "de",
+      "text": "Hi everyone, this text will be editable after ctrl + shift + e.",
+      "css": {}
     },
     {
       "id": 17,
       "uuid": "hubertContainer",
       "text": "a",
+      "lang": "de",
       "css": {
         "font-family": "fantasy",
         "font-size": "12px",
@@ -93,10 +260,151 @@
         "padding-bottom": "10px",
         "padding-left": "30px"
       }
+    },
+    {
+      "uuid": "hubertTextInContainer",
+      "text": "",
+      "lang": "de",
+      "css": {},
+      "id": 18
+    },
+    {
+      "uuid": "hubertTextInContainer",
+      "text": "",
+      "css": {},
+      "lang": "de",
+      "id": 19
+    },
+    {
+      "id": 20,
+      "uuid": "hubertTextInContainer2",
+      "text": "Lorem asdhpiuFHDAIUDHF ASDUIH DUSIH SIUDFH SDUIHF IUSDHF IUSDH UDSHF SUDH UDSH DUH DUHD UHDUHD UDHU iuahdiu hadif ksd iudsiof jdsiof jidj dij idj dijfdi jioajao djdisfj iodfj idjf idjfidjfidjfdi difjdi dif idjf didfj dijf idji djfi dfi jdij dijf dijfidjif jdi jdij dij dif jdijf dij idj dij dij dij dij dijf idj fidj idj fiodajsoifjdifjdifjdif jdi jfdijdijfdif jdijf difjdij idjf Eos scaevola vivendum consequuntur ne, omnis justo in vis. Appareat perfecto has eu, facer consequat repudiandae cum cu. Iisque intellegebat no pri, velit aeque soleat eam ne, vel te veri timeam. Est facilisi dissentias id, tota inani qui ut. Velit euismod volutpat te pri.idfjdi i Eos scaevola vivendum consequuntur ne, omnis justo in vis. Appareat perfecto has eu, facer consequat repudiandae cum cu. Iisque intellegebat no pri, velit aeque soleat eam ne, vel te veri timeam. Est facilisi dissentias id, tota inani qui ut. Velit euismod volutpat te pri.   ",
+      "css": {
+        "padding-top": "2rem",
+        "padding-right": "2rem",
+        "padding-bottom": "2rem",
+        "padding-left": "2rem"
+      },
+      "lang": "de"
+    },
+    {
+      "uuid": "hubertTextInContainer",
+      "lang": "de",
+      "text": "",
+      "css": {},
+      "id": 21
+    },
+    {
+      "id": 22,
+      "lang": "de",
+      "uuid": "hubertTextInContainer",
+      "text": "Hello World!",
+      "css": {
+        "font-size": "32px",
+        "font-weight": "700"
+      }
+    },
+    {
+      "uuid": "abc00",
+      "lang": "de",
+      "css": {},
+      "id": 23
+    },
+    {
+      "id": 24,
+      "uuid": "hubert",
+      "text": "Deutch",
+      "css": {
+        "background-color": "wheat",
+        "display": "flex",
+        "flex-direction": "column",
+        "margin-left": "20%",
+        "margin-right": "20%",
+        "align-items": "center",
+        "border-top-width": "1px",
+        "border-right-width": "1px",
+        "border-bottom-width": "1px",
+        "border-left-width": "1px",
+        "border-top-style": "solid",
+        "border-right-style": "solid",
+        "border-bottom-style": "solid",
+        "border-left-style": "solid",
+        "border-top-color": "black",
+        "border-right-color": "black",
+        "border-bottom-color": "black",
+        "border-left-color": "black",
+        "border-image-source": "initial",
+        "border-image-slice": "initial",
+        "border-image-width": "initial",
+        "border-image-outset": "initial",
+        "border-image-repeat": "initial"
+      },
+      "lang": "de"
+    },
+    {
+      "id": 25,
+      "uuid": "hubertTextInContainer",
+      "text": "Hallo Welt",
+      "css": {
+        "font-size": "32px",
+        "font-weight": "700"
+      },
+      "lang": "de"
+    },
+    {
+      "id": 26,
+      "uuid": "hubert",
+      "text": "POLSKA",
+      "css": {
+        "background-color": "wheat",
+        "display": "flex",
+        "flex-direction": "column",
+        "margin-left": "20%",
+        "margin-right": "20%",
+        "align-items": "center",
+        "border-top-width": "1px",
+        "border-right-width": "1px",
+        "border-bottom-width": "1px",
+        "border-left-width": "1px",
+        "border-top-style": "solid",
+        "border-right-style": "solid",
+        "border-bottom-style": "solid",
+        "border-left-style": "solid",
+        "border-top-color": "black",
+        "border-right-color": "black",
+        "border-bottom-color": "black",
+        "border-left-color": "black",
+        "border-image-source": "initial",
+        "border-image-slice": "initial",
+        "border-image-width": "initial",
+        "border-image-outset": "initial",
+        "border-image-repeat": "initial"
+      },
+      "lang": "pl"
+    },
+    {
+      "id": 27,
+      "uuid": "hubertTextInContainer",
+      "text": "Witaj świecie",
+      "css": {},
+      "lang": "pl"
+    },
+    {
+      "id": 28,
+      "uuid": "hubertTextInContainer2",
+      "text": "Vestibulum in augue nisl. Duis mattis tellus a lacinia facilisis. Curabitur at nisl enim. Curabitur sit amet turpis malesuada, vestibulum velit eu, dignissim velit. Nam arcu quam, faucibus ac elementum non, feugiat sed orci. Pellentesque magna neque, dapibus sit amet interdum nec, placerat quis sapien. Ut odio orci, dapibus blandit aliquet ultricies, accumsan sed magna. Praesent elementum neque est, sed congue risus imperdiet nec. Ut ut dolor magna. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Praesent finibus, orci eget aliquam eleifend, augue massa euismod sapien, venenatis hendrerit est leo eget sem. Aenean tellus arcu, ultrices non nulla nec, tincidunt mattis elit. Morbi iaculis ex quis lorem congue rutrum. Mauris commodo nibh velit, posuere placerat mi ultrices vel. In hac habitasse platea dictumst. Vivamus ornare at dolor quis tincidunt.",
+      "css": {
+        "padding-top": "2rem",
+        "padding-right": "2rem",
+        "padding-bottom": "2rem",
+        "padding-left": "2rem"
+      },
+      "lang": "pl"
     }
   ],
   "simplevideo": [
     {
+      "lang": "de",
       "id": 1,
       "uuid": "firstVideo",
       "url": "http://techslides.com/demos/sample-videos/small.mp4 "
@@ -104,24 +412,45 @@
   ],
   "simpleimage": [
     {
+      "lang": "de",
       "id": 23,
       "uuid": "firstImage",
       "url": "http://www.pngall.com/wp-content/uploads/2016/03/Bug-PNG-2.png"
     },
     {
+      "lang": "de",
       "uuid": "card",
       "url": "http://www.pngall.com/wp-content/uploads/2016/03/Bug-PNG-2.png",
       "id": 24
     },
     {
+      "lang": "de",
       "uuid": "hubertImage",
       "url": "http://localhost:3000/uploaded/Zrzut%20ekranu%202018-05-31%20o%2021.23.24.png",
       "id": 25
     },
     {
       "uuid": "hubertImage",
-      "url": "http://localhost:3000/uploaded/Zrzut%20ekranu%202018-08-04%20o%2010.52.50.png",
+      "url": "http://localhost:3000/uploaded/240px-Flag_of_Germany.svg.png",
       "id": 26
+    },
+    {
+      "lang": "de",
+      "uuid": "hubertImage",
+      "url": "http://localhost:3000/uploaded/Zrzut ekranu 2018-07-14 o 12.12.04.png",
+      "id": 27
+    },
+    {
+      "lang": "de",
+      "uuid": "hubertImage",
+      "url": "http://localhost:3000/uploaded/240px-Flag_of_Germany.svg.png",
+      "id": 28
+    },
+    {
+      "uuid": "hubertImage",
+      "url": "http://localhost:3000/uploaded/pol.jpg",
+      "lang": "pl",
+      "id": 29
     }
   ]
 }

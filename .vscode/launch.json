@@ -7,7 +7,7 @@
         {
             "type": "node",
             "request": "launch",
-            "name": "Launch Program",
+            "name": "Server node",
             "program": "${workspaceFolder}/server.js"
         }
     ]

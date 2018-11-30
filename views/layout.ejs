@@ -24,12 +24,16 @@
 
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css" integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ"
         crossorigin="anonymous">
+        
 </head>
 <%- include nav.ejs %>
     <%- body %>
 
         <script>
-            simplecms.init("http://localhost:3000", "f438548f5f0bbfd5733f34c80bcf412bf7c7c317");
+            simplecms.init({
+                url: "http://localhost:3000",
+                apikey: "85f1f9772b69f4e8762b252de9c3cafabaf6ac04"
+            });
         </script>
 
         </html>

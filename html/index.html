@@ -5,10 +5,12 @@
     <meta charset="UTF-8">
 
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css">
-    <link rel="stylesheet" href="/simplecms.min.css">
-    <!-- <link rel="stylesheet" href="/simplecms.css"> -->
-    
+    <link rel="stylesheet" href="/simplecms.css">
+    <!-- <link rel="stylesheet" href="/simplecms.min.css"> -->
+
+
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js"></script>
     <!-- <script src="/simplecms.min.js"></script> -->
     <script src="/simplecms.js"></script>
@@ -18,17 +20,28 @@
 
 <body>
     <div class="containter">
-        <hr/>
-        <h1>Test</h1>
-        <hr/>
+        <hr />
+        <div class="d-flex justify-content-around">
+                <h1>Test</h1>
+                <simplelanguage></simplelanguage>
+        </div>
+        <hr />
 
         <simpletext uuid="hubert"></simpletext>
-        <simpletext uuid="hubertContainer"></simpletext>
-        <simpleimage uuid="hubertImage"></simpleimage>
+
+        <simplecontainer uuid="hubertContainer">
+            <simpletext uuid="hubertTextInContainer"></simpletext>
+            <simpleimage uuid="hubertImage"></simpleimage>
+            <simpletext uuid="hubertTextInContainer2"></simpletext>
+        </simplecontainer>
     </div>
 
     <script>
-        simplecms.init("http://localhost:3000", "85f1f9772b69f4e8762b252de9c3cafabaf6ac04")
+        simplecms.init({
+            url: "http://localhost:3000",
+            apikey: "85f1f9772b69f4e8762b252de9c3cafabaf6ac04",
+            defaultLang: "pl"
+        });
     </script>
 
 </body>

@@ -23,6 +23,7 @@ app.simpleeditor = (function () {
                     app.simplevideo.init();
                     app.simpleimage.init();
                     app.simpletext.init();
+                    app.simplecontainer.init();
                     app.menu.init();
                 }
             }
@@ -39,7 +40,38 @@ app.simpleeditor = (function () {
             }
         });
     }
+
+    function _readStyles(el) {
+        var styles = {};
+        var i = 0;
+        while (el.style[i]) {
+            styles[el.style[i]] = el.style[el.style[i]]
+            i++;
+        }
+        return styles;
+    }
+
+    function _clearStyles(obj) {
+        var s = obj.style;
+        while (s[0]) {
+            s[s[0]] = ""
+        }
+    }
+
+    function _unwrap(data) {
+        if (data instanceof Array) {
+            if (data.length > 0) {
+                return data[0];
+            }
+        } else {
+            return data;
+        }
+    }
+
     return {
-        listenForCombination: _listenForCombination
+        listenForCombination: _listenForCombination,
+        readStyles: _readStyles,
+        clearStyles: _clearStyles,
+        unwrap: _unwrap
     }
 }())

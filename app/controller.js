@@ -60,6 +60,16 @@ var controller = function (server, userMiddleware) {
         userMiddleware(req, res)
         res.render('dashboard/media')
     });
+
+    server.get('/simplecms/dashboard/lang/', (req, res) => {
+        userMiddleware(req, res)
+        res.render('dashboard/lang')
+    });
+
+    server.get('/simplecms/dashboard/newlang/', (req, res) => {
+        userMiddleware(req, res)
+        res.render('dashboard/newlang')
+    });
 };
 
 module.exports = controller;

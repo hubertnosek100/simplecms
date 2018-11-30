@@ -1,0 +1,36 @@
+<body class="scms-body">
+
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css" integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ"
+        crossorigin="anonymous">
+    <div class="container pt-5">
+        <div class="d-flex justify-content-between">
+            <div>
+                <h2>Languages settings</h2>
+                <p>Manage languages on your site.</p>
+            </div>
+            <div>
+                <button onclick="app.goTo('/simplecms/dashboard/newlang')" type="submit" class="btn btn-primary scms-btn scms-primary">
+                    <i class="fas fa-plus"></i>
+                    Add language
+                </button>
+            </div>
+
+        </div>
+        <hr />
+        <div class="pt-2 ">
+            <div class="d-flex justify-content-center">
+
+                <div class="lang-list">
+
+                </div>
+            </div>
+
+
+            <%- include stickymenu.ejs %>
+
+        </div>
+    </div>
+    <script>
+        app.lang.init();
+    </script>
+</body>
