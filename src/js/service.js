@@ -32,12 +32,14 @@ app.service = (function () {
             dataType = "html"
         }
 
-        if (!model.lang) {
-            model.lang = "";
-        }
-
-        if (localStorage["lang"]) {
-            model.lang = localStorage["lang"];
+        if(model){
+            if (!model.lang) {
+                model.lang = "";
+            }
+    
+            if (localStorage["lang"]) {
+                model.lang = localStorage["lang"];
+            }
         }
 
         $.ajax({
