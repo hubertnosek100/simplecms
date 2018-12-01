@@ -197,15 +197,6 @@
       "template": "TestCollection",
       "lang": "de",
       "id": 8
-    },
-    {
-      "uuid": "abc",
-      "TestColor": "rgb(255, 128, 0)",
-      "undefined": [],
-      "templateid": "6",
-      "template": "Color",
-      "lang": "de",
-      "id": 9
     }
   ],
   "simpletext": [

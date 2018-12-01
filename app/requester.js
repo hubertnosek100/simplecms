@@ -26,7 +26,9 @@ var requester = (function () {
             }
 
             var key = _transformKey(req);
-
+            if(key === -1){
+                return;
+            }
 
             if (counter[key]) {
                 counter[key] = counter[key] + 1;
@@ -50,13 +52,11 @@ var requester = (function () {
         for (let i = 0; i < compontents.length; i++) {
             const comp = compontents[i];
             if(key.indexOf(comp) !== -1){
-                key = comp;
-                break;
+                return comp;
             }
         }
 
-
-        return key;
+        return -1;
     }
 
 
