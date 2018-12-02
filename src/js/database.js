@@ -1,32 +1,39 @@
 app.database = (function () {
-    var _pager;
+    var _pager, _search;
+
     function _init() {
-        _pager =  app.ui.pager;
+        _pager = app.ui.pager;
         _pager.onChanged(_reload)
+
+        _search = app.ui.search;
+        _search.assign('input[type="search"]')
+        _search.onChanged(_reload)
+
+
         $("#scmsDbTable").parent().append(_pager.build())
 
         for (let i = 0; i < app.static.components.length; i++) {
             const component = app.static.components[i];
             $("#scmsTableSelect").append("<option value='" + component + "'>" + component + "</option>");
         }
-        app.service.get('/' + app.static.simpletext + _pager.getQuery(), _set);
+        app.service.get('/' + app.static.simpletext + _pager.getQuery() + _search.getQuery(), _set);
 
         $("#scmsTableSelect").on("change", _changed);
     }
 
-    function _changed(){
+    function _changed() {
         _pager.reset();
         _reload();
     }
 
     function _reload(data) {
         $("#scmsDbTable").find("tbody").empty();
-        app.service.get('/' + $("#scmsTableSelect").val() + _pager.getQuery(), _set);
+        app.service.get('/' + $("#scmsTableSelect").val() + _pager.getQuery() + _search.getQuery(), _set);
     }
 
     function _set(data) {
         var $tableBody = $("#scmsDbTable").find("tbody");
-       
+
 
         data.forEach(function (el) {
             $tableBody.append(_newELement(el))

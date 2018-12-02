@@ -4,12 +4,22 @@
 
         <h2>Database</h2>
         <p>List all of objects you have in your simplecms.</p>
-        <hr/>
+        <hr />
 
-        <div class="form-group w-25">
-            <label for="scmsTableSelect">Select table:</label>
-            <select class="form-control" id="scmsTableSelect">
-            </select>
+        <div class="d-flex justify-content-between">
+            <div class="form-group w-25">
+                <label for="scmsTableSelect">Select table:</label>
+                <select class="form-control" id="scmsTableSelect">
+                </select>
+            </div>
+            <div class="d-flex align-items-end mb-4">
+                <form class="input-icon ">
+                    <input type="search" class="form-control header-search" placeholder="Search..." tabindex="1">
+                    <div class="input-icon-addon">
+                        <i class="fe fe-search"></i>
+                    </div>
+                </form>
+            </div>
         </div>
 
         <div class="card">
