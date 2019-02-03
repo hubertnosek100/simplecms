@@ -21,8 +21,7 @@
   "devDependencies": {
     "gulp": "^3.9.1",
     "gulp-clean-css": "^3.10.0",
-    "gulp-minify": "^3.1.0",
-    "json-server": "^0.14.0"
+    "gulp-minify": "^3.1.0"
   },
   "name": "simplecms",
   "description": "Simple cms for small and medium size pages.",
