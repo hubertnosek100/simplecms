@@ -85,7 +85,7 @@
       "id": 6,
       "uuid": "hubertContainer",
       "css": {
-        "background-color": "wheat",
+        "background-color": "red",
         "display": "flex",
         "flex-direction": "column",
         "margin-left": "20%",
@@ -204,7 +204,7 @@
       "id": 12,
       "uuid": "hubert",
       "lang": "de",
-      "text": "SomeText",
+      "text": "Another",
       "css": {
         "background-color": "wheat",
         "display": "flex",

@@ -43,8 +43,8 @@ app.template = (function () {
 
     function _newELement(element) {
         $row = $("<tr></tr>");
-        $rmbtn = $("<button db-id='" + element.id + "' class='btn btn-outline-danger'><i class='fas fa-trash-alt'></i></button>");
-        $editbtn = $("<button db-id='" + element.id + "' data-toggle='modal' data-target='#editJsonModal' class='btn btn-outline-primary ml-3' style='width: 40px;'><i class='far fa-edit'></i></i></button>");
+        $rmbtn = $("<button db-id='" + element.id + "' class='btn btn-sm btn-outline-danger'><i class='fas fa-trash-alt'></i> Remove</button>");
+        $editbtn = $("<button db-id='" + element.id + "' data-toggle='modal' data-target='#editJsonModal' class='btn btn-sm btn-outline-primary ml-3' ><i class='far fa-edit'></i> Edit</button>");
 
         $rmbtn.on("click", _remove);
         $editbtn.on("click", _edit);

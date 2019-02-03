@@ -27,7 +27,7 @@ var requester = (function () {
 
             var key = _transformKey(req);
             if(key === -1){
-                return;
+                return
             }
 
             if (counter[key]) {

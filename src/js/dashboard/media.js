@@ -26,7 +26,9 @@ var media = (function () {
             });
 
             table.append(tbody);
-            $list.append($('<div class="card"></div>').append(table));
+            $list.append($('<div class="card"></div>')
+                .append($('<div class="card-status bg-gray"></div>'))
+                .append(table));
         }
     }
 
@@ -38,11 +40,11 @@ var media = (function () {
 
         var url = _makeMediaUrl(element)
         $imgCol.append('<img style="height:40px; width:40px" src= "' + url + '"/>')
-        var $copyBtn = $("<button data-url='" + url + "' class='btn btn-outline-dark'><i class='fas fa-copy'></i></button>");
+        var $copyBtn = $("<button data-url='" + url + "' class='btn btn-sm btn-outline-dark'><i class='fas fa-copy'></i> Copy</button>");
         $copyBtn.on('click', _copyToCliboard)
         $copyCol.append($copyBtn)
 
-        var $rmBtn = $("<button data-name='" + element + "' class='btn btn-outline-danger ml-3'><i class='fas fa-trash-alt'></i></button>");
+        var $rmBtn = $("<button data-name='" + element + "' class='btn btn-sm btn-outline-danger ml-3'><i class='fas fa-trash-alt'></i> Remove</button>");
         $rmBtn.on('click', _remove)
         $copyCol.append($rmBtn)
 

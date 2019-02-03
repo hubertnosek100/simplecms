@@ -4,12 +4,13 @@
     <div class="container pt-5">
         <h2>Dashboard</h2>
         <p>Here your will manage you simplecms.</p>
-        <hr/>
+        <hr />
         <div class="pt-5 d-flex justify-content-center flex-wrap">
-            <div class="card w-75">
+            <div class="card w-100">
+
 
                 <div class="card-header">
-                    <label>API key </label>
+                    <h3 class="card-title">API key</h3>
                 </div>
                 <div class="card-body">
                     <div class="input-group w-50">
@@ -27,33 +28,87 @@
                 </div>
             </div>
 
-            <div class="card w-75">
-                <div class="card-header d-flex justify-content-between">
-                    <div>
-                            Requests diagram
+            <div class="card w-100">
+                    <div class="card-header d-flex justify-content-between">
+                        <h3 class="card-title">Requests diagram</h3>
+    
+                        <div class="selectgroup">
+                            <label class="selectgroup-item">
+                                <input type="radio" name="when" value="daily" class="selectgroup-input" checked="">
+                                <span class="selectgroup-button">Daily</span>
+                            </label>
+    
+                            <label class="selectgroup-item">
+                                <input type="radio" name="when" value="monthly" class="selectgroup-input">
+                                <span class="selectgroup-button">Monthly</span>
+                            </label>
+                            <label class="selectgroup-item">
+                                <input type="radio" name="when" value="yearly" class="selectgroup-input">
+                                <span class="selectgroup-button">Yearly</span>
+                            </label>
+                        </div>
                     </div>
-                    <div class="selectgroup">
-                        <label class="selectgroup-item">
-                            <input type="radio" name="when" value="daily" class="selectgroup-input" checked="">
-                            <span class="selectgroup-button">Daily</span>
-                        </label>
-       
-                        <label class="selectgroup-item">
-                            <input type="radio" name="when" value="monthly" class="selectgroup-input">
-                            <span class="selectgroup-button">Monthly</span>
-                        </label>
-                        <label class="selectgroup-item">
-                            <input type="radio" name="when" value="yearly" class="selectgroup-input">
-                            <span class="selectgroup-button">Yearly</span>
-                        </label>
+                    <div class="card-body">
+                        <div id="chart-employment" style="height: 16rem; max-height: 256px; position: relative;" class="c3">
+    
+                        </div>
                     </div>
+                </div>
+
+            <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Accounts configuration</h3>
+                    </div>
+                    <div class="card-body">
+                        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aperiam deleniti fugit incidunt, iste,
+                        itaque minima neque pariatur perferendis sed suscipit velit vitae voluptatem. A consequuntur,
+                        deserunt eaque error nulla temporibus!
+                    </div>
+                    <div class="card-footer">
+                        This is standard card footer
+                    </div>
+                </div>
+            <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Backups configuration</h3>
+                    </div>
+                    <div class="card-body">
+                        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aperiam deleniti fugit incidunt, iste,
+                        itaque minima neque pariatur perferendis sed suscipit velit vitae voluptatem. A consequuntur,
+                        deserunt eaque error nulla temporibus!
+                    </div>
+                    <div class="card-footer">
+                        This is standard card footer
+                    </div>
+                </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Blog configuration</h3>
                 </div>
                 <div class="card-body">
-                    <div id="chart-employment" style="height: 16rem; max-height: 256px; position: relative;" class="c3">
-
-                    </div>
+                    Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aperiam deleniti fugit incidunt, iste,
+                    itaque minima neque pariatur perferendis sed suscipit velit vitae voluptatem. A consequuntur,
+                    deserunt eaque error nulla temporibus!
+                </div>
+                <div class="card-footer">
+                    This is standard card footer
                 </div>
             </div>
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Newsletter configuration</h3>
+                </div>
+                <div class="card-body">
+                    Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aperiam deleniti fugit incidunt, iste,
+                    itaque minima neque pariatur perferendis sed suscipit velit vitae voluptatem. A consequuntur,
+                    deserunt eaque error nulla temporibus!
+                </div>
+                <div class="card-footer">
+                    This is standard card footer
+                </div>
+            </div>
+
 
         </div>
         <%- include stickymenu.ejs %>

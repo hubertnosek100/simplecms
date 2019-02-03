@@ -12,24 +12,30 @@
         <hr />
         <div class="pt-2 ">
             <div class="d-flex justify-content-center">
-                <form action="/newlang" method="POST">
-                    <div class="form-group">
-                        <label for="code">Code</label>
-                        <input name="code" type="text" class="form-control" id="code" placeholder="pl">
-                    </div>
-                    <div class="form-group">
+                <fieldset class="form-fieldset w-50">
+
+                    <form action="/newlang" method="POST">
+                        <div class="form-group">
+                            <label for="code">Code</label>
+                            <input name="code" type="text" class="form-control" id="code" placeholder="pl">
+                        </div>
+                        <div class="form-group">
                             <label for="placeholder">Placeholder</label>
                             <input name="placeholder" type="text" class="form-control" id="placeholder" placeholder="Polski">
                         </div>
-                    <div class="form-group">
-                        <label for="url">Image url</label>
-                        <input name="url" type="text" class="form-control" id="url" placeholder="http://image.io/pl">
-                    </div>
-                    <button type="submit" class="btn btn-primary scms-btn scms-primary">
-                        <i class="fas fa-plus"></i>
-                        Add language
-                    </button>
-                </form>
+                        <div class="form-group">
+                            <label for="url">Image url</label>
+                            <input name="url" type="text" class="form-control" id="url" placeholder="http://image.io/pl">
+                        </div>
+                        <div class="d-flex flex-row-reverse">
+                            <button type="submit" class="btn btn-primary scms-btn scms-primary">
+                                <i class="fas fa-plus"></i>
+                                Add language
+                            </button>
+                        </div>
+
+                    </form>
+                </fieldset>
 
             </div>
 

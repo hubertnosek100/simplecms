@@ -19,6 +19,7 @@ app.database = (function () {
         app.service.get('/' + app.static.simpletext + _pager.getQuery() + _search.getQuery(), _set);
 
         $("#scmsTableSelect").on("change", _changed);
+        $("#editJsonForm").on("submit", _send);
     }
 
     function _changed() {
@@ -42,13 +43,15 @@ app.database = (function () {
 
     function _newELement(element) {
         $row = $("<tr></tr>");
-        $rmbtn = $("<button db-id='" + element.id + "' class='btn btn-outline-danger'><i class='fas fa-trash-alt'></i></button>");
+        $rmbtn = $("<button db-id='" + element.id + "' class='btn btn-sm btn-outline-danger'><i class='fas fa-trash-alt'></i> Remove</button>");
+        $editbtn = $("<button db-id='" + element.id + "' data-toggle='modal' data-target='#editJsonModal'  class='btn btn-sm btn-outline-primary mt-3' ><i class='far fa-edit'></i> Edit</button>");
 
         $rmbtn.on("click", _remove);
+        $editbtn.on("click", _edit);
 
         $idColumn = $("<td></td>").text(element.id);
         $contentColumn = $("<td></td>").text(JSON.stringify(element));
-        $actionColumn = $("<td></td>").append($rmbtn);
+        $actionColumn = $("<td></td>").append($rmbtn).append($editbtn);
 
         $row.append($idColumn);
         $row.append($contentColumn);
@@ -66,6 +69,27 @@ app.database = (function () {
         var component = $("#scmsTableSelect").val();
         app.service.delete("/" + component + "/" + id);
         _reload();
+    }
+
+    function _edit(params) {
+        var id = '';
+        if (params.target.tagName === "BUTTON") {
+
+            id = $(params.target).attr("db-id");
+        } else {
+            id = $(params.target).parent().attr("db-id");
+        }
+
+        app.service.get("/" + $("#scmsTableSelect").val()  + '/' + id, function (data) {
+            $('#editJsonText').val(JSON.stringify(data, undefined, 4))
+        });
+    }
+
+    function _send(e) {
+        e.preventDefault();
+        var model = JSON.parse($('#editJsonText').val());
+        app.service.put("/" + $("#scmsTableSelect").val() + '/' + model.id, model);
+        $('#editJsonModal').modal('hide');
     }
 
     return {

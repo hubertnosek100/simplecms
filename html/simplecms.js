@@ -76,6 +76,7 @@ app.database = (function () {
         app.service.get('/' + app.static.simpletext + _pager.getQuery() + _search.getQuery(), _set);
 
         $("#scmsTableSelect").on("change", _changed);
+        $("#editJsonForm").on("submit", _send);
     }
 
     function _changed() {
@@ -99,13 +100,15 @@ app.database = (function () {
 
     function _newELement(element) {
         $row = $("<tr></tr>");
-        $rmbtn = $("<button db-id='" + element.id + "' class='btn btn-outline-danger'><i class='fas fa-trash-alt'></i></button>");
+        $rmbtn = $("<button db-id='" + element.id + "' class='btn btn-sm btn-outline-danger'><i class='fas fa-trash-alt'></i> Remove</button>");
+        $editbtn = $("<button db-id='" + element.id + "' data-toggle='modal' data-target='#editJsonModal'  class='btn btn-sm btn-outline-primary mt-3' ><i class='far fa-edit'></i> Edit</button>");
 
         $rmbtn.on("click", _remove);
+        $editbtn.on("click", _edit);
 
         $idColumn = $("<td></td>").text(element.id);
         $contentColumn = $("<td></td>").text(JSON.stringify(element));
-        $actionColumn = $("<td></td>").append($rmbtn);
+        $actionColumn = $("<td></td>").append($rmbtn).append($editbtn);
 
         $row.append($idColumn);
         $row.append($contentColumn);
@@ -123,6 +126,27 @@ app.database = (function () {
         var component = $("#scmsTableSelect").val();
         app.service.delete("/" + component + "/" + id);
         _reload();
+    }
+
+    function _edit(params) {
+        var id = '';
+        if (params.target.tagName === "BUTTON") {
+
+            id = $(params.target).attr("db-id");
+        } else {
+            id = $(params.target).parent().attr("db-id");
+        }
+
+        app.service.get("/" + $("#scmsTableSelect").val()  + '/' + id, function (data) {
+            $('#editJsonText').val(JSON.stringify(data, undefined, 4))
+        });
+    }
+
+    function _send(e) {
+        e.preventDefault();
+        var model = JSON.parse($('#editJsonText').val());
+        app.service.put("/" + $("#scmsTableSelect").val() + '/' + model.id, model);
+        $('#editJsonModal').modal('hide');
     }
 
     return {
@@ -656,717 +680,6 @@ app.modal = (function () {
         create: _create
     }
 }());
-app.dashboard = (function () {
-
-    function _init() {
-        $(document).ready(function () {
-            _load();
-
-            $('#apikeygeneratebtn').on('click', _generate);
-            app.dashboard.chart();
-        });
-    }
-
-    function _load() {
-        app.service.get("/apikey", _set);
-    }
-
-    function _set(auth) {
-        if (auth.apikey !== "default") {
-            $('#apikeytext').val(auth.apikey)
-        }
-    }
-
-    function _generate(params) {
-        var api = _guid();
-        $('#apikeytext').val(api);
-        app.service.post('/apikey/', {
-            apikey: api
-        });
-    }
-
-    function _guid() {
-        function s4() {
-            return Math.floor((1 + Math.random()) * 0x10000)
-                .toString(16)
-                .substring(1);
-        }
-        var s = '';
-        for (let i = 0; i < 10; i++) {
-            s += s4();
-        }
-        return s;
-    }
-
-
-
-    return {
-        init: _init
-    }
-}());
-
-app.dashboard.chart = function () {
-
-    $('input[type=radio][name=when]').change(function () {
-        console.log(this.value);
-        if (this.value === "daily") {
-            drawDaily();
-        } else if (this.value === "monthly") {
-            drawMonthly();
-        } else if (this.value === "yearly") {
-            drawYearly();
-        }
-    });
-
-    var drawYearly = function () {
-        app.service.get("/requester?when=yearly", function (data) {
-            var parsed = app.dashboard.yearData(data);
-            draw(parsed);
-        });
-    }
-
-    var drawMonthly = function () {
-        app.service.get("/requester?when=monthly", function (data) {
-            var parsed = app.dashboard.monthData(data);
-            draw(parsed);
-        });
-    }
-
-    var drawDaily = function () {
-        app.service.get("/requester?when=daily", function (data) {
-            var parsed = app.dashboard.hourData(data);
-            draw(parsed);
-        });
-    }
-
-    drawDaily();
-    var draw = function (parsed) {
-        var chart = c3.generate({
-            bindto: '#chart-employment', // id of chart wrapper
-            data: {
-                columns: parsed.data,
-                type: 'line', // default type of chart
-                colors: parsed.colors
-            },
-            axis: {
-                x: {
-                    type: 'category',
-                    // name of each category
-                    categories: parsed.categories
-                },
-            },
-            legend: {
-                show: true, //hide legend
-            },
-            padding: {
-                bottom: 0,
-                top: 0
-            },
-        });
-    }
-};
-app.exponents = (function () {
-    function _init() {
-        $(document).ready(function () {
-            _load();
-            $("#editJsonForm").on("submit", _send);
-        });
-    }
-
-    function _load() {
-        app.service.get("/" + app.static.exponent, _set);
-    }
-
-    function _set(data) {
-        var $list = $('.exponents-list');
-
-        if (data.length === 0) {
-            $p = $('<p class="p-3">There is no exponents. </p>');
-            var btn = buttonBuilder.build("Create new exponent", "/simplecms/dashboard/newexponent");
-            $p.append(btn);
-            $list.append($p)
-        } else {
-            data.forEach(element => {});
-
-            var table = $('<table class="table table-hover text-center"></table>');
-            var head = $('<thead class=""></thead>');
-            var headTr = $('<tr> </tr>');
-            headTr.append('<td>#ID</td>');
-            headTr.append('<td>Template</td>');
-            headTr.append('<td>Uuid</td>');
-            headTr.append('<td>Action</td>');
-            head.append(headTr);
-            table.append(head);
-
-            var tbody = $('<tbody></tbody>')
-            data.forEach(el => {
-                tbody.append(_newELement(el))
-            });
-
-            table.append(tbody);
-            var btn = buttonBuilder.build("Create new exponent", "/simplecms/dashboard/newexponent");
-            $list.append($('<div class="card"></div>').append(table));
-            $list.append(btn);
-        }
-    }
-
-    function _newELement(element) {
-        $row = $("<tr></tr>");
-        $rmbtn = $("<button db-id='" + element.id + "' class='btn btn-outline-danger'><i class='fas fa-trash-alt'></i></button>");
-        $editbtn = $("<button db-id='" + element.id + "' data-toggle='modal' data-target='#editJsonModal'  class='btn btn-outline-primary ml-3' style='width: 40px;'><i class='far fa-edit'></i></i></button>");
-
-        $rmbtn.on("click", _remove);
-        $editbtn.on("click", _edit);
-        $idColumn = $("<td></td>").text(element.id);
-        $uuidColumn = $("<td></td>").text(element.template);
-        $nameColumn = $("<td></td>").text(element.uuid);
-        $actionColumn = $("<td></td>").append($rmbtn).append($editbtn);
-
-        $row.append($idColumn);
-        $row.append($uuidColumn);
-        $row.append($nameColumn);
-        $row.append($actionColumn);
-        return $row;
-    }
-
-    function _remove(params) {
-        var id = '';
-        if (params.target.tagName === "BUTTON") {
-            id = $(params.target).attr("db-id");
-        } else {
-            id = $(params.target).parent().attr("db-id");
-        }
-        app.service.delete("/" + app.static.exponent + "/" + id);
-        _reload();
-    }
-
-    function _edit(params) {
-        var id = '';
-        if (params.target.tagName === "BUTTON") {
-
-            id = $(params.target).attr("db-id");
-        } else {
-            id = $(params.target).parent().attr("db-id");
-        }
-
-        app.service.get("/" + app.static.exponent + '/' + id, function (data) {
-            $('#editJsonText').val(JSON.stringify(data, undefined, 4))
-        });
-    }
-
-    function _send(e) {
-        e.preventDefault();
-        var model = JSON.parse($('#editJsonText').val());
-        app.service.put("/" + app.static.exponent + '/' + model.id, model);
-        $('#editJsonModal').modal('hide');
-    }
-
-    function _reload() {
-        $('.exponents-list').empty();
-        _load();
-    }
-
-
-    return {
-        init: _init
-    }
-}());
-var lang = (function () {
-
-    function _init() {
-        app.service.get('/lang', _set);
-    }
-
-    function _set(data) {
-
-        var $list = $('.lang-list')
-        $('.lang-list').empty();
-        if (data.length === 0) {
-            $p = $('<p class="p-3">There is no languages. </p>');
-            $list.append($p)
-        } else {
-            var table = $('<table class="table table-hover text-center"></table>');
-            var head = $('<thead class=""></thead>');
-            var headTr = $('<tr> </tr>');
-            headTr.append('<td>Image</td>');
-            headTr.append('<td>Code</td>');
-            headTr.append('<td>Placeholder</td>');
-            headTr.append('<td>Action</td>');
-            head.append(headTr);
-            table.append(head);
-
-            var tbody = $('<tbody></tbody>')
-            data.forEach(el => {
-                tbody.append(_newELement(el))
-            });
-
-            table.append(tbody);
-            $list.append($('<div class="card"></div>').append(table));
-        }
-    }
-
-    function _newELement(element) {
-        var $img = $('<img style="height:40px; width:40px" src= "' + element.url + '"/>')
-        var $rmBtn = $("<button data-name='" + element.code + "' class='btn btn-outline-danger ml-3'><i class='fas fa-trash-alt'></i></button>");
-        $rmBtn.on('click', _remove)
-
-        return $("<tr></tr>")
-            .append($("<td></td>").append($img))
-            .append($("<td></td>").text(element.code))
-            .append($("<td></td>").text(element.placeholder))
-            .append($("<td></td>").append($rmBtn));
-    }
-
-
-    function _remove(e) {
-        var name = ''
-        if (e.target.tagName === "BUTTON") {
-            name = $(e.target).attr('data-name')
-        } else {
-            name = $(e.target).parent().attr("data-name");
-        }
-
-        app.service.post("/removelang/", {
-            code: name
-        });
-        _reload();
-    }
-
-    function _reload() {
-        $('.media-list').empty();
-        _init();
-    }
-
-    return {
-        init: _init
-    }
-}());
-
-app.lang = lang;
-var media = (function () {
-
-    function _init() {
-        app.service.get('/media', _set);
-    }
-
-    function _set(data) {
-        var $list = $('.media-list')
-
-        if (data.length === 0) {
-            $p = $('<p class="p-3">There is no media. </p>');
-            $list.append($p)
-        } else {
-            var table = $('<table class="table table-hover text-center"></table>');
-            var head = $('<thead class=""></thead>');
-            var headTr = $('<tr> </tr>');
-            headTr.append('<td>Preview</td>');
-            headTr.append('<td>Name</td>');
-            headTr.append('<td>Action</td>');
-            head.append(headTr);
-            table.append(head);
-
-            var tbody = $('<tbody></tbody>')
-            data.forEach(el => {
-                tbody.append(_newELement(el))
-            });
-
-            table.append(tbody);
-            $list.append($('<div class="card"></div>').append(table));
-        }
-    }
-
-    function _newELement(element) {
-        $row = $("<tr></tr>");
-        $col = $("<td></td>").text(element);
-        $copyCol = $("<td></td>")
-        $imgCol = $("<td></td>")
-
-        var url = _makeMediaUrl(element)
-        $imgCol.append('<img style="height:40px; width:40px" src= "' + url + '"/>')
-        var $copyBtn = $("<button data-url='" + url + "' class='btn btn-outline-dark'><i class='fas fa-copy'></i></button>");
-        $copyBtn.on('click', _copyToCliboard)
-        $copyCol.append($copyBtn)
-
-        var $rmBtn = $("<button data-name='" + element + "' class='btn btn-outline-danger ml-3'><i class='fas fa-trash-alt'></i></button>");
-        $rmBtn.on('click', _remove)
-        $copyCol.append($rmBtn)
-
-        $row.append($imgCol);
-        $row.append($col);
-        $row.append($copyCol);
-        return $row;
-    }
-
-    function _makeMediaUrl(param) {
-        return app.url + '/uploaded/' + param;
-    }
-
-    function _copyToCliboard(e) {
-        var text = ''
-        if (e.target.tagName === "BUTTON") {
-            text = $(e.target).attr('data-url')
-        } else {
-            text = $(e.target).parent().attr("data-url");
-        }
-
-        var $temp = $("<input>");
-        $("body").append($temp);
-        $temp.val(text).select();
-        document.execCommand("copy");
-        $temp.remove();
-    }
-
-    function _remove(e) {
-        var name = ''
-        if (e.target.tagName === "BUTTON") {
-            name = $(e.target).attr('data-name')
-        } else {
-            name = $(e.target).parent().attr("data-name");
-        }
-
-        app.service.post("/removemedia/", {
-            name: name
-        });
-        _reload();
-    }
-
-    function _reload() {
-        $('.media-list').empty();
-        _init();
-    }
-
-    return {
-        init: _init
-    }
-}());
-
-app.media = media;
-app.newexponent = (function () {
-    function _init() {
-        $(document).ready(function () {
-            _load();
-            $('#createexponentform').on("submit", _submit)
-        });
-    }
-
-    function _submit(e) {
-        e.preventDefault();
-        var model = app.formToJSON($("#createexponentform"));
-
-        $("#createexponentform").find('form').toArray().splice(0, 1)
-        var forms = $("#createexponentform").find('form').toArray()
-        var colForm = forms.splice(0, 1);
-        var id = $(colForm).attr('id');
-        model[id] = [];
-
-        forms.forEach((el) => {
-            model[id].push(app.formToJSON($(el)));
-        });
-
-        model.templateid = $("#newtemplateselect").val();
-        model.template = $("#newtemplateselect option:selected").text();
-        app.service.post("/" + app.static.exponent, model, _templateAdded)
-    }
-
-    function _templateAdded(data) {
-        if(JSON.parse(data)){
-            window.location.reload()
-        }
-    }
-
-    function _load() {
-        app.service.get("/" + app.static.template, _set);
-
-        $("#newtemplateselect").on("change", _loadTemplate);
-    }
-
-    function _set(data) {
-        if (data.length === 0) {
-            var $list = $('.template-list');
-            $p = $('<p class="p-3">You have no templates. </p>');
-            var btn = buttonBuilder.build("Create new template", "/simplecms/dashboard/newtemplate");
-            $p.append(btn);
-            $list.append($p)
-        } else {
-            data.forEach(element => {
-                $("#newtemplateselect").append('<option value="' + element.id + '" >' + element.name + '</option>')
-            });
-            _setTemplate(data[0]);
-        }
-    }
-
-    function _loadTemplate(params) {
-        var id = $("#newtemplateselect").val();
-        app.service.get("/" + app.static.template + "/" + id, _setTemplate);
-    }
-
-    function _setTemplate(template) {
-        _clear("newexponentcontent");
-        if (template.elements.length > 0) {
-            template.elements.forEach(element => {
-                var uiEl = elementFactory.build(element.type, element.name, element.items);
-                if (uiEl && uiEl.callback) {
-                    $("#newexponentcontent").append(uiEl.content);
-                    uiEl.callback();
-                } else {
-                    $("#newexponentcontent").append(uiEl);
-                }
-            });
-        }
-    }
-
-    function _clear(id) {
-        var myNode = document.getElementById(id);
-        while (myNode.firstChild) {
-            myNode.removeChild(myNode.firstChild);
-        }
-    }
-
-    return {
-        init: _init
-    }
-}());
-app.newtemplate = (function () {
-
-
-    var _list = [];
-
-    function _init() {
-        $('#addelementform').on("submit", _addNewElement);
-        app.static.elementTypes.forEach(element => {
-            $('#newtemplatetypeselect')
-                .append('<option value="' + element + '">' + element + '</option>');
-        });
-
-        $("#addtemplateform").on("submit", _addTemplate);
-        $('#openAddExponentModal').on("click", _default);
-    }
-
-    function _default() {
-        $('#addCollectionElement').attr('disabled', true);
-    }
-
-    function _addTemplate(e) {
-        e.preventDefault();
-
-        var model = app.formToJSON($("#addtemplateform"));
-        model.elements = _list;
-        app.service.post("/" + app.static.template, model, _templateAdded);
-    }
-
-    function _templateAdded(data) {
-        if(JSON.parse(data)){
-            window.location.reload()
-        }
-    }
-
-    function _addNewElement(e) {
-        e.preventDefault();
-        $("#addelementmodal").modal('hide');
-
-        var json = app.formToJSON($(e.target))
-
-        var curretnList;
-
-
-        if (json.collection) {
-            var collection = _list.find(function (x) {
-                return x.name === json.collection
-            });
-            if (!collection.items) {
-                collection.items = [];
-            }
-            curretnList = collection.items;
-
-        } else {
-            curretnList = _list;
-        }
-
-        if (!curretnList.find(function (x) {
-                return x.name === json.name
-            }) && !(json.collection && json.type === "collection")) {
-
-            curretnList.push(json);
-            var name = $("<div>Name: " + json.name + "</div>");
-            var type = $("<div>Type: " + json.type + "</div>");
-            var desc = $('<div></div>');
-
-            desc.append(name);
-            desc.append(type);
-
-            var btn = $('<button class="btn btn-sm btn-outline-danger"><i class="fas fa-trash-alt"></i></button>');
-            btn.on("click", function (e) {
-                console.log(e.target)
-                if (e.target.tagName === "BUTTON") {
-                    $(e.target).parent().parent().remove();
-                } else {
-                    $(e.target).parent().parent().parent().remove();
-                }
-                var toDelete = curretnList.find(function (x) {
-                    return x.name === json.name
-                });
-                var index = curretnList.indexOf(toDelete);
-                if (index > -1) {
-                    curretnList.splice(index, 1);
-                }
-
-            });
-
-            var action = $('<div class="temp-action"></div>');
-            action.append(btn);
-
-            var classes = "temp-element";
-            if (json.type === "collection") {
-                action.append(_createCollectionBag(json.name));
-                classes = classes + " temp-collection"
-            }
-
-            var id = json.name;
-            if (json.collection) {
-                id = "collection" + json.collection;
-            }
-            var card = $("<div id='" + id + "' class='" + classes + "'></div>");
-            card.append(desc);
-            card.append(action);
-
-            // to change
-            if (json.collection) {
-                var bag = $('#' + json.collection).find(".temp-bag");
-                if (bag.length == 0) {
-                    bag = $('<div class="temp-bag"></div>');
-                    $('#' + json.collection).append(bag);
-                }
-                bag.append(card)
-
-
-            } else {
-                $("#element-list").append(card);
-            }
-        } else {
-            console.log("error")
-        }
-    }
-
-    function _createCollectionBag(key) {
-        var btn = $('<button class="btn btn-sm btn-secondary ml-2"><i class="fas fa-plus"></i></button>');
-        btn.on("click", function (e) {
-            e.preventDefault();
-            $('#addCollectionElement').removeAttr('disabled');
-            $('#addCollectionElement').val(key);
-            $("#addelementmodal").modal('show');
-        });
-        return btn;
-    }
-
-    $(document).ready(_init);
-}());
-app.template = (function () {
-    function _init() {
-        $(document).ready(function () {
-            _load();
-            $("#editJsonForm").on("submit", _send);
-        });
-    }
-
-    function _load() {
-        app.service.get("/" + app.static.template, _set);
-    }
-
-    function _set(data) {
-        var $list = $('.template-list');
-
-        if (data.length === 0) {
-            $p = $('<p class="p-3">You have no templates. </p>');
-            var btn = buttonBuilder.build("Create new template", "/simplecms/dashboard/newtemplate");
-            $p.append(btn);
-            $list.append($p)
-        } else {
-            var table = $('<table class="table table-hover text-center"></table>');
-            var head = $('<thead class=""></thead>');
-            var headTr = $('<tr> </tr>');
-            headTr.append('<td>#ID</td>');
-            headTr.append('<td>@uuid</td>');
-            headTr.append('<td>Name</td>');
-            headTr.append('<td>Action</td>');
-            head.append(headTr);
-            table.append(head);
-
-            var tbody = $('<tbody></tbody>')
-            data.forEach(el => {
-                tbody.append(_newELement(el))
-            });
-
-            table.append(tbody);
-            var btn = buttonBuilder.build("Create new template", "/simplecms/dashboard/newtemplate");
-            $list.append($('<div class="card"></div>').append(table));
-            $list.append(btn);
-        }
-    }
-
-    function _newELement(element) {
-        $row = $("<tr></tr>");
-        $rmbtn = $("<button db-id='" + element.id + "' class='btn btn-outline-danger'><i class='fas fa-trash-alt'></i></button>");
-        $editbtn = $("<button db-id='" + element.id + "' data-toggle='modal' data-target='#editJsonModal' class='btn btn-outline-primary ml-3' style='width: 40px;'><i class='far fa-edit'></i></i></button>");
-
-        $rmbtn.on("click", _remove);
-        $editbtn.on("click", _edit);
-
-        $idColumn = $("<td></td>").text(element.id);
-        $uuidColumn = $("<td></td>").text(element.uuid);
-        $nameColumn = $("<td></td>").text(element.name);
-        $actionColumn = $("<td></td>").append($rmbtn).append($editbtn);
-
-        $row.append($idColumn);
-        $row.append($uuidColumn);
-        $row.append($nameColumn);
-        $row.append($actionColumn);
-        return $row;
-    }
-
-    function _remove(params) {
-        var id = '';
-        if (params.target.tagName === "BUTTON") {
-            id = $(params.target).attr("db-id");
-        } else {
-            id = $(params.target).parent().attr("db-id");
-        }
-        app.service.delete("/" + app.static.template + "/" + id);
-        _reload();
-    }
-
-
-    function _edit(params) {
-        var id = '';
-        if (params.target.tagName === "BUTTON") {
-
-            id = $(params.target).attr("db-id");
-        } else {
-            id = $(params.target).parent().attr("db-id");
-        }
-
-        app.service.get("/" + app.static.template + '/' + id, function (data) {
-            $('#editJsonText').val(JSON.stringify(data, undefined, 4))
-        });
-    }
-
-    function _send(e) {
-        e.preventDefault();
-        var model = JSON.parse($('#editJsonText').val());
-        app.service.put("/" + app.static.template + '/' + model.id, model);
-        $('#editJsonModal').modal('hide');
-    }
-
-
-    function _reload() {
-        $('.template-list').empty();
-        _load();
-    }
-
-
-    return {
-        init: _init
-    }
-}());
 app.simplecontainer = (function () {
 
     function _load(url) {
@@ -1733,6 +1046,719 @@ app.simplevideo = (function () {
     return {
         load: _load,
         init: _makeEditbale
+    }
+}());
+app.dashboard = (function () {
+
+    function _init() {
+        $(document).ready(function () {
+            _load();
+
+            $('#apikeygeneratebtn').on('click', _generate);
+            app.dashboard.chart();
+        });
+    }
+
+    function _load() {
+        app.service.get("/apikey", _set);
+    }
+
+    function _set(auth) {
+        if (auth.apikey !== "default") {
+            $('#apikeytext').val(auth.apikey)
+        }
+    }
+
+    function _generate(params) {
+        var api = _guid();
+        $('#apikeytext').val(api);
+        app.service.post('/apikey/', {
+            apikey: api
+        });
+    }
+
+    function _guid() {
+        function s4() {
+            return Math.floor((1 + Math.random()) * 0x10000)
+                .toString(16)
+                .substring(1);
+        }
+        var s = '';
+        for (let i = 0; i < 10; i++) {
+            s += s4();
+        }
+        return s;
+    }
+
+
+
+    return {
+        init: _init
+    }
+}());
+
+app.dashboard.chart = function () {
+
+    $('input[type=radio][name=when]').change(function () {
+        console.log(this.value);
+        if (this.value === "daily") {
+            drawDaily();
+        } else if (this.value === "monthly") {
+            drawMonthly();
+        } else if (this.value === "yearly") {
+            drawYearly();
+        }
+    });
+
+    var drawYearly = function () {
+        app.service.get("/requester?when=yearly", function (data) {
+            var parsed = app.dashboard.yearData(data);
+            draw(parsed);
+        });
+    }
+
+    var drawMonthly = function () {
+        app.service.get("/requester?when=monthly", function (data) {
+            var parsed = app.dashboard.monthData(data);
+            draw(parsed);
+        });
+    }
+
+    var drawDaily = function () {
+        app.service.get("/requester?when=daily", function (data) {
+            var parsed = app.dashboard.hourData(data);
+            draw(parsed);
+        });
+    }
+
+    drawDaily();
+    var draw = function (parsed) {
+        var chart = c3.generate({
+            bindto: '#chart-employment', // id of chart wrapper
+            data: {
+                columns: parsed.data,
+                type: 'line', // default type of chart
+                colors: parsed.colors
+            },
+            axis: {
+                x: {
+                    type: 'category',
+                    // name of each category
+                    categories: parsed.categories
+                },
+            },
+            legend: {
+                show: true, //hide legend
+            },
+            padding: {
+                bottom: 0,
+                top: 0
+            },
+        });
+    }
+};
+app.exponents = (function () {
+    function _init() {
+        $(document).ready(function () {
+            _load();
+            $("#editJsonForm").on("submit", _send);
+        });
+    }
+
+    function _load() {
+        app.service.get("/" + app.static.exponent, _set);
+    }
+
+    function _set(data) {
+        var $list = $('.exponents-list');
+
+        if (data.length === 0) {
+            $p = $('<p class="p-3">There is no exponents. </p>');
+            var btn = buttonBuilder.build("Create new exponent", "/simplecms/dashboard/newexponent");
+            $p.append(btn);
+            $list.append($p)
+        } else {
+            data.forEach(element => {});
+
+            var table = $('<table class="table table-hover text-center"></table>');
+            var head = $('<thead class=""></thead>');
+            var headTr = $('<tr> </tr>');
+            headTr.append('<td>#ID</td>');
+            headTr.append('<td>Template</td>');
+            headTr.append('<td>Uuid</td>');
+            headTr.append('<td>Action</td>');
+            head.append(headTr);
+            table.append(head);
+
+            var tbody = $('<tbody></tbody>')
+            data.forEach(el => {
+                tbody.append(_newELement(el))
+            });
+
+            table.append(tbody);
+            var btn = buttonBuilder.build("Create new exponent", "/simplecms/dashboard/newexponent");
+            $list.append($('<div class="card"></div>').append(table));
+            $list.append(btn);
+        }
+    }
+
+    function _newELement(element) {
+        $row = $("<tr></tr>");
+        $rmbtn = $("<button db-id='" + element.id + "' class='btn btn-sm btn-outline-danger'><i class='fas fa-trash-alt'></i> Remove</button>");
+        $editbtn = $("<button db-id='" + element.id + "' data-toggle='modal' data-target='#editJsonModal'  class='btn btn-sm btn-outline-primary ml-3' ><i class='far fa-edit'></i> Edit</button>");
+
+        $rmbtn.on("click", _remove);
+        $editbtn.on("click", _edit);
+        $idColumn = $("<td></td>").text(element.id);
+        $uuidColumn = $("<td></td>").text(element.template);
+        $nameColumn = $("<td></td>").text(element.uuid);
+        $actionColumn = $("<td></td>").append($rmbtn).append($editbtn);
+
+        $row.append($idColumn);
+        $row.append($uuidColumn);
+        $row.append($nameColumn);
+        $row.append($actionColumn);
+        return $row;
+    }
+
+    function _remove(params) {
+        var id = '';
+        if (params.target.tagName === "BUTTON") {
+            id = $(params.target).attr("db-id");
+        } else {
+            id = $(params.target).parent().attr("db-id");
+        }
+        app.service.delete("/" + app.static.exponent + "/" + id);
+        _reload();
+    }
+
+    function _edit(params) {
+        var id = '';
+        if (params.target.tagName === "BUTTON") {
+
+            id = $(params.target).attr("db-id");
+        } else {
+            id = $(params.target).parent().attr("db-id");
+        }
+
+        app.service.get("/" + app.static.exponent + '/' + id, function (data) {
+            $('#editJsonText').val(JSON.stringify(data, undefined, 4))
+        });
+    }
+
+    function _send(e) {
+        e.preventDefault();
+        var model = JSON.parse($('#editJsonText').val());
+        app.service.put("/" + app.static.exponent + '/' + model.id, model);
+        $('#editJsonModal').modal('hide');
+    }
+
+    function _reload() {
+        $('.exponents-list').empty();
+        _load();
+    }
+
+
+    return {
+        init: _init
+    }
+}());
+var lang = (function () {
+
+    function _init() {
+        app.service.get('/lang', _set);
+    }
+
+    function _set(data) {
+
+        var $list = $('.lang-list')
+        $('.lang-list').empty();
+        if (data.length === 0) {
+            $p = $('<p class="p-3">There is no languages. </p>');
+            $list.append($p)
+        } else {
+            var table = $('<table class="table table-hover text-center"></table>');
+            var head = $('<thead class=""></thead>');
+            var headTr = $('<tr> </tr>');
+            headTr.append('<td>Image</td>');
+            headTr.append('<td>Code</td>');
+            headTr.append('<td>Placeholder</td>');
+            headTr.append('<td>Action</td>');
+            head.append(headTr);
+            table.append(head);
+
+            var tbody = $('<tbody></tbody>')
+            data.forEach(el => {
+                tbody.append(_newELement(el))
+            });
+
+            table.append(tbody);
+            $list.append($('<div class="card"></div>').append(table));
+        }
+    }
+
+    function _newELement(element) {
+        var $img = $('<img style="height:40px; width:40px" src= "' + element.url + '"/>')
+        var $rmBtn = $("<button data-name='" + element.code + "' class='btn btn-sm btn-outline-danger ml-3'><i class='fas fa-trash-alt'></i> Remove</button>");
+        $rmBtn.on('click', _remove)
+
+        return $("<tr></tr>")
+            .append($("<td></td>").append($img))
+            .append($("<td></td>").text(element.code))
+            .append($("<td></td>").text(element.placeholder))
+            .append($("<td></td>").append($rmBtn));
+    }
+
+
+    function _remove(e) {
+        var name = ''
+        if (e.target.tagName === "BUTTON") {
+            name = $(e.target).attr('data-name')
+        } else {
+            name = $(e.target).parent().attr("data-name");
+        }
+
+        app.service.post("/removelang/", {
+            code: name
+        });
+        _reload();
+    }
+
+    function _reload() {
+        $('.media-list').empty();
+        _init();
+    }
+
+    return {
+        init: _init
+    }
+}());
+
+app.lang = lang;
+var media = (function () {
+
+    function _init() {
+        app.service.get('/media', _set);
+    }
+
+    function _set(data) {
+        var $list = $('.media-list')
+
+        if (data.length === 0) {
+            $p = $('<p class="p-3">There is no media. </p>');
+            $list.append($p)
+        } else {
+            var table = $('<table class="table table-hover text-center"></table>');
+            var head = $('<thead class=""></thead>');
+            var headTr = $('<tr> </tr>');
+            headTr.append('<td>Preview</td>');
+            headTr.append('<td>Name</td>');
+            headTr.append('<td>Action</td>');
+            head.append(headTr);
+            table.append(head);
+
+            var tbody = $('<tbody></tbody>')
+            data.forEach(el => {
+                tbody.append(_newELement(el))
+            });
+
+            table.append(tbody);
+            $list.append($('<div class="card"></div>')
+                .append($('<div class="card-status bg-gray"></div>'))
+                .append(table));
+        }
+    }
+
+    function _newELement(element) {
+        $row = $("<tr></tr>");
+        $col = $("<td></td>").text(element);
+        $copyCol = $("<td></td>")
+        $imgCol = $("<td></td>")
+
+        var url = _makeMediaUrl(element)
+        $imgCol.append('<img style="height:40px; width:40px" src= "' + url + '"/>')
+        var $copyBtn = $("<button data-url='" + url + "' class='btn btn-sm btn-outline-dark'><i class='fas fa-copy'></i> Copy</button>");
+        $copyBtn.on('click', _copyToCliboard)
+        $copyCol.append($copyBtn)
+
+        var $rmBtn = $("<button data-name='" + element + "' class='btn btn-sm btn-outline-danger ml-3'><i class='fas fa-trash-alt'></i> Remove</button>");
+        $rmBtn.on('click', _remove)
+        $copyCol.append($rmBtn)
+
+        $row.append($imgCol);
+        $row.append($col);
+        $row.append($copyCol);
+        return $row;
+    }
+
+    function _makeMediaUrl(param) {
+        return app.url + '/uploaded/' + param;
+    }
+
+    function _copyToCliboard(e) {
+        var text = ''
+        if (e.target.tagName === "BUTTON") {
+            text = $(e.target).attr('data-url')
+        } else {
+            text = $(e.target).parent().attr("data-url");
+        }
+
+        var $temp = $("<input>");
+        $("body").append($temp);
+        $temp.val(text).select();
+        document.execCommand("copy");
+        $temp.remove();
+    }
+
+    function _remove(e) {
+        var name = ''
+        if (e.target.tagName === "BUTTON") {
+            name = $(e.target).attr('data-name')
+        } else {
+            name = $(e.target).parent().attr("data-name");
+        }
+
+        app.service.post("/removemedia/", {
+            name: name
+        });
+        _reload();
+    }
+
+    function _reload() {
+        $('.media-list').empty();
+        _init();
+    }
+
+    return {
+        init: _init
+    }
+}());
+
+app.media = media;
+app.newexponent = (function () {
+    function _init() {
+        $(document).ready(function () {
+            _load();
+            $('#createexponentform').on("submit", _submit)
+        });
+    }
+
+    function _submit(e) {
+        e.preventDefault();
+        var model = app.formToJSON($("#createexponentform"));
+
+        $("#createexponentform").find('form').toArray().splice(0, 1)
+        var forms = $("#createexponentform").find('form').toArray()
+        var colForm = forms.splice(0, 1);
+        var id = $(colForm).attr('id');
+        model[id] = [];
+
+        forms.forEach((el) => {
+            model[id].push(app.formToJSON($(el)));
+        });
+
+        model.templateid = $("#newtemplateselect").val();
+        model.template = $("#newtemplateselect option:selected").text();
+        app.service.post("/" + app.static.exponent, model, _templateAdded)
+    }
+
+    function _templateAdded(data) {
+        if(JSON.parse(data)){
+            window.location.reload()
+        }
+    }
+
+    function _load() {
+        app.service.get("/" + app.static.template, _set);
+
+        $("#newtemplateselect").on("change", _loadTemplate);
+    }
+
+    function _set(data) {
+        if (data.length === 0) {
+            var $list = $('.template-list');
+            $p = $('<p class="p-3">You have no templates. </p>');
+            var btn = buttonBuilder.build("Create new template", "/simplecms/dashboard/newtemplate");
+            $p.append(btn);
+            $list.append($p)
+        } else {
+            data.forEach(element => {
+                $("#newtemplateselect").append('<option value="' + element.id + '" >' + element.name + '</option>')
+            });
+            _setTemplate(data[0]);
+        }
+    }
+
+    function _loadTemplate(params) {
+        var id = $("#newtemplateselect").val();
+        app.service.get("/" + app.static.template + "/" + id, _setTemplate);
+    }
+
+    function _setTemplate(template) {
+        _clear("newexponentcontent");
+        if (template.elements.length > 0) {
+            template.elements.forEach(element => {
+                var uiEl = elementFactory.build(element.type, element.name, element.items);
+                if (uiEl && uiEl.callback) {
+                    $("#newexponentcontent").append(uiEl.content);
+                    uiEl.callback();
+                } else {
+                    $("#newexponentcontent").append(uiEl);
+                }
+            });
+        }
+    }
+
+    function _clear(id) {
+        var myNode = document.getElementById(id);
+        while (myNode.firstChild) {
+            myNode.removeChild(myNode.firstChild);
+        }
+    }
+
+    return {
+        init: _init
+    }
+}());
+app.newtemplate = (function () {
+
+
+    var _list = [];
+
+    function _init() {
+        $('#addelementform').on("submit", _addNewElement);
+        app.static.elementTypes.forEach(element => {
+            $('#newtemplatetypeselect')
+                .append('<option value="' + element + '">' + element + '</option>');
+        });
+
+        $("#addtemplateform").on("submit", _addTemplate);
+        $('#openAddExponentModal').on("click", _default);
+    }
+
+    function _default() {
+        $('#addCollectionElement').attr('disabled', true);
+    }
+
+    function _addTemplate(e) {
+        e.preventDefault();
+
+        var model = app.formToJSON($("#addtemplateform"));
+        model.elements = _list;
+        app.service.post("/" + app.static.template, model, _templateAdded);
+    }
+
+    function _templateAdded(data) {
+        if(JSON.parse(data)){
+            window.location.reload()
+        }
+    }
+
+    function _addNewElement(e) {
+        e.preventDefault();
+        $("#addelementmodal").modal('hide');
+
+        var json = app.formToJSON($(e.target))
+
+        var curretnList;
+
+
+        if (json.collection) {
+            var collection = _list.find(function (x) {
+                return x.name === json.collection
+            });
+            if (!collection.items) {
+                collection.items = [];
+            }
+            curretnList = collection.items;
+
+        } else {
+            curretnList = _list;
+        }
+
+        if (!curretnList.find(function (x) {
+                return x.name === json.name
+            }) && !(json.collection && json.type === "collection")) {
+
+            curretnList.push(json);
+            var name = $("<div>Name: " + json.name + "</div>");
+            var type = $("<div>Type: " + json.type + "</div>");
+            var desc = $('<div></div>');
+
+            desc.append(name);
+            desc.append(type);
+
+            var btn = $('<button class="btn btn-sm btn-outline-danger"><i class="fas fa-trash-alt"></i></button>');
+            btn.on("click", function (e) {
+                console.log(e.target)
+                if (e.target.tagName === "BUTTON") {
+                    $(e.target).parent().parent().remove();
+                } else {
+                    $(e.target).parent().parent().parent().remove();
+                }
+                var toDelete = curretnList.find(function (x) {
+                    return x.name === json.name
+                });
+                var index = curretnList.indexOf(toDelete);
+                if (index > -1) {
+                    curretnList.splice(index, 1);
+                }
+
+            });
+
+            var action = $('<div class="temp-action"></div>');
+            action.append(btn);
+
+            var classes = "temp-element";
+            if (json.type === "collection") {
+                action.append(_createCollectionBag(json.name));
+                classes = classes + " temp-collection"
+            }
+
+            var id = json.name;
+            if (json.collection) {
+                id = "collection" + json.collection;
+            }
+            var card = $("<div id='" + id + "' class='" + classes + "'></div>");
+            card.append(desc);
+            card.append(action);
+
+            // to change
+            if (json.collection) {
+                var bag = $('#' + json.collection).find(".temp-bag");
+                if (bag.length == 0) {
+                    bag = $('<div class="temp-bag"></div>');
+                    $('#' + json.collection).append(bag);
+                }
+                bag.append(card)
+
+
+            } else {
+                $("#element-list").append(card);
+            }
+        } else {
+            console.log("error")
+        }
+    }
+
+    function _createCollectionBag(key) {
+        var btn = $('<button class="btn btn-sm btn-secondary ml-2"><i class="fas fa-plus"></i></button>');
+        btn.on("click", function (e) {
+            e.preventDefault();
+            $('#addCollectionElement').removeAttr('disabled');
+            $('#addCollectionElement').val(key);
+            $("#addelementmodal").modal('show');
+        });
+        return btn;
+    }
+
+    $(document).ready(_init);
+}());
+app.template = (function () {
+    function _init() {
+        $(document).ready(function () {
+            _load();
+            $("#editJsonForm").on("submit", _send);
+        });
+    }
+
+    function _load() {
+        app.service.get("/" + app.static.template, _set);
+    }
+
+    function _set(data) {
+        var $list = $('.template-list');
+
+        if (data.length === 0) {
+            $p = $('<p class="p-3">You have no templates. </p>');
+            var btn = buttonBuilder.build("Create new template", "/simplecms/dashboard/newtemplate");
+            $p.append(btn);
+            $list.append($p)
+        } else {
+            var table = $('<table class="table table-hover text-center"></table>');
+            var head = $('<thead class=""></thead>');
+            var headTr = $('<tr> </tr>');
+            headTr.append('<td>#ID</td>');
+            headTr.append('<td>@uuid</td>');
+            headTr.append('<td>Name</td>');
+            headTr.append('<td>Action</td>');
+            head.append(headTr);
+            table.append(head);
+
+            var tbody = $('<tbody></tbody>')
+            data.forEach(el => {
+                tbody.append(_newELement(el))
+            });
+
+            table.append(tbody);
+            var btn = buttonBuilder.build("Create new template", "/simplecms/dashboard/newtemplate");
+            $list.append($('<div class="card"></div>').append(table));
+            $list.append(btn);
+        }
+    }
+
+    function _newELement(element) {
+        $row = $("<tr></tr>");
+        $rmbtn = $("<button db-id='" + element.id + "' class='btn btn-sm btn-outline-danger'><i class='fas fa-trash-alt'></i> Remove</button>");
+        $editbtn = $("<button db-id='" + element.id + "' data-toggle='modal' data-target='#editJsonModal' class='btn btn-sm btn-outline-primary ml-3' ><i class='far fa-edit'></i> Edit</button>");
+
+        $rmbtn.on("click", _remove);
+        $editbtn.on("click", _edit);
+
+        $idColumn = $("<td></td>").text(element.id);
+        $uuidColumn = $("<td></td>").text(element.uuid);
+        $nameColumn = $("<td></td>").text(element.name);
+        $actionColumn = $("<td></td>").append($rmbtn).append($editbtn);
+
+        $row.append($idColumn);
+        $row.append($uuidColumn);
+        $row.append($nameColumn);
+        $row.append($actionColumn);
+        return $row;
+    }
+
+    function _remove(params) {
+        var id = '';
+        if (params.target.tagName === "BUTTON") {
+            id = $(params.target).attr("db-id");
+        } else {
+            id = $(params.target).parent().attr("db-id");
+        }
+        app.service.delete("/" + app.static.template + "/" + id);
+        _reload();
+    }
+
+
+    function _edit(params) {
+        var id = '';
+        if (params.target.tagName === "BUTTON") {
+
+            id = $(params.target).attr("db-id");
+        } else {
+            id = $(params.target).parent().attr("db-id");
+        }
+
+        app.service.get("/" + app.static.template + '/' + id, function (data) {
+            $('#editJsonText').val(JSON.stringify(data, undefined, 4))
+        });
+    }
+
+    function _send(e) {
+        e.preventDefault();
+        var model = JSON.parse($('#editJsonText').val());
+        app.service.put("/" + app.static.template + '/' + model.id, model);
+        $('#editJsonModal').modal('hide');
+    }
+
+
+    function _reload() {
+        $('.template-list').empty();
+        _load();
+    }
+
+
+    return {
+        init: _init
     }
 }());
 app.ui = app.ui ? app.ui : {};
