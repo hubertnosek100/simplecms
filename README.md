@@ -38,3 +38,13 @@ e: simplecms.init({
 
 For edit component just press ctrl + shift + e for edit on your website where you imported the library. </br> 
 When you enabled editing just right click on your component to open menu.
+
+## Screenshots
+
+![](p1.png)
+
+![](p2.png)
+
+![](p3.png)
+
+![](p4.png)

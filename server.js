@@ -6,7 +6,7 @@ var cookieParser = require('cookie-parser')
 var expressLayouts = require('express-ejs-layouts');
 var express = require('express');
 
-var controller = require('./app/controller');
+var controller = require('./app/viewController');
 var requester = require('./app/requester');
 var uploader = require('./app/uploader');
 var authorizer = require('./app/authorizer');
@@ -37,9 +37,8 @@ server.use((req, res, next) => {
   }
 })
 server.use(router)
-var port = 8080;
 
-var server_port = process.env.OPENSHIFT_NODEJS_PORT || 8080
+var server_port = process.env.OPENSHIFT_NODEJS_PORT || 3000
 var server_ip_address = process.env.OPENSHIFT_NODEJS_IP || '0.0.0.0'
 
 

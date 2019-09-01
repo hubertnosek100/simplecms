@@ -184,6 +184,60 @@ nav a {
   background-color: #44bf71 !important;
 }
 
+.sec-nav {
+  background: white;
+  border-bottom: 1px solid lightgray;
+  padding: 10px 140px;
+  display: flex;
+  flex-direction: row-reverse;
+  min-height: 65px;
+  align-items: center;
+  justify-content: space-between;
+}
+
+simplelanguage .dropdown button {
+  border-color: #5ddbb4;
+  color: #5ddbb4;
+}
+
+simplelanguage .dropdown button:hover {
+  border-color: #44bf71 !important;
+  background-color: #44bf71 !important;
+}
+
+simplelanguage .dropdown button:active {
+  border-color: #44bf71 !important;
+  background-color: #44bf71 !important;
+}
+
+.selectgroup-input:checked + .selectgroup-button {
+  border-color: #5ddbb4 !important;
+  color: #5ddbb4 !important;
+}
+
+.scms-link {
+  color: #5ddbb4;
+}
+
+.scms-link:hover {
+  color: #44bf71;
+}
+
+.sticky {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 100;
+  -webkit-transition: width 300ms ease-in-out, height 300ms ease-in-out;
+  -moz-transition: width 300ms ease-in-out, height 300ms ease-in-out;
+  -o-transition: width 300ms ease-in-out, height 300ms ease-in-out;
+  transition: width 300ms ease-in-out, height 300ms ease-in-out;
+}
+
+body > div.container.pt-5.sticky-container {
+  padding-top: 100px !important;
+}
+
 .bg-article {
   background-color: #f5f2f0;
   border-radius: 5px;
@@ -350,6 +404,60 @@ nav a {
 .scms-btn:hover {
   border-color: #44bf71 !important;
   background-color: #44bf71 !important;
+}
+
+.sec-nav {
+  background: white;
+  border-bottom: 1px solid lightgray;
+  padding: 10px 140px;
+  display: flex;
+  flex-direction: row-reverse;
+  min-height: 65px;
+  align-items: center;
+  justify-content: space-between;
+}
+
+simplelanguage .dropdown button {
+  border-color: #5ddbb4;
+  color: #5ddbb4;
+}
+
+simplelanguage .dropdown button:hover {
+  border-color: #44bf71 !important;
+  background-color: #44bf71 !important;
+}
+
+simplelanguage .dropdown button:active {
+  border-color: #44bf71 !important;
+  background-color: #44bf71 !important;
+}
+
+.selectgroup-input:checked + .selectgroup-button {
+  border-color: #5ddbb4 !important;
+  color: #5ddbb4 !important;
+}
+
+.scms-link {
+  color: #5ddbb4;
+}
+
+.scms-link:hover {
+  color: #44bf71;
+}
+
+.sticky {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 100;
+  -webkit-transition: width 300ms ease-in-out, height 300ms ease-in-out;
+  -moz-transition: width 300ms ease-in-out, height 300ms ease-in-out;
+  -o-transition: width 300ms ease-in-out, height 300ms ease-in-out;
+  transition: width 300ms ease-in-out, height 300ms ease-in-out;
+}
+
+body > div.container.pt-5.sticky-container {
+  padding-top: 100px !important;
 }
 #element-list {
   display: flex;

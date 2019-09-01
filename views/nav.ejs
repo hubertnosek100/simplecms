@@ -62,3 +62,35 @@
 
     </div>
 </nav>
+
+<% if (isAuthenticated){ %>
+    <div id="sec-nav" class="sec-nav">
+            <simplelanguage flag="true"></simplelanguage>
+            <li class="nav-item">
+                    <a class="nav-link scms-link" href="/simplecms/users">
+                        <i class="fas fa-users"></i>
+                        Users
+                    </a>
+                </li>
+    </div>
+  
+    
+
+    <script>
+            window.onscroll = function() {addSticky()};
+            var navbar = document.getElementById("sec-nav");
+            var sticky = navbar.offsetTop;
+            
+            function addSticky() {
+                var container = $(".container");
+
+              if (window.pageYOffset >= sticky) {
+                navbar.classList.add("sticky")
+                container.addClass("sticky-container");
+              } else {
+                navbar.classList.remove("sticky");
+                container.removeClass("sticky-container");
+              }
+            }
+            </script>
+<%  }  %>

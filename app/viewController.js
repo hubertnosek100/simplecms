@@ -1,7 +1,9 @@
-var controller = function (server, userMiddleware) {
-
+var userController = require('./user/userController')
+var viewController = function (server, userMiddleware) {
+    userController(server, userMiddleware)
+    
     server.get('/', (req, res) => {
-        userMiddleware(req, res)
+        userMiddleware(req, res, true)
         res.render('index')
     });
 
@@ -11,12 +13,12 @@ var controller = function (server, userMiddleware) {
     });
 
     server.get('/login/', (req, res) => {
-        userMiddleware(req, res)
+        userMiddleware(req, res, true)
         res.render('login')
     });
 
     server.get('/simplecms/components/', (req, res) => {
-        userMiddleware(req, res)
+        userMiddleware(req, res, true)
         res.render('components')
     });
 
@@ -70,6 +72,21 @@ var controller = function (server, userMiddleware) {
         userMiddleware(req, res)
         res.render('dashboard/newlang')
     });
+
+    server.get('/simplecms/dashboard/monitoring/', (req, res) => {
+        userMiddleware(req, res)
+        res.render('dashboard/monitoring')
+    });
+
+    server.get('/simplecms/dashboard/newmonitoring/', (req, res) => {
+        userMiddleware(req, res)
+        res.render('dashboard/newmonitoring')
+    });
+
+    server.get('/simplecms/users/', (req, res) => {
+        userMiddleware(req, res)
+        res.render('users/list')
+    });
 };
 
-module.exports = controller;
+module.exports = viewController;

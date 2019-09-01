@@ -1,6 +1,11 @@
 app = (function () {
     var _url;
 
+    function _module(value) {
+        if (value === undefined) return {};
+        else return value;
+    }
+
     function _init(options) {
         app.url = options.url;
         app.service.set(options.apikey, options.defaultLang)
@@ -50,7 +55,8 @@ app = (function () {
         url: _url,
         debounce: _debounce,
         formToJSON: _formToJSON,
-        goTo: _goTo
+        goTo: _goTo,
+        module: _module
     }
 }());
 

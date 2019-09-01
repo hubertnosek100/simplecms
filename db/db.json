@@ -110,12 +110,6 @@
         "border-image-repeat": "initial"
       },
       "lang": "pl"
-    },
-    {
-      "uuid": "hubertContainer",
-      "css": {},
-      "lang": "de",
-      "id": 7
     }
   ],
   "template": [
@@ -168,6 +162,22 @@
       ],
       "lang": "de",
       "id": 6
+    },
+    {
+      "name": "sekcja",
+      "uuid": "sec1",
+      "elements": [
+        {
+          "name": "tytuł",
+          "type": "text"
+        },
+        {
+          "name": "film",
+          "type": "link"
+        }
+      ],
+      "lang": "",
+      "id": 7
     }
   ],
   "exponent": [
@@ -187,15 +197,16 @@
       "templateid": "5",
       "template": "TestCollection",
       "id": 7,
-      "lang": "de"
+      "lang": "pl"
     },
     {
-      "uuid": "123456",
-      "Title": "Abc",
-      "group": [],
-      "templateid": "5",
-      "template": "TestCollection",
-      "lang": "de",
+      "uuid": "s1",
+      "tytuł": "Sekcja Pierwsza ",
+      "film": "hta",
+      "undefined": [],
+      "templateid": "7",
+      "template": "sekcja",
+      "lang": "pl",
       "id": 8
     }
   ],
@@ -237,20 +248,6 @@
       "lang": "de",
       "text": "Hi everyone, this text will be editable after ctrl + shift + e.",
       "css": {}
-    },
-    {
-      "id": 17,
-      "uuid": "hubertContainer",
-      "text": "a",
-      "lang": "de",
-      "css": {
-        "font-family": "fantasy",
-        "font-size": "12px",
-        "padding-top": "10px",
-        "padding-right": "30px",
-        "padding-bottom": "10px",
-        "padding-left": "30px"
-      }
     },
     {
       "uuid": "hubertTextInContainer",
@@ -391,6 +388,48 @@
         "padding-left": "2rem"
       },
       "lang": "pl"
+    },
+    {
+      "uuid": "profileNavContent",
+      "text": "",
+      "css": {},
+      "lang": "",
+      "id": 30
+    },
+    {
+      "uuid": "profileNavContent",
+      "text": "",
+      "css": {},
+      "lang": "",
+      "id": 31
+    },
+    {
+      "uuid": "profileNavContent",
+      "text": "",
+      "css": {},
+      "lang": "",
+      "id": 32
+    },
+    {
+      "uuid": "profileNavContent",
+      "text": "aoisdjaids",
+      "css": {},
+      "lang": "",
+      "id": 33
+    },
+    {
+      "uuid": "profileNavContent",
+      "text": "asdasd",
+      "css": {},
+      "lang": "",
+      "id": 34
+    },
+    {
+      "uuid": "profileNavContent",
+      "text": "asdasd",
+      "css": {},
+      "lang": "",
+      "id": 35
     }
   ],
   "simplevideo": [

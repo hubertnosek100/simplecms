@@ -68,7 +68,7 @@ var authorizer = function (server) {
         if (result.success) {
             res.cookie('simplecms_token', result.token)
             userMiddleware(req, res)
-            res.redirect('/');
+            res.redirect('/simplecms/dashboard/');
         }
         res.render('login')
     })
@@ -100,12 +100,15 @@ var isAuthorized = function (req) {
 }
 authorizer.isAuthorized = isAuthorized;
 
-var userMiddleware = function (req, res) {
+var userMiddleware = function (req, res, noRedirection) {
     if (isAuthenticated(req)) {
         res.locals.isAuthenticated = true;
 
     } else {
         res.locals.isAuthenticated = false;
+        if(!noRedirection){
+            res.render('login')
+        }
     }
 }
 
@@ -135,7 +138,7 @@ function isAuthorizedByToken(token) {
 function login(name, pwd) {
     if (name && pwd) {
         if (name === auth.username) {
-            var hash = passwordhasher.createHash('ssha512', pwd, new Buffer('83d88386463f0625', 'hex'));
+            var hash = passwordhasher.createHash('ssha512', pwd, Buffer.from('83d88386463f0625', 'hex'));
             var rfcHash = passwordhasher.formatRFC2307(hash)
             if (rfcHash == auth.password) {
 

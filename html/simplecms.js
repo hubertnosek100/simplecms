@@ -1,6 +1,11 @@
 app = (function () {
     var _url;
 
+    function _module(value) {
+        if (value === undefined) return {};
+        else return value;
+    }
+
     function _init(options) {
         app.url = options.url;
         app.service.set(options.apikey, options.defaultLang)
@@ -50,7 +55,8 @@ app = (function () {
         url: _url,
         debounce: _debounce,
         formToJSON: _formToJSON,
-        goTo: _goTo
+        goTo: _goTo,
+        module: _module
     }
 }());
 
@@ -241,6 +247,9 @@ app.service = (function () {
         _setCookie("lang", code, 1);
         window.location.reload();
     }
+    function _getLanguage(){
+        return _getCookie("lang");
+    }
 
     function _getCookie(cname) {
         var name = cname + "=";
@@ -288,7 +297,8 @@ app.service = (function () {
         set: _set,
         isAuthenticated: _isAuthenticated,
         login: _login,
-        changeLanguage: _changeLanguage
+        changeLanguage: _changeLanguage,
+        getLanguage: _getLanguage
     }
 }());
 app.static = (function () {
@@ -546,508 +556,6 @@ var uiBuilder = (function () {
         buildFormGroup: _buildFormGroup,
     }
 }());
-app.menu = (function () {
-    var _current = undefined
-    function _load(url) {
-        app.service.get(url + "/simplecms/components/menu.html", _set, "html");
-    }
-
-    function _set(data) {
-        $('body').append(data);
-        $('#loginForm').on('submit', function (e) {
-            e.preventDefault()
-            var model = app.formToJSON($(e.target))
-            app.service.login(model, _drawAuth)
-        })
-        $('#faviconId').attr('src', app.url + '/favicon.png')
-    }
-
-    function _init() {
-        $('simpletext').contextmenu(function (e) {
-            app.menuComponent(e.target)
-            _openNav();
-            e.preventDefault();
-        });
-        $(document).on('keydown', function (e) {
-            if (e.keyCode === 27) {
-                _closeNav();
-            }
-        });
-    }
-
-    function _openNav() {
-        document.getElementById("mySidenav").style.width = "300px";
-        $('body').append('<div id="backdrop" class="modal-backdrop fade show"></div>');
-    }
-
-    function _closeNav() {
-        document.getElementById("mySidenav").style.width = "0";
-        $('#backdrop').remove();
-    }
-
-    function _loginTab(params) {
-        app.service.isAuthenticated(_drawAuth);
-    }
-
-    function _drawAuth(auth) {
-        if (auth) {
-            $('#loginForm').hide()
-            $('#loginInfo').show()
-        } else {
-            $('#loginInfo').hide()
-            $('#loginForm').show()
-        }
-    }
-
-    return {
-        load: _load,
-        open: _openNav,
-        close: _closeNav,
-        current: _current,
-        loginTab: _loginTab,
-        init: _init
-    }
-}())
-app.menuComponent = function (target) {
-    let tagName = target.tagName.toLocaleLowerCase();
-
-    var _draw = function (el, uuid) {
-        try {
-            var css = JSON.parse($(el).val())
-            var obj = $(tagName + '[uuid="' + uuid + '"]');
-            app.simpleeditor.clearStyles(obj[0])
-            for (var style in css) {
-                if (css.hasOwnProperty(style)) {
-                    obj.css(style, css[style]);
-                }
-            }
-            app[tagName].save({
-                target: obj[0]
-            })
-            $('#componenJsonHelp').text("")
-        } catch (err) {
-            $('#componenJsonHelp').text("Not valid Json")
-        }
-    }
-
-    var found = function (data) {
-        var el = app.simpleeditor.unwrap(data)
-        if (el) {
-            app.menu.current = el;
-            $('#componentUuid').val(el.uuid)
-            $('#componentJsonCss').val(JSON.stringify(el.css, undefined, 4));
-
-            var draw = app.debounce(_draw, 1000);
-            $('#componentJsonCss').unbind();
-            $('#componentJsonCss').on('keyup', function (evt) {
-                draw(evt.target, el.uuid);
-            });
-        }
-    };
-    var uuid = $(target).attr('uuid');
-    app[tagName].find(app.url, uuid, found);
-};
-app.modal = (function () {
-
-    function _load(url) {
-        app.service.get(url + "/simplecms/components/modal.html", _set, "html");
-    }
-
-    function _set(data) {
-        $('body').append(data);
-    }
-
-    function _create(callback, model, title, placeholder, url, property) {
-
-        $("#simplemodal").modal();
-        $("#simplemodal").find('input').attr("placeholder", placeholder);
-        $("#simpleModalLabel").text(title);
-        $("#simpleModalSave").unbind();
-        $("#simpleModalSave").on("click", function () {
-            model[property] = $("#simplemodal").find('input').val();
-            if (model.id) {
-                app.service.put(url + "/" + model.id, model)
-            } else {
-                app.service.post(url, model)
-            }
-            $('#simplemodal').modal("hide");
-            callback(model[property], model.uuid);
-        });
-    }
-
-    return {
-        load: _load,
-        create: _create
-    }
-}());
-app.simplecontainer = (function () {
-
-    function _load(url) {
-        var containers = $(app.static.simplecontainer)
-        for (let i = 0; i < containers.length; i++) {
-            const $cont = $(containers[i]);
-            _find(url, $cont.attr("uuid"), function (data) {
-                var el = app.simpleeditor.unwrap(data)
-                if (el) {
-                    $cont.attr("db-id", el.id);
-                    // todo function writeStyles!
-                    var css = el.css
-                    for (var style in css) {
-                        if (css.hasOwnProperty(style)) {
-                            $cont.css(style, css[style]);
-                        }
-                    }
-                } else {
-                    _save({
-                        target: $cont[0]
-                    })
-                }
-            });
-        }
-    }
-
-    function _find(url, uuid, callback) {
-        app.service.get(url + "/" + app.static.simplecontainer + '?uuid=' + uuid, callback);
-    }
-
-    function _save(el) {
-        var uuid = $(el.target).attr('uuid');
-        var id = $(el.target).attr('db-id');
-        var css = app.simpleeditor.readStyles(el.target);
-        if (id) {
-            app.service.put(app.url + "/" + app.static.simplecontainer + "/" + id, {
-                id: id,
-                uuid: uuid,
-                css: css
-            })
-        } else {
-            app.service.post(app.url + "/" + app.static.simplecontainer, {
-                uuid: uuid,
-                css: css
-            })
-        }
-    }
-
-
-    function _makeEditable() {
-        var editButton = $('<button type="button" class="btn btn-primary scms-primary scms-btn btn-sm">EDIT</button>')
-        var editAble = $('<div class="container-editable"></div>')
-        editButton.on('click', _edit)
-        editAble.append(editButton)
-        $(app.static.simplecontainer).prepend(editAble)
-        $(app.static.simplecontainer).addClass('editable')
-    }
-
-    function _edit(e) {
-        app.menu.open();
-        app.menuComponent($(e.target).parent().parent()[0])
-    }
-
-    return {
-        load: _load,
-        save: _save,
-        init: _makeEditable,
-        find: _find
-    }
-}());
-app.simpleeditor = (function () {
-
-    function _listenForCombination(params) {
-        var keys = {
-            shift: false,
-            ctrl: false,
-            e: false
-        };
-        var done = false;
-        $(document.body).keydown(function (e) {
-            // console.log(e.key)
-            // console.log(e.keyCode)
-            if (e.keyCode == 16) {
-                keys["shift"] = true;
-            } else if (e.keyCode == 17) {
-                keys["ctrl"] = true;
-            } else if (e.keyCode == 69) {
-                keys["e"] = true;
-            }
-            if (keys["shift"] && keys["ctrl"] && keys["e"]) {
-                if (!done) {
-                    done = true
-                    app.simplevideo.init();
-                    app.simpleimage.init();
-                    app.simpletext.init();
-                    app.simplecontainer.init();
-                    app.menu.init();
-                }
-            }
-        });
-
-        $(document.body).keyup(function (e) {
-            // reset status of the button 'released' == 'false'
-            if (e.keyCode == 16) {
-                keys["shift"] = false;
-            } else if (e.keyCode == 17) {
-                keys["ctrl"] = false;
-            } else if (e.keyCode == 69) {
-                keys["e"] = false;
-            }
-        });
-    }
-
-    function _readStyles(el) {
-        var styles = {};
-        var i = 0;
-        while (el.style[i]) {
-            styles[el.style[i]] = el.style[el.style[i]]
-            i++;
-        }
-        return styles;
-    }
-
-    function _clearStyles(obj) {
-        var s = obj.style;
-        while (s[0]) {
-            s[s[0]] = ""
-        }
-    }
-
-    function _unwrap(data) {
-        if (data instanceof Array) {
-            if (data.length > 0) {
-                return data[0];
-            }
-        } else {
-            return data;
-        }
-    }
-
-    return {
-        listenForCombination: _listenForCombination,
-        readStyles: _readStyles,
-        clearStyles: _clearStyles,
-        unwrap: _unwrap
-    }
-}())
-app.simpleimage = (function () {
-
-    function _load(url) {
-        app.service.get(url + "/" + app.static.simpleimage, _set);
-        _init()
-    }
-
-    function _init() {
-        $simpleimages = $(app.static.simpleimage);
-        $simpleimages.each(function (idx, el) {
-            $(el).append("<img class='default' src='" + el.url + "'/>");
-            var classes = $(el).attr("class");
-            $(el).find('img').attr("class", classes);
-        });
-    }
-
-    function _makeEditbale() {
-        $simpleimages = $(app.static.simpleimage);
-        $simpleimages.each(function (idx, el) {
-            $(el).find('img')
-                .unbind()
-                .addClass('pointer');
-
-            $(el).find('img').on("click", function () {
-                var uuid = $(el).attr('uuid')
-                var image = $(app.static.simpleimage + "[uuid='" + uuid + "']").find("img");
-                var src = image.attr('src')
-                app.modal.create(_setLocal, {
-                    uuid: $(el).attr('uuid'),
-                    url: src
-                }, "Set image url", "Image url...", app.url + "/simpleimage", "url");
-            });
-        });
-    }
-
-    function _set(data) {
-        data.forEach(function (el) {
-            $simpleimage = $(app.static.simpleimage + "[uuid='" + el.uuid + "'");
-            $simpleimage.attr("db-id", el.id);
-            if (el.url !== "") {
-                $simpleimage.find('img').attr('src', el.url);
-                $simpleimage.find('img').removeClass('default');
-            }
-        });
-    }
-
-    function _setLocal(data, uuid) {
-        $element = $(app.static.simpleimage + "[uuid='" + uuid + "'");
-        $element.find('img').attr("src", data);
-        if (data !== "") {
-            $element.find('img').removeClass('default');
-        } else {
-            $element.find('img').addClass('default');
-        }
-    }
-
-    return {
-        load: _load,
-        init: _makeEditbale
-    }
-}());
-app.simplelanguage = (function () {
-    function _init(url) {
-        app.service.get(url + '/lang', _set);
-    }
-
-    function _set(data) {
-        $simplelanguage = $(app.static.simplelanguage);
-        $simplelanguage.each(function (idx, el) {
-            var select = $('<div class="dropdown"></div>')
-            select.append(' <button class="btn btn-outline-primary dropdown-toggle" type="button" id="dropdownLanguagesMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Languages</button>')
-            var container = $('<div class="dropdown-menu" aria-labelledby="dropdownLanguagesMenuButton"></div>')
-            data.forEach(function (lang) {
-                var opt = $('<a data-code="' + lang.code + '" class="dropdown-item"></a>')
-                opt.append('<img style="height:40px; width:40px"  src="' + lang.url + '"/>');
-                opt.append('<span style="margin-left:10px;">' + lang.placeholder + '</span>');
-                opt.on('click', _changeLanguage);
-                container.append(opt)
-            })
-            $(select).append(container)
-            $(el).append(select);
-        });
-    }
-
-    function _changeLanguage(el) {
-        var target = $(el.target);
-        if (el.target.nodeName !== "A") {
-            target = $(target).parent();
-        }
-        var code = target.attr('data-code');
-        app.service.changeLanguage(code);
-    }
-
-    return {
-        load: _init
-    }
-}());
-app.simpletext = (function () {
-
-    function _find(url, uuid, callback) {
-        app.service.get(url + "/" + app.static.simpletext + '?uuid=' + uuid, callback);
-    }
-
-    function _load(url) {
-        app.service.get(url + "/" + app.static.simpletext, _set);
-    }
-
-    function _init() {
-        $simpletexts = $(app.static.simpletext);
-        $simpletexts.each(function (idx, el) {
-            $(el).attr('contenteditable', true);
-            $(el).attr('data-placeholder', "Insert text here...");
-            var save = app.debounce(_save, 1000);
-            $(el).on('keyup', function (evt, el) {
-                save(evt, el);
-            });
-        });
-    }
-
-    function _save(el) {
-        var text = $(el.target).text();
-        var uuid = $(el.target).attr('uuid');
-        var id = $(el.target).attr('db-id');
-        var css = app.simpleeditor.readStyles(el.target);
-        if (id) {
-            app.service.put(app.url + "/" + app.static.simpletext + "/" + id, {
-                id: id,
-                uuid: uuid,
-                text: text,
-                css: css
-            })
-        } else {
-            app.service.post(app.url + "/" + app.static.simpletext, {
-                uuid: uuid,
-                text: text,
-                css: css
-            })
-        }
-    }
-
-    function _set(data) {
-        data.forEach(function (el) {
-            $simpletext = $(app.static.simpletext + "[uuid='" + el.uuid + "'");
-            $simpletext.text(el.text);
-            $simpletext.attr("db-id", el.id);
-            var css = el.css
-            for (var style in css) {
-                if (css.hasOwnProperty(style)) {
-                    $simpletext.css(style, css[style]);
-                }
-            }
-        });
-    }
-
-    return {
-        load: _load,
-        find: _find,
-        save: _save,
-        init: _init
-    }
-}());
-app.simplevideo = (function () {
-
-    function _load(url) {
-        app.service.get(url + "/" + app.static.simplevideo, _set);
-        _init()
-    }
-
-    function _init() {
-        $simplevideos = $(app.static.simplevideo);
-        $simplevideos.each(function (idx, el) {
-            $(el).append("<video controls class='default' src='" + el.url + "'/>");
-            var classes = $(el).attr("class");
-            $(el).find('video').attr("class", classes);
-        });
-    }
-
-    function _makeEditbale() {
-        $simplevideos = $(app.static.simplevideo);
-        $simplevideos.each(function (idx, el) {
-            $(el).find('video')
-                .unbind()
-                .addClass('pointer');
-            $(el).find('video').on("click", function () {
-                var uuid = $(el).attr('uuid')
-                var video = $(app.static.simplevideo + "[uuid='" + uuid + "']").find("video");
-                var src = video.attr('src')
-                app.modal.create(_setLocal, {
-                    uuid: $(el).attr('uuid'),
-                    url: src
-                }, "Set video url", "Video url...", app.url + "/simplevideo", "url");
-            });
-        });
-    }
-
-    function _set(data) {
-        data.forEach(function (el) {
-            $simplevideo = $(app.static.simplevideo + "[uuid='" + el.uuid + "'");
-            $simplevideo.attr("db-id", el.id);
-            if (el.url !== "") {
-                $simplevideo.find('video').attr('src', el.url);
-                $simplevideo.find('video').removeClass('default');
-            }
-        });
-    }
-
-    function _setLocal(data, uuid) {
-        $element = $(app.static.simplevideo + "[uuid='" + uuid + "'");
-        $element.find('video').attr("src", data);
-        if (data !== "") {
-            $element.find('video').removeClass('default');
-        } else {
-            $element.find('video').addClass('default');
-        }
-    }
-
-    return {
-        load: _load,
-        init: _makeEditbale
-    }
-}());
 app.dashboard = (function () {
 
     function _init() {
@@ -1298,7 +806,7 @@ var lang = (function () {
     }
 
     function _newELement(element) {
-        var $img = $('<img style="height:40px; width:40px" src= "' + element.url + '"/>')
+        var $img = $('<img style="height:40px; width:40px;object-fit:contain;" src= "' + element.url + '"/>')
         var $rmBtn = $("<button data-name='" + element.code + "' class='btn btn-sm btn-outline-danger ml-3'><i class='fas fa-trash-alt'></i> Remove</button>");
         $rmBtn.on('click', _remove)
 
@@ -1376,7 +884,7 @@ var media = (function () {
         $imgCol = $("<td></td>")
 
         var url = _makeMediaUrl(element)
-        $imgCol.append('<img style="height:40px; width:40px" src= "' + url + '"/>')
+        $imgCol.append('<img style="height:40px; width:40px;object-fit:contain;" src= "' + url + '"/>')
         var $copyBtn = $("<button data-url='" + url + "' class='btn btn-sm btn-outline-dark'><i class='fas fa-copy'></i> Copy</button>");
         $copyBtn.on('click', _copyToCliboard)
         $copyCol.append($copyBtn)
@@ -1520,6 +1028,49 @@ app.newexponent = (function () {
         init: _init
     }
 }());
+
+var newmonitoring = (function () {
+
+    function _init() {
+        $('#healtcheck-btn').on('click', _tryCheck)
+    }
+
+    function _tryCheck(e) {
+        e.preventDefault();
+        $(e.target).addClass('btn-loading');
+        var model = app.formToJSON($('#newMonitoringForm'))
+
+        var start_time = new Date().getTime();
+        var req = new XMLHttpRequest();
+        req.open('GET', model.url, true);
+        req.setRequestHeader('Access-Control-Allow-Origin', '*')
+        req.onreadystatechange = (aEvt) => { _onResponse(aEvt, req, start_time, e) };
+        req.onerror = _onResponse;
+        req.send(null);
+    }
+
+    function _onResponse(aEvt, req, start_time, e) {
+        if (req && req.readyState == 4) {
+
+            $('#callback').parent().removeClass('d-none')
+            $('#callback').parent().addClass('d-flex')
+
+            var request_time = new Date().getTime() - start_time;
+            var preview = app.monitoring.preview.build(req);
+            preview.withTime(request_time);
+            $('#callback').html(preview.toHtml())
+        }
+
+        $(e.target).removeClass('btn-loading');
+    }
+
+    return {
+        init: _init
+    }
+}());
+
+app.monitoring = app.module(app.monitoring);
+app.monitoring.new = newmonitoring;
 app.newtemplate = (function () {
 
 
@@ -1761,6 +1312,612 @@ app.template = (function () {
         init: _init
     }
 }());
+app.menu = (function () {
+    var _current = undefined
+    function _load(url) {
+        app.service.get(url + "/simplecms/components/menu.html", _set, "html");
+    }
+
+    function _set(data) {
+        $('body').append(data);
+        $('#loginForm').on('submit', function (e) {
+            e.preventDefault()
+            var model = app.formToJSON($(e.target))
+            app.service.login(model, _drawAuth)
+        })
+        $('#faviconId').attr('src', app.url + '/favicon.png')
+    }
+
+    function _init() {
+        $('simpletext').contextmenu(function (e) {
+            app.menuComponent(e.target)
+            _openNav();
+            e.preventDefault();
+        });
+        $(document).on('keydown', function (e) {
+            if (e.keyCode === 27) {
+                _closeNav();
+            }
+        });
+    }
+
+    function _openNav() {
+        document.getElementById("mySidenav").style.width = "300px";
+        $('body').append('<div id="backdrop" class="modal-backdrop fade show"></div>');
+    }
+
+    function _closeNav() {
+        document.getElementById("mySidenav").style.width = "0";
+        $('#backdrop').remove();
+    }
+
+    function _loginTab(params) {
+        app.service.isAuthenticated(_drawAuth);
+    }
+
+    function _drawAuth(auth) {
+        if (auth) {
+            $('#loginForm').hide()
+            $('#loginInfo').show()
+        } else {
+            $('#loginInfo').hide()
+            $('#loginForm').show()
+        }
+    }
+
+    return {
+        load: _load,
+        open: _openNav,
+        close: _closeNav,
+        current: _current,
+        loginTab: _loginTab,
+        init: _init
+    }
+}())
+app.menuComponent = function (target) {
+    let tagName = target.tagName.toLocaleLowerCase();
+
+    var _draw = function (el, uuid) {
+        try {
+            var css = JSON.parse($(el).val())
+            var obj = $(tagName + '[uuid="' + uuid + '"]');
+            app.simpleeditor.clearStyles(obj[0])
+            for (var style in css) {
+                if (css.hasOwnProperty(style)) {
+                    obj.css(style, css[style]);
+                }
+            }
+            app[tagName].save({
+                target: obj[0]
+            })
+            $('#componenJsonHelp').text("")
+        } catch (err) {
+            $('#componenJsonHelp').text("Not valid Json")
+        }
+    }
+
+    var found = function (data) {
+        var el = app.simpleeditor.unwrap(data)
+        if (el) {
+            app.menu.current = el;
+            $('#componentUuid').val(el.uuid)
+            $('#componentJsonCss').val(JSON.stringify(el.css, undefined, 4));
+
+            var draw = app.debounce(_draw, 1000);
+            $('#componentJsonCss').unbind();
+            $('#componentJsonCss').on('keyup', function (evt) {
+                draw(evt.target, el.uuid);
+            });
+        }
+    };
+    var uuid = $(target).attr('uuid');
+    app[tagName].find(app.url, uuid, found);
+};
+app.modal = (function () {
+
+    function _load(url) {
+        app.service.get(url + "/simplecms/components/modal.html", _set, "html");
+    }
+
+    function _set(data) {
+        $('body').append(data);
+    }
+
+    function _create(callback, model, title, placeholder, url, property) {
+
+        $("#simplemodal").modal();
+        $("#simplemodal").find('input').attr("placeholder", placeholder);
+        $("#simpleModalLabel").text(title);
+        $("#simpleModalSave").unbind();
+        $("#simpleModalSave").on("click", function () {
+            model[property] = $("#simplemodal").find('input').val();
+            if (model.id) {
+                app.service.put(url + "/" + model.id, model)
+            } else {
+                app.service.post(url, model)
+            }
+            $('#simplemodal').modal("hide");
+            callback(model[property], model.uuid);
+        });
+    }
+
+    return {
+        load: _load,
+        create: _create
+    }
+}());
+var preview = (function () {
+
+    function _build(req) {
+        var preview = {};
+        preview.request = req;
+        preview.toHtml = _toHtml;
+        preview.withTime = _withTime;
+
+        return preview;
+    }
+
+    function _withTime(time) {
+        this.time = time + " ms";
+    }
+
+    function _toHtml() {
+        if (this.request.status === 200) {
+
+            var type = this.request.getResponseHeader('content-type');
+            return _addElement(this.request.status, "Status")
+                .append(_addElement(this.request.responseURL, "Url"))
+                .append(_addElement(type, "Typ"))
+                .append(_addElement(this.time, "Czas"))
+                .append(_addElement(this.request.response, "Odpowiedź"))
+        }
+        else {
+            return _addElement(this.request.status, "Status")
+                .append(_addElement(this.request.responseURL, "Url"))
+                .append(_addElement(this.time, "Czas"))
+                .append(_addElement(this.request.statusText, "Błąd"))
+
+        }
+    }
+
+    function _addElement(text, titleText) {
+        var title = $('<strong></strong>').text(`${titleText}: `);
+        var content = $('<span></span>').text(text);
+        return $('<p class="mb-0"></p>').append(title).append(content);
+    }
+
+    return {
+        build: _build
+    }
+}());
+
+app.monitoring = app.module(app.monitoring);
+app.monitoring.preview = preview;
+Array.prototype.first = function () {
+    return this[0];
+};
+Array.prototype.last = function () {
+    return this[this.length - 1];
+};
+Array.prototype.next = function (predicate, thisValue) {
+    return this[this.findIndex(predicate, thisValue) + 1];
+};
+Array.prototype.prev = function (predicate, thisValue) {
+    return this[this.findIndex(predicate, thisValue) - 1];
+};
+Array.prototype.any = function () {
+    return this.length > 0;
+}
+
+Array.prototype.contains = function (val) {
+    return this.indexOf(val) !== -1;
+}
+
+String.prototype.contains = function (val) {
+    return this.indexOf(val) !== -1;
+}
+
+
+Array.prototype.groupBy = function (key) {
+    return this.reduce(function (rv, x) {
+        (rv[x[key]] = rv[x[key]] || []).push(x);
+        return rv;
+    }, {});
+};
+
+Array.prototype.distinctBy = function (key) {
+    let grouped = this.groupBy(key);
+    let distinctBy = [];
+    for (const prop in grouped) {
+        if (grouped.hasOwnProperty(prop) && prop !== "undefined") {
+            const element = grouped[prop];
+            if (element) {
+                distinctBy.push(element.first());
+            }
+        }
+    }
+    return distinctBy;
+};
+app.simplecontainer = (function () {
+
+    function _load(url) {
+        var containers = $(app.static.simplecontainer)
+        for (let i = 0; i < containers.length; i++) {
+            const $cont = $(containers[i]);
+            _find(url, $cont.attr("uuid"), function (data) {
+                var el = app.simpleeditor.unwrap(data)
+                if (el) {
+                    $cont.attr("db-id", el.id);
+                    // todo function writeStyles!
+                    var css = el.css
+                    for (var style in css) {
+                        if (css.hasOwnProperty(style)) {
+                            $cont.css(style, css[style]);
+                        }
+                    }
+                } else {
+                    _save({
+                        target: $cont[0]
+                    })
+                }
+            });
+        }
+    }
+
+    function _find(url, uuid, callback) {
+        app.service.get(url + "/" + app.static.simplecontainer + '?uuid=' + uuid, callback);
+    }
+
+    function _save(el) {
+        var uuid = $(el.target).attr('uuid');
+        var id = $(el.target).attr('db-id');
+        var css = app.simpleeditor.readStyles(el.target);
+        if (id) {
+            app.service.put(app.url + "/" + app.static.simplecontainer + "/" + id, {
+                id: id,
+                uuid: uuid,
+                css: css
+            })
+        } else {
+            app.service.post(app.url + "/" + app.static.simplecontainer, {
+                uuid: uuid,
+                css: css
+            })
+        }
+    }
+
+
+    function _makeEditable() {
+        var editButton = $('<button type="button" class="btn btn-primary scms-primary scms-btn btn-sm">EDIT</button>')
+        var editAble = $('<div class="container-editable"></div>')
+        editButton.on('click', _edit)
+        editAble.append(editButton)
+        $(app.static.simplecontainer).prepend(editAble)
+        $(app.static.simplecontainer).addClass('editable')
+    }
+
+    function _edit(e) {
+        app.menu.open();
+        app.menuComponent($(e.target).parent().parent()[0])
+    }
+
+    return {
+        load: _load,
+        save: _save,
+        init: _makeEditable,
+        find: _find
+    }
+}());
+app.simpleeditor = (function () {
+
+    function _listenForCombination(params) {
+        var keys = {
+            shift: false,
+            ctrl: false,
+            e: false
+        };
+        var done = false;
+        $(document.body).keydown(function (e) {
+            // console.log(e.key)
+            // console.log(e.keyCode)
+            if (e.keyCode == 16) {
+                keys["shift"] = true;
+            } else if (e.keyCode == 17) {
+                keys["ctrl"] = true;
+            } else if (e.keyCode == 69) {
+                keys["e"] = true;
+            }
+            if (keys["shift"] && keys["ctrl"] && keys["e"]) {
+                if (!done) {
+                    done = true
+                    app.simplevideo.init();
+                    app.simpleimage.init();
+                    app.simpletext.init();
+                    app.simplecontainer.init();
+                    app.menu.init();
+                }
+            }
+        });
+
+        $(document.body).keyup(function (e) {
+            // reset status of the button 'released' == 'false'
+            if (e.keyCode == 16) {
+                keys["shift"] = false;
+            } else if (e.keyCode == 17) {
+                keys["ctrl"] = false;
+            } else if (e.keyCode == 69) {
+                keys["e"] = false;
+            }
+        });
+    }
+
+    function _readStyles(el) {
+        var styles = {};
+        var i = 0;
+        while (el.style[i]) {
+            styles[el.style[i]] = el.style[el.style[i]]
+            i++;
+        }
+        return styles;
+    }
+
+    function _clearStyles(obj) {
+        var s = obj.style;
+        while (s[0]) {
+            s[s[0]] = ""
+        }
+    }
+
+    function _unwrap(data) {
+        if (data instanceof Array) {
+            if (data.length > 0) {
+                return data[0];
+            }
+        } else {
+            return data;
+        }
+    }
+
+    return {
+        listenForCombination: _listenForCombination,
+        readStyles: _readStyles,
+        clearStyles: _clearStyles,
+        unwrap: _unwrap
+    }
+}())
+app.simpleimage = (function () {
+
+    function _load(url) {
+        app.service.get(url + "/" + app.static.simpleimage, _set);
+        _init()
+    }
+
+    function _init() {
+        $simpleimages = $(app.static.simpleimage);
+        $simpleimages.each(function (idx, el) {
+            $(el).append("<img class='default' src='" + el.url + "'/>");
+            var classes = $(el).attr("class");
+            $(el).find('img').attr("class", classes);
+        });
+    }
+
+    function _makeEditbale() {
+        $simpleimages = $(app.static.simpleimage);
+        $simpleimages.each(function (idx, el) {
+            $(el).find('img')
+                .unbind()
+                .addClass('pointer');
+
+            $(el).find('img').on("click", function () {
+                var uuid = $(el).attr('uuid')
+                var image = $(app.static.simpleimage + "[uuid='" + uuid + "']").find("img");
+                var src = image.attr('src')
+                app.modal.create(_setLocal, {
+                    uuid: $(el).attr('uuid'),
+                    url: src
+                }, "Set image url", "Image url...", app.url + "/simpleimage", "url");
+            });
+        });
+    }
+
+    function _set(data) {
+        data.forEach(function (el) {
+            $simpleimage = $(app.static.simpleimage + "[uuid='" + el.uuid + "'");
+            $simpleimage.attr("db-id", el.id);
+            if (el.url !== "") {
+                $simpleimage.find('img').attr('src', el.url);
+                $simpleimage.find('img').removeClass('default');
+            }
+        });
+    }
+
+    function _setLocal(data, uuid) {
+        $element = $(app.static.simpleimage + "[uuid='" + uuid + "'");
+        $element.find('img').attr("src", data);
+        if (data !== "") {
+            $element.find('img').removeClass('default');
+        } else {
+            $element.find('img').addClass('default');
+        }
+    }
+
+    return {
+        load: _load,
+        init: _makeEditbale
+    }
+}());
+app.simplelanguage = (function () {
+    function _init(url) {
+        app.service.get(url + '/lang', _set);
+    }
+
+    function _getCurrentLangImage(container, lang) {
+        if (Boolean($(container).attr('flag'))) {
+            if (lang.code === app.service.getLanguage()) {
+                return '<img style="height:24px; width:24px;object-fit:contain; padding:3px;"  src="' + lang.url + '"/>'
+            }
+        }
+    }
+    function _set(data) {
+        $simplelanguage = $(app.static.simplelanguage);
+        $simplelanguage.each(function (idx, el) {
+            var select = $('<div class="dropdown"></div>')
+            var btn = $(' <button class="btn btn-outline-primary  dropdown-toggle" type="button" id="dropdownLanguagesMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Languages</button>');
+            var container = $('<div class="dropdown-menu" aria-labelledby="dropdownLanguagesMenuButton"></div>')
+            data.forEach(function (lang) {
+                var opt = $('<a data-code="' + lang.code + '" class="dropdown-item"></a>')
+                opt.append('<img style="height:40px; width:40px;object-fit:contain;"  src="' + lang.url + '"/>');
+                opt.append('<span style="margin-left:10px;">' + lang.placeholder + '</span>');
+                opt.on('click', _changeLanguage);
+                var current = _getCurrentLangImage(el, lang);
+                if(current){
+                    btn.prepend(current)
+                }
+                container.append(opt)
+            })
+            select.append(btn)
+            $(select).append(container)
+            $(el).append(select);
+        });
+    }
+
+    function _changeLanguage(el) {
+        var target = $(el.target);
+        if (el.target.nodeName !== "A") {
+            target = $(target).parent();
+        }
+        var code = target.attr('data-code');
+        app.service.changeLanguage(code);
+    }
+
+    return {
+        load: _init
+    }
+}());
+app.simpletext = (function () {
+
+    function _find(url, uuid, callback) {
+        app.service.get(url + "/" + app.static.simpletext + '?uuid=' + uuid, callback);
+    }
+
+    function _load(url) {
+        app.service.get(url + "/" + app.static.simpletext, _set);
+    }
+
+    function _init() {
+        $simpletexts = $(app.static.simpletext);
+        $simpletexts.each(function (idx, el) {
+            $(el).attr('contenteditable', true);
+            $(el).attr('data-placeholder', "Insert text here...");
+            var save = app.debounce(_save, 1000);
+            $(el).on('keyup', function (evt, el) {
+                save(evt, el);
+            });
+        });
+    }
+
+    function _save(el) {
+        var text = $(el.target).text();
+        var uuid = $(el.target).attr('uuid');
+        var id = $(el.target).attr('db-id');
+        var css = app.simpleeditor.readStyles(el.target);
+        if (id) {
+            app.service.put(app.url + "/" + app.static.simpletext + "/" + id, {
+                id: id,
+                uuid: uuid,
+                text: text,
+                css: css
+            })
+        } else {
+            app.service.post(app.url + "/" + app.static.simpletext, {
+                uuid: uuid,
+                text: text,
+                css: css
+            })
+        }
+    }
+
+    function _set(data) {
+        data.forEach(function (el) {
+            $simpletext = $(app.static.simpletext + "[uuid='" + el.uuid + "'");
+            $simpletext.text(el.text);
+            $simpletext.attr("db-id", el.id);
+            var css = el.css
+            for (var style in css) {
+                if (css.hasOwnProperty(style)) {
+                    $simpletext.css(style, css[style]);
+                }
+            }
+        });
+    }
+
+    return {
+        load: _load,
+        find: _find,
+        save: _save,
+        init: _init
+    }
+}());
+app.simplevideo = (function () {
+
+    function _load(url) {
+        app.service.get(url + "/" + app.static.simplevideo, _set);
+        _init()
+    }
+
+    function _init() {
+        $simplevideos = $(app.static.simplevideo);
+        $simplevideos.each(function (idx, el) {
+            $(el).append("<video controls class='default' src='" + el.url + "'/>");
+            var classes = $(el).attr("class");
+            $(el).find('video').attr("class", classes);
+        });
+    }
+
+    function _makeEditbale() {
+        $simplevideos = $(app.static.simplevideo);
+        $simplevideos.each(function (idx, el) {
+            $(el).find('video')
+                .unbind()
+                .addClass('pointer');
+            $(el).find('video').on("click", function () {
+                var uuid = $(el).attr('uuid')
+                var video = $(app.static.simplevideo + "[uuid='" + uuid + "']").find("video");
+                var src = video.attr('src')
+                app.modal.create(_setLocal, {
+                    uuid: $(el).attr('uuid'),
+                    url: src
+                }, "Set video url", "Video url...", app.url + "/simplevideo", "url");
+            });
+        });
+    }
+
+    function _set(data) {
+        data.forEach(function (el) {
+            $simplevideo = $(app.static.simplevideo + "[uuid='" + el.uuid + "'");
+            $simplevideo.attr("db-id", el.id);
+            if (el.url !== "") {
+                $simplevideo.find('video').attr('src', el.url);
+                $simplevideo.find('video').removeClass('default');
+            }
+        });
+    }
+
+    function _setLocal(data, uuid) {
+        $element = $(app.static.simplevideo + "[uuid='" + uuid + "'");
+        $element.find('video').attr("src", data);
+        if (data !== "") {
+            $element.find('video').removeClass('default');
+        } else {
+            $element.find('video').addClass('default');
+        }
+    }
+
+    return {
+        load: _load,
+        init: _makeEditbale
+    }
+}());
 app.ui = app.ui ? app.ui : {};
 app.ui.pager = (function () {
     var obj = {};
@@ -1844,6 +2001,110 @@ app.ui.search = (function () {
     }
 
     return obj;
+}());
+app.users = app.module(app.users);
+
+app.users.list = (function () {
+    var _selector = ".users-list"
+    function _init() {
+        $(document).ready(function () {
+            _load();
+            // $("#editJsonForm").on("submit", _send);
+        });
+    }
+
+    function _load() {
+        app.service.get("/users/list", _set);
+    }
+
+    function _set(data) {
+        var $list = $(_selector);
+
+        if (data.length === 0) {
+            $p = $('<p class="p-3">There is no users. </p>');
+            $list.append($p)
+        } else {
+            // data.forEach(element => {});
+
+            var table = $('<table class="table table-hover text-center"></table>');
+            var head = $('<thead class=""></thead>');
+            var headTr = $('<tr> </tr>');
+            headTr.append('<td>#ID</td>');
+            headTr.append('<td>Email</td>');
+            headTr.append('<td>Action</td>');
+            head.append(headTr);
+            table.append(head);
+
+            var tbody = $('<tbody></tbody>')
+            data.forEach(el => {
+                tbody.append(_newELement(el))
+            });
+
+            table.append(tbody);
+            $list.append($('<div class="card"></div>').append(table));
+        }
+    }
+
+    function _newELement(element) {
+        $row = $("<tr></tr>");
+        // $rmbtn = $("<button db-id='" + element.id + "' class='btn btn-sm btn-outline-danger'><i class='fas fa-trash-alt'></i> Remove</button>");
+        // $editbtn = $("<button db-id='" + element.id + "' data-toggle='modal' data-target='#editJsonModal'  class='btn btn-sm btn-outline-primary ml-3' ><i class='far fa-edit'></i> Edit</button>");
+
+        // $rmbtn.on("click", _remove);
+        // $editbtn.on("click", _edit);
+        $idColumn = $("<td></td>").text(element.id);
+        $nameColumn = $("<td></td>").text(element.login);
+        // $nameColumn = $("<td></td>").text(element.uuid);
+        // $actionColumn = $("<td></td>").append($rmbtn).append($editbtn);
+
+        $row.append($idColumn);
+        $row.append($nameColumn);
+        // $row.append($nameColumn);
+        // $row.append($actionColumn);
+        return $row;
+    }
+
+    // function _remove(params) {
+    //     var id = '';
+    //     if (params.target.tagName === "BUTTON") {
+    //         id = $(params.target).attr("db-id");
+    //     } else {
+    //         id = $(params.target).parent().attr("db-id");
+    //     }
+    //     app.service.delete("/" + app.static.exponent + "/" + id);
+    //     _reload();
+    // }
+
+    // function _edit(params) {
+    //     var id = '';
+    //     if (params.target.tagName === "BUTTON") {
+
+    //         id = $(params.target).attr("db-id");
+    //     } else {
+    //         id = $(params.target).parent().attr("db-id");
+    //     }
+
+    //     app.service.get("/" + app.static.exponent + '/' + id, function (data) {
+    //         $('#editJsonText').val(JSON.stringify(data, undefined, 4))
+    //     });
+    // }
+
+    // function _send(e) {
+    //     e.preventDefault();
+    //     var model = JSON.parse($('#editJsonText').val());
+    //     app.service.put("/" + app.static.exponent + '/' + model.id, model);
+    //     $('#editJsonModal').modal('hide');
+    // }
+
+    function _reload() {
+        $(_selector).empty();
+        _load();
+    }
+
+
+    return {
+        init: _init
+    }
 }());
 app.dashboard.hourData = function (data) {
     var names = [];

@@ -86,6 +86,9 @@ app.service = (function () {
         _setCookie("lang", code, 1);
         window.location.reload();
     }
+    function _getLanguage(){
+        return _getCookie("lang");
+    }
 
     function _getCookie(cname) {
         var name = cname + "=";
@@ -133,6 +136,7 @@ app.service = (function () {
         set: _set,
         isAuthenticated: _isAuthenticated,
         login: _login,
-        changeLanguage: _changeLanguage
+        changeLanguage: _changeLanguage,
+        getLanguage: _getLanguage
     }
 }());

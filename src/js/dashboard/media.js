@@ -39,7 +39,7 @@ var media = (function () {
         $imgCol = $("<td></td>")
 
         var url = _makeMediaUrl(element)
-        $imgCol.append('<img style="height:40px; width:40px" src= "' + url + '"/>')
+        $imgCol.append('<img style="height:40px; width:40px;object-fit:contain;" src= "' + url + '"/>')
         var $copyBtn = $("<button data-url='" + url + "' class='btn btn-sm btn-outline-dark'><i class='fas fa-copy'></i> Copy</button>");
         $copyBtn.on('click', _copyToCliboard)
         $copyCol.append($copyBtn)

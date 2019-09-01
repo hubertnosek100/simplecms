@@ -33,7 +33,7 @@ var lang = (function () {
     }
 
     function _newELement(element) {
-        var $img = $('<img style="height:40px; width:40px" src= "' + element.url + '"/>')
+        var $img = $('<img style="height:40px; width:40px;object-fit:contain;" src= "' + element.url + '"/>')
         var $rmBtn = $("<button data-name='" + element.code + "' class='btn btn-sm btn-outline-danger ml-3'><i class='fas fa-trash-alt'></i> Remove</button>");
         $rmBtn.on('click', _remove)
 

@@ -1,0 +1,20 @@
+{
+    "users": [
+        {
+            "id": "test",
+            "login": "a@wp.pl",
+            "claims": [
+                {
+                    "id": "uihafoduahdf",
+                    "name": "Super"
+                }
+            ]
+        }
+    ],
+    "claims": [
+        {
+            "id": "uihafoduahdf",
+            "name": "Super"
+        }
+    ]
+}
