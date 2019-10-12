@@ -328,6 +328,140 @@ app.static = (function () {
         simplelanguage: _simplelanguage
     }
 }());
+app.menu = (function () {
+    var _current = undefined
+    function _load(url) {
+        app.service.get(url + "/simplecms/components/menu.html", _set, "html");
+    }
+
+    function _set(data) {
+        $('body').append(data);
+        $('#loginForm').on('submit', function (e) {
+            e.preventDefault()
+            var model = app.formToJSON($(e.target))
+            app.service.login(model, _drawAuth)
+        })
+        $('#faviconId').attr('src', app.url + '/favicon.png')
+    }
+
+    function _init() {
+        $('simpletext').contextmenu(function (e) {
+            app.menuComponent(e.target)
+            _openNav();
+            e.preventDefault();
+        });
+        $(document).on('keydown', function (e) {
+            if (e.keyCode === 27) {
+                _closeNav();
+            }
+        });
+    }
+
+    function _openNav() {
+        document.getElementById("mySidenav").style.width = "300px";
+        $('body').append('<div id="backdrop" class="modal-backdrop fade show"></div>');
+    }
+
+    function _closeNav() {
+        document.getElementById("mySidenav").style.width = "0";
+        $('#backdrop').remove();
+    }
+
+    function _loginTab(params) {
+        app.service.isAuthenticated(_drawAuth);
+    }
+
+    function _drawAuth(auth) {
+        if (auth) {
+            $('#loginForm').hide()
+            $('#loginInfo').show()
+        } else {
+            $('#loginInfo').hide()
+            $('#loginForm').show()
+        }
+    }
+
+    return {
+        load: _load,
+        open: _openNav,
+        close: _closeNav,
+        current: _current,
+        loginTab: _loginTab,
+        init: _init
+    }
+}())
+app.menuComponent = function (target) {
+    let tagName = target.tagName.toLocaleLowerCase();
+
+    var _draw = function (el, uuid) {
+        try {
+            var css = JSON.parse($(el).val())
+            var obj = $(tagName + '[uuid="' + uuid + '"]');
+            app.simpleeditor.clearStyles(obj[0])
+            for (var style in css) {
+                if (css.hasOwnProperty(style)) {
+                    obj.css(style, css[style]);
+                }
+            }
+            app[tagName].save({
+                target: obj[0]
+            })
+            $('#componenJsonHelp').text("")
+        } catch (err) {
+            $('#componenJsonHelp').text("Not valid Json")
+        }
+    }
+
+    var found = function (data) {
+        var el = app.simpleeditor.unwrap(data)
+        if (el) {
+            app.menu.current = el;
+            $('#componentUuid').val(el.uuid)
+            $('#componentJsonCss').val(JSON.stringify(el.css, undefined, 4));
+
+            var draw = app.debounce(_draw, 1000);
+            $('#componentJsonCss').unbind();
+            $('#componentJsonCss').on('keyup', function (evt) {
+                draw(evt.target, el.uuid);
+            });
+        }
+    };
+    var uuid = $(target).attr('uuid');
+    app[tagName].find(app.url, uuid, found);
+};
+app.modal = (function () {
+
+    function _load(url) {
+        app.service.get(url + "/simplecms/components/modal.html", _set, "html");
+    }
+
+    function _set(data) {
+        $('body').append(data);
+    }
+
+    function _create(callback, model, title, placeholder, url, property) {
+
+        $("#simplemodal").modal();
+        $("#simplemodal").find('input').attr("placeholder", placeholder);
+        $("#simpleModalLabel").text(title);
+        $("#simpleModalSave").unbind();
+        $("#simpleModalSave").on("click", function () {
+            model[property] = $("#simplemodal").find('input').val();
+            if (model.id) {
+                app.service.put(url + "/" + model.id, model)
+            } else {
+                app.service.post(url, model)
+            }
+            $('#simplemodal').modal("hide");
+            callback(model[property], model.uuid);
+        });
+    }
+
+    return {
+        load: _load,
+        create: _create
+    }
+}());
 var buttonBuilder = (function () {
 
     function _build(text, link) {
@@ -1312,140 +1446,6 @@ app.template = (function () {
         init: _init
     }
 }());
-app.menu = (function () {
-    var _current = undefined
-    function _load(url) {
-        app.service.get(url + "/simplecms/components/menu.html", _set, "html");
-    }
-
-    function _set(data) {
-        $('body').append(data);
-        $('#loginForm').on('submit', function (e) {
-            e.preventDefault()
-            var model = app.formToJSON($(e.target))
-            app.service.login(model, _drawAuth)
-        })
-        $('#faviconId').attr('src', app.url + '/favicon.png')
-    }
-
-    function _init() {
-        $('simpletext').contextmenu(function (e) {
-            app.menuComponent(e.target)
-            _openNav();
-            e.preventDefault();
-        });
-        $(document).on('keydown', function (e) {
-            if (e.keyCode === 27) {
-                _closeNav();
-            }
-        });
-    }
-
-    function _openNav() {
-        document.getElementById("mySidenav").style.width = "300px";
-        $('body').append('<div id="backdrop" class="modal-backdrop fade show"></div>');
-    }
-
-    function _closeNav() {
-        document.getElementById("mySidenav").style.width = "0";
-        $('#backdrop').remove();
-    }
-
-    function _loginTab(params) {
-        app.service.isAuthenticated(_drawAuth);
-    }
-
-    function _drawAuth(auth) {
-        if (auth) {
-            $('#loginForm').hide()
-            $('#loginInfo').show()
-        } else {
-            $('#loginInfo').hide()
-            $('#loginForm').show()
-        }
-    }
-
-    return {
-        load: _load,
-        open: _openNav,
-        close: _closeNav,
-        current: _current,
-        loginTab: _loginTab,
-        init: _init
-    }
-}())
-app.menuComponent = function (target) {
-    let tagName = target.tagName.toLocaleLowerCase();
-
-    var _draw = function (el, uuid) {
-        try {
-            var css = JSON.parse($(el).val())
-            var obj = $(tagName + '[uuid="' + uuid + '"]');
-            app.simpleeditor.clearStyles(obj[0])
-            for (var style in css) {
-                if (css.hasOwnProperty(style)) {
-                    obj.css(style, css[style]);
-                }
-            }
-            app[tagName].save({
-                target: obj[0]
-            })
-            $('#componenJsonHelp').text("")
-        } catch (err) {
-            $('#componenJsonHelp').text("Not valid Json")
-        }
-    }
-
-    var found = function (data) {
-        var el = app.simpleeditor.unwrap(data)
-        if (el) {
-            app.menu.current = el;
-            $('#componentUuid').val(el.uuid)
-            $('#componentJsonCss').val(JSON.stringify(el.css, undefined, 4));
-
-            var draw = app.debounce(_draw, 1000);
-            $('#componentJsonCss').unbind();
-            $('#componentJsonCss').on('keyup', function (evt) {
-                draw(evt.target, el.uuid);
-            });
-        }
-    };
-    var uuid = $(target).attr('uuid');
-    app[tagName].find(app.url, uuid, found);
-};
-app.modal = (function () {
-
-    function _load(url) {
-        app.service.get(url + "/simplecms/components/modal.html", _set, "html");
-    }
-
-    function _set(data) {
-        $('body').append(data);
-    }
-
-    function _create(callback, model, title, placeholder, url, property) {
-
-        $("#simplemodal").modal();
-        $("#simplemodal").find('input').attr("placeholder", placeholder);
-        $("#simpleModalLabel").text(title);
-        $("#simpleModalSave").unbind();
-        $("#simpleModalSave").on("click", function () {
-            model[property] = $("#simplemodal").find('input').val();
-            if (model.id) {
-                app.service.put(url + "/" + model.id, model)
-            } else {
-                app.service.post(url, model)
-            }
-            $('#simplemodal').modal("hide");
-            callback(model[property], model.uuid);
-        });
-    }
-
-    return {
-        load: _load,
-        create: _create
-    }
-}());
 var preview = (function () {
 
     function _build(req) {
@@ -2003,6 +2003,109 @@ app.ui.search = (function () {
     return obj;
 }());
 app.users = app.module(app.users);
+app.users.claimList = (function () {
+    var _selector = ".claim-list"
+    function _init() {
+        $(document).ready(function () {
+            _load();
+            // $("#editJsonForm").on("submit", _send);
+        });
+    }
+
+    function _load() {
+        app.service.get("/claim/list", _set);
+    }
+
+    function _set(data) {
+        var $list = $(_selector);
+
+        if (data.length === 0) {
+            $p = $('<p class="p-3">There is no users. </p>');
+            $list.append($p)
+        } else {
+            // data.forEach(element => {});
+
+            var table = $('<table class="table table-hover text-center"></table>');
+            var head = $('<thead class=""></thead>');
+            var headTr = $('<tr> </tr>');
+            headTr.append('<td>#ID</td>');
+            headTr.append('<td>Name</td>');
+            headTr.append('<td>Action</td>');
+            head.append(headTr);
+            table.append(head);
+
+            var tbody = $('<tbody></tbody>')
+            data.forEach(el => {
+                tbody.append(_newELement(el))
+            });
+
+            table.append(tbody);
+            $list.append($('<div class="card"></div>').append(table));
+        }
+    }
+
+    function _newELement(element) {
+        $row = $("<tr></tr>");
+        // $rmbtn = $("<button db-id='" + element.id + "' class='btn btn-sm btn-outline-danger'><i class='fas fa-trash-alt'></i> Remove</button>");
+        // $editbtn = $("<button db-id='" + element.id + "' data-toggle='modal' data-target='#editJsonModal'  class='btn btn-sm btn-outline-primary ml-3' ><i class='far fa-edit'></i> Edit</button>");
+
+        // $rmbtn.on("click", _remove);
+        // $editbtn.on("click", _edit);
+        $idColumn = $("<td></td>").text(element.id);
+        $nameColumn = $("<td></td>").text(element.name);
+        // $nameColumn = $("<td></td>").text(element.uuid);
+        // $actionColumn = $("<td></td>").append($rmbtn).append($editbtn);
+
+        $row.append($idColumn);
+        $row.append($nameColumn);
+        // $row.append($nameColumn);
+        // $row.append($actionColumn);
+        return $row;
+    }
+
+    // function _remove(params) {
+    //     var id = '';
+    //     if (params.target.tagName === "BUTTON") {
+    //         id = $(params.target).attr("db-id");
+    //     } else {
+    //         id = $(params.target).parent().attr("db-id");
+    //     }
+    //     app.service.delete("/" + app.static.exponent + "/" + id);
+    //     _reload();
+    // }
+
+    // function _edit(params) {
+    //     var id = '';
+    //     if (params.target.tagName === "BUTTON") {
+
+    //         id = $(params.target).attr("db-id");
+    //     } else {
+    //         id = $(params.target).parent().attr("db-id");
+    //     }
+
+    //     app.service.get("/" + app.static.exponent + '/' + id, function (data) {
+    //         $('#editJsonText').val(JSON.stringify(data, undefined, 4))
+    //     });
+    // }
+
+    // function _send(e) {
+    //     e.preventDefault();
+    //     var model = JSON.parse($('#editJsonText').val());
+    //     app.service.put("/" + app.static.exponent + '/' + model.id, model);
+    //     $('#editJsonModal').modal('hide');
+    // }
+
+    function _reload() {
+        $(_selector).empty();
+        _load();
+    }
+
+
+    return {
+        init: _init
+    }
+}());
+app.users = app.module(app.users);
 
 app.users.list = (function () {
     var _selector = ".users-list"
@@ -2014,12 +2117,11 @@ app.users.list = (function () {
     }
 
     function _load() {
-        app.service.get("/users/list", _set);
+        app.service.get("/claim/list", _set);
     }
 
     function _set(data) {
         var $list = $(_selector);
-
         if (data.length === 0) {
             $p = $('<p class="p-3">There is no users. </p>');
             $list.append($p)

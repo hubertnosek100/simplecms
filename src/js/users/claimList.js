@@ -1,7 +1,6 @@
 app.users = app.module(app.users);
-
-app.users.list = (function () {
-    var _selector = ".users-list"
+app.users.claimList = (function () {
+    var _selector = ".claim-list"
     function _init() {
         $(document).ready(function () {
             _load();
@@ -15,6 +14,7 @@ app.users.list = (function () {
 
     function _set(data) {
         var $list = $(_selector);
+
         if (data.length === 0) {
             $p = $('<p class="p-3">There is no users. </p>');
             $list.append($p)
@@ -25,7 +25,7 @@ app.users.list = (function () {
             var head = $('<thead class=""></thead>');
             var headTr = $('<tr> </tr>');
             headTr.append('<td>#ID</td>');
-            headTr.append('<td>Email</td>');
+            headTr.append('<td>Name</td>');
             headTr.append('<td>Action</td>');
             head.append(headTr);
             table.append(head);
@@ -48,7 +48,7 @@ app.users.list = (function () {
         // $rmbtn.on("click", _remove);
         // $editbtn.on("click", _edit);
         $idColumn = $("<td></td>").text(element.id);
-        $nameColumn = $("<td></td>").text(element.login);
+        $nameColumn = $("<td></td>").text(element.name);
         // $nameColumn = $("<td></td>").text(element.uuid);
         // $actionColumn = $("<td></td>").append($rmbtn).append($editbtn);
 

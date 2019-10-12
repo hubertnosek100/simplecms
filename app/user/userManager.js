@@ -16,7 +16,7 @@ function validateEmail(email) {
     return re.test(String(email).toLowerCase());
 }
 
-var addRole = function(){
+var addRole = function () {
     // todo in future
 }
 
@@ -128,6 +128,7 @@ var create = function (data) {
         error: 'Login is not valid email.'
     };
 }
+
 
 userManager.login = login;
 userManager.create = create;

@@ -64,13 +64,14 @@ var authorizer = function (server) {
         var name = req.body.login;
         var pwd = req.body.password;
         var result = login(name, pwd)
-
+        res.locals.isAuthenticated = false;
         if (result.success) {
             res.cookie('simplecms_token', result.token)
-            userMiddleware(req, res)
+            userMiddleware(req, res, true)
             res.redirect('/simplecms/dashboard/');
+        } else {
+            res.render('login')
         }
-        res.render('login')
     })
 
 
@@ -103,10 +104,9 @@ authorizer.isAuthorized = isAuthorized;
 var userMiddleware = function (req, res, noRedirection) {
     if (isAuthenticated(req)) {
         res.locals.isAuthenticated = true;
-
     } else {
         res.locals.isAuthenticated = false;
-        if(!noRedirection){
+        if (!noRedirection) {
             res.render('login')
         }
     }
@@ -148,8 +148,8 @@ function login(name, pwd) {
                         publickey: auth.publickey
                     }
                 }, auth.privatekey, {
-                        expiresIn: '1h'
-                    });
+                    expiresIn: '1h'
+                });
                 return {
                     success: true,
                     token: token

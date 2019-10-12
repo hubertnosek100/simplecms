@@ -87,6 +87,11 @@ var viewController = function (server, userMiddleware) {
         userMiddleware(req, res)
         res.render('users/list')
     });
+
+    server.get('/simplecms/users/claimList', (req, res) => {
+        userMiddleware(req, res)
+        res.render('users/claimList')
+    });
 };
 
 module.exports = viewController;

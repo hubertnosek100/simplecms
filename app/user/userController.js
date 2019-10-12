@@ -14,6 +14,13 @@ var userController = function (server, userMiddleware) {
         });
         res.jsonp(dtos);
     });
+
+    server.get('/claim/list', (req, res) => {
+        userMiddleware(req, res);
+        var db = new JsonDB(this.dbString, true, false);
+        var dtos = db.getData("users/claims") || [];
+        res.jsonp(dtos);
+    });
 };
 
 module.exports = userController;
